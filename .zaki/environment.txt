@@ -1,0 +1,34 @@
+# SYSTEM INFORMATION
+Operating System: Windows_NT 10.0.26100
+Default Shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Home Directory: C:\Users\y.khira
+Current Working Directory: c:\yasser\Cequens_projects\2025\routing_project\routing_repo
+Platform: win32
+Architecture: x64
+Node Version: v20.18.1
+Total Memory: 16GB
+Free Memory: 3GB
+CPU Cores: 12
+
+Current Time: 2/20/2025, 4:03:42 PM (Africa/Cairo, UTC+2:00)
+
+# EDITOR STATE
+
+Visible Files:
+  README.md
+
+Open Tabs:
+  project_design\README.md
+  README.md
+
+# WORKSPACE SUMMARY
+
+Important Project Files:
+  README.md
+
+Files:
+  README.md
+  project_design/
+  project_design/architecture.md
+  project_design/design.md
+  project_design/README.md

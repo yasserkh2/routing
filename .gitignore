@@ -1,0 +1,53 @@
+# Python virtual environments
+venv/
+env/
+.env/
+.venv/
+ENV/
+working_befor_data/venv/
+working_befor_data/flask_app/venv/
+working_befor_data/.venv/
+working_befor_data/flask_app/.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Local development
+.DS_Store
+Thumbs.db
+
+# Zaki directory
+.zaki/
+.zaki/environment.txt
+.zaki/taskhistory.json
+
+# Git line endings
+* text=auto eol=lf
