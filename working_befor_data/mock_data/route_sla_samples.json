@@ -1,0 +1,161 @@
+{
+    "samples": [
+        {
+            "route": "Talabat_Jordan_Togo Cell",
+            "sla_dd": 99.5,
+            "sla_tested": 98.8,
+            "sla_assumed": 94.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Healthy",
+            "details": {
+                "mcc": "615",
+                "mnc": "1",
+                "provider": "AMD Telecom"
+            }
+        },
+        {
+            "route": "Cequens_Premium_EUR_Kuwait",
+            "sla_dd": null,
+            "sla_tested": 92.5,
+            "sla_assumed": 96.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Warning",
+            "details": {
+                "mcc": "419",
+                "mnc": "9",
+                "provider": "Twilio"
+            }
+        },
+        {
+            "route": "Cequens_Verify_INTL_Togo",
+            "sla_dd": 97.8,
+            "sla_tested": null,
+            "sla_assumed": 94.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Healthy",
+            "details": {
+                "mcc": "615",
+                "mnc": "1",
+                "provider": "MessageBird"
+            }
+        },
+        {
+            "route": "Cequens_Standard_USD_Kuwait",
+            "sla_dd": 89.5,
+            "sla_tested": 91.2,
+            "sla_assumed": 96.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Critical",
+            "details": {
+                "mcc": "419",
+                "mnc": "9",
+                "provider": "Infobip"
+            }
+        },
+        {
+            "route": "Regional_Enterprise_INTL_Togo",
+            "sla_dd": 95.6,
+            "sla_tested": 96.8,
+            "sla_assumed": 94.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Warning",
+            "details": {
+                "mcc": "615",
+                "mnc": "1",
+                "provider": "AMD Telecom"
+            }
+        },
+        {
+            "route": "Cequens_Alibaba_Kuwait",
+            "sla_dd": 98.9,
+            "sla_tested": 97.5,
+            "sla_assumed": 96.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Healthy",
+            "details": {
+                "mcc": "419",
+                "mnc": "9",
+                "provider": "Twilio"
+            }
+        },
+        {
+            "route": "Cequens_Premium_OTP_EUR_Togo",
+            "sla_dd": 88.2,
+            "sla_tested": 89.5,
+            "sla_assumed": 94.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Critical",
+            "details": {
+                "mcc": "615",
+                "mnc": "1",
+                "provider": "Infobip"
+            }
+        },
+        {
+            "route": "Cequens_Standard_AED_Kuwait",
+            "sla_dd": 96.7,
+            "sla_tested": null,
+            "sla_assumed": 96.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Healthy",
+            "details": {
+                "mcc": "419",
+                "mnc": "9",
+                "provider": "MessageBird"
+            }
+        },
+        {
+            "route": "Regional_Enterprise_INTL_OTP_Togo",
+            "sla_dd": null,
+            "sla_tested": 95.8,
+            "sla_assumed": 94.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Warning",
+            "details": {
+                "mcc": "615",
+                "mnc": "1",
+                "provider": "AMD Telecom"
+            }
+        },
+        {
+            "route": "Cequens_Operators_Premium_Kuwait",
+            "sla_dd": 97.2,
+            "sla_tested": 96.9,
+            "sla_assumed": 96.0,
+            "last_updated": "2025-02-24T14:42:42.123Z",
+            "status": "Healthy",
+            "details": {
+                "mcc": "419",
+                "mnc": "9",
+                "provider": "Twilio"
+            }
+        }
+    ],
+    "summary": {
+        "total_samples": 10,
+        "status_distribution": {
+            "Healthy": 4,
+            "Warning": 3,
+            "Critical": 2
+        },
+        "sla_coverage": {
+            "dd_available": 8,
+            "tested_available": 8,
+            "average_dd": 95.43,
+            "average_tested": 94.88,
+            "average_assumed": 95.0
+        },
+        "network_distribution": {
+            "Togo Cell": {
+                "mcc": "615",
+                "mnc": "1",
+                "samples": 5
+            },
+            "Kuwait Virgin Mobile": {
+                "mcc": "419",
+                "mnc": "9",
+                "samples": 5
+            }
+        }
+    }
+}

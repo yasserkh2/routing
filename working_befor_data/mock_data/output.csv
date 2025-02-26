@@ -1,0 +1,15 @@
+Reference ID,Product Name,Provider Name,Name,Network Name,MCC,MNC,Old Rate,New Rate,Margin %,Price Change Status,Created On
+450271,Talabat_Jordan,AMD Telecom,"Premium_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-2459.618442,Increased,2025-02-06T12:43:18.763Z
+450271,Cequens_Operators_Premium,AMD Telecom,"Premium_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-3124.777448,Increased,2025-02-06T12:43:26.163Z
+450271,Cequens_Premium_EUR,AMD Telecom,"Premium_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-119.545455,Increased,2025-02-06T12:43:26.167Z
+450271,Cequens_Premium_OTP_EUR,AMD Telecom,"Premium_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-258.749206,Increased,2025-02-06T12:43:26.167Z
+450271,Cequens_Alibaba,AMD Telecom,"Alibaba_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-2616.875,Increased,2025-02-06T12:43:26.167Z
+450271,Cequens_Verify_INTL,AMD Telecom,"Verify_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-4283.824123,Increased,2025-02-06T12:43:26.167Z
+450271,Cequens_Operators_Premium,AMD Telecom,"Standard_Kuwait_Virgin_Telecom, AMD",Kuwait Virgin Mobile,419,9,0.115,0.1725,-117.072148,Increased,2025-02-06T12:43:26.170Z
+450271,Cequens_Standard_Operators_USD,AMD Telecom,"Standard_Kuwait_Virgin_Telecom, AMD",Kuwait Virgin Mobile,419,9,0.115,0.1725,-123.18701,Increased,2025-02-06T12:43:26.170Z
+450271,Cequens_Standard_AED,AMD Telecom,"Standard_Kuwait_Virgin_Telecom, AMD",Kuwait Virgin Mobile,419,9,0.115,0.1725,-44.284387,Increased,2025-02-06T12:43:26.173Z
+450271,Cequens_Standard_USD,AMD Telecom,"Standard_Kuwait_Virgin_Telecom, AMD",Kuwait Virgin Mobile,419,9,0.115,0.1725,-118.661972,Increased,2025-02-06T12:43:26.173Z
+450271,Cequens_Standard_EUR,AMD Telecom,"Standard_Kuwait_Virgin_Telecom, AMD",Kuwait Virgin Mobile,419,9,0.115,0.1725,-98.504028,Increased,2025-02-06T12:43:26.177Z
+450271,Cequens_Premium_OTP_EUR,AMD Telecom,"Standard_Kuwait_Virgin_Telecom, AMD",Kuwait Virgin Mobile,419,9,0.115,0.1725,-98.504028,Increased,2025-02-06T12:43:26.177Z
+450271,Regional_Enterprise_INTL_ADV,AMD Telecom,"Enterprise_INTL_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-4263.143631,Increased,2025-02-06T12:43:26.180Z
+450271,Regional_Enterprise_INTL_OTP,AMD Telecom,"Enterprise_INTL_Togo Cell_Togo, AMD",Togo Cell (Togo Telecom),615,1,0.1011,0.2415,-4097.971994,Increased,2025-02-06T12:43:26.180Z

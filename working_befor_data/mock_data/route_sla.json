@@ -1,0 +1,84 @@
+{
+    "mcc": "615",
+    "mnc": "1",
+    "products": {
+        "Talabat_Jordan": {
+            "routes": [
+                {
+                    "reference_id": "450271",
+                    "product_name": "Talabat_Jordan",
+                    "provider_name": "AMD Telecom",
+                    "name": "Premium_Togo Cell_Togo, AMD",
+                    "network_name": "Togo Cell (Togo Telecom)",
+                    "mcc": "615",
+                    "mnc": "1",
+                    "old_rate": 0.1011,
+                    "new_rate": 0.2415,
+                    "margin_percentage": -2459.62,
+                    "price_change_status": "Increased",
+                    "created_on": "2025-02-06T12:43:18.763Z",
+                    "sla_dd": 97.5,
+                    "sla_tested": 95.8,
+                    "sla_assumed": 94.0
+                }
+            ],
+            "sla_dd_available": 1,
+            "sla_tested_available": 1,
+            "average_sla_dd": 97.5,
+            "average_sla_tested": 95.8,
+            "sla_assumed": 94.0
+        },
+        "Cequens_Operators_Premium": {
+            "routes": [
+                {
+                    "reference_id": "450271",
+                    "product_name": "Cequens_Operators_Premium",
+                    "provider_name": "AMD Telecom",
+                    "name": "Premium_Togo Cell_Togo, AMD",
+                    "network_name": "Togo Cell (Togo Telecom)",
+                    "mcc": "615",
+                    "mnc": "1",
+                    "old_rate": 0.1011,
+                    "new_rate": 0.2415,
+                    "margin_percentage": -3124.78,
+                    "price_change_status": "Increased",
+                    "created_on": "2025-02-06T12:43:26.163Z",
+                    "sla_dd": 98.2,
+                    "sla_tested": null,
+                    "sla_assumed": 94.0
+                }
+            ],
+            "sla_dd_available": 1,
+            "sla_tested_available": 0,
+            "average_sla_dd": 98.2,
+            "average_sla_tested": 0,
+            "sla_assumed": 94.0
+        },
+        "Cequens_Premium_EUR": {
+            "routes": [
+                {
+                    "reference_id": "450271",
+                    "product_name": "Cequens_Premium_EUR",
+                    "provider_name": "AMD Telecom",
+                    "name": "Premium_Togo Cell_Togo, AMD",
+                    "network_name": "Togo Cell (Togo Telecom)",
+                    "mcc": "615",
+                    "mnc": "1",
+                    "old_rate": 0.1011,
+                    "new_rate": 0.2415,
+                    "margin_percentage": -119.55,
+                    "price_change_status": "Increased",
+                    "created_on": "2025-02-06T12:43:26.167Z",
+                    "sla_dd": null,
+                    "sla_tested": 94.5,
+                    "sla_assumed": 94.0
+                }
+            ],
+            "sla_dd_available": 0,
+            "sla_tested_available": 1,
+            "average_sla_dd": 0,
+            "average_sla_tested": 94.5,
+            "sla_assumed": 94.0
+        }
+    }
+}

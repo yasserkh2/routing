@@ -1,0 +1,79 @@
+[
+    {
+        "product_name": "Talabat_Jordan",
+        "route_count": 1,
+        "average_margin": -2459.62,
+        "dd_coverage": 100.0,
+        "test_coverage": 100.0
+    },
+    {
+        "product_name": "Cequens_Operators_Premium",
+        "route_count": 2,
+        "average_margin": -1620.93,
+        "dd_coverage": 50.0,
+        "test_coverage": 50.0
+    },
+    {
+        "product_name": "Cequens_Premium_EUR",
+        "route_count": 1,
+        "average_margin": -119.55,
+        "dd_coverage": 0.0,
+        "test_coverage": 100.0
+    },
+    {
+        "product_name": "Cequens_Premium_OTP_EUR",
+        "route_count": 2,
+        "average_margin": -178.63,
+        "dd_coverage": 50.0,
+        "test_coverage": 100.0
+    },
+    {
+        "product_name": "Cequens_Alibaba",
+        "route_count": 1,
+        "average_margin": -2616.88,
+        "dd_coverage": 0.0,
+        "test_coverage": 0.0
+    },
+    {
+        "product_name": "Cequens_Verify_INTL",
+        "route_count": 1,
+        "average_margin": -4283.82,
+        "dd_coverage": 100.0,
+        "test_coverage": 100.0
+    },
+    {
+        "product_name": "Cequens_Standard_Operators_USD",
+        "route_count": 1,
+        "average_margin": -123.19,
+        "dd_coverage": 100.0,
+        "test_coverage": 0.0
+    },
+    {
+        "product_name": "Cequens_Standard_AED",
+        "route_count": 1,
+        "average_margin": -44.28,
+        "dd_coverage": 100.0,
+        "test_coverage": 100.0
+    },
+    {
+        "product_name": "Cequens_Standard_USD",
+        "route_count": 1,
+        "average_margin": -118.66,
+        "dd_coverage": 0.0,
+        "test_coverage": 100.0
+    },
+    {
+        "product_name": "Regional_Enterprise_INTL_ADV",
+        "route_count": 1,
+        "average_margin": -4263.14,
+        "dd_coverage": 100.0,
+        "test_coverage": 0.0
+    },
+    {
+        "product_name": "Regional_Enterprise_INTL_OTP",
+        "route_count": 1,
+        "average_margin": -4097.97,
+        "dd_coverage": 0.0,
+        "test_coverage": 100.0
+    }
+]

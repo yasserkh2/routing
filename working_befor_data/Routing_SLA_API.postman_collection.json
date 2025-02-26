@@ -1,0 +1,476 @@
+{
+	"info": {
+		"_postman_id": "b5a3e9d0-5f1b-4c1e-8b1d-9f9d0f0f0f0f",
+		"name": "Routing SLA API",
+		"description": "API for retrieving and analyzing route SLA data from multiple sources",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Root Endpoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": [""]
+				},
+				"description": "Get API information and available endpoints"
+			}
+		},
+		{
+			"name": "Get Links SLA",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/links/sla?product_name=Cequens_Premium_EUR&status=Critical&mcc=615&mnc=1&provider=Infobip",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "links", "sla"],
+					"query": [
+						{
+							"key": "product_name",
+							"value": "Cequens_Premium_EUR",
+							"description": "Filter by product name"
+						},
+						{
+							"key": "status",
+							"value": "Critical",
+							"description": "Filter by status (Healthy/Warning/Critical)"
+						},
+						{
+							"key": "mcc",
+							"value": "615",
+							"description": "Filter by Mobile Country Code"
+						},
+						{
+							"key": "mnc",
+							"value": "1",
+							"description": "Filter by Mobile Network Code"
+						},
+						{
+							"key": "provider",
+							"value": "Infobip",
+							"description": "Filter by provider name"
+						}
+					]
+				},
+				"description": "Get SLA measurements for links grouped by profile"
+			},
+			"response": [
+				{
+					"name": "Critical Links Sample",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": {
+						"count": 1,
+						"profiles": [
+							{
+								"product_name": "Cequens_Premium_EUR",
+								"links": [
+									{
+										"product_name": "Cequens_Premium_EUR",
+										"link_id": "CPE_615_1_INF",
+										"network_name": "Togo Cell (Togo Telecom)",
+										"mcc": "615",
+										"mnc": "1",
+										"provider": "Infobip",
+										"sla_dd": 88.2,
+										"sla_tested": 89.5,
+										"sla_assumed": 94.0,
+										"status": "Critical",
+										"last_updated": "2025-02-24T14:52:51.123Z"
+									}
+								],
+								"sla_summary": {
+									"total_links": 1,
+									"dd_coverage": 100.0,
+									"test_coverage": 100.0,
+									"average_dd": 88.2,
+									"average_tested": 89.5,
+									"average_assumed": 94.0
+								}
+							}
+						],
+						"summary": {
+							"total_profiles": 1,
+							"total_links": 1,
+							"status_distribution": {
+								"Healthy": 0,
+								"Warning": 0,
+								"Critical": 1
+							},
+							"sla_coverage": {
+								"dd_coverage": 100.0,
+								"test_coverage": 100.0,
+								"average_dd": 88.2,
+								"average_tested": 89.5,
+								"average_assumed": 94.0
+							},
+							"network_distribution": {
+								"Togo Cell (Togo Telecom)": {
+									"mcc": "615",
+									"mnc": "1",
+									"links": 1
+								}
+							},
+							"provider_distribution": {
+								"Infobip": 1
+							}
+						}
+					}
+				},
+				{
+					"name": "Multiple Links Sample",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": {
+						"count": 1,
+						"profiles": [
+							{
+								"product_name": "Cequens_Premium_EUR",
+								"links": [
+									{
+										"product_name": "Cequens_Premium_EUR",
+										"link_id": "CPE_615_1_INF",
+										"network_name": "Togo Cell (Togo Telecom)",
+										"mcc": "615",
+										"mnc": "1",
+										"provider": "Infobip",
+										"sla_dd": 88.2,
+										"sla_tested": 89.5,
+										"sla_assumed": 94.0,
+										"status": "Critical",
+										"last_updated": "2025-02-24T14:52:51.123Z"
+									},
+									{
+										"product_name": "Cequens_Premium_EUR",
+										"link_id": "CPE_419_9_AMD",
+										"network_name": "Kuwait Virgin Mobile",
+										"mcc": "419",
+										"mnc": "9",
+										"provider": "AMD Telecom",
+										"sla_dd": 96.7,
+										"sla_tested": 95.9,
+										"sla_assumed": 96.0,
+										"status": "Healthy",
+										"last_updated": "2025-02-24T14:52:51.123Z"
+									},
+									{
+										"product_name": "Cequens_Premium_EUR",
+										"link_id": "CPE_419_9_TWI",
+										"network_name": "Kuwait Virgin Mobile",
+										"mcc": "419",
+										"mnc": "9",
+										"provider": "Twilio",
+										"sla_dd": 98.9,
+										"sla_tested": 97.5,
+										"sla_assumed": 96.0,
+										"status": "Healthy",
+										"last_updated": "2025-02-24T14:52:51.123Z"
+									}
+								],
+								"sla_summary": {
+									"total_links": 3,
+									"dd_coverage": 100.0,
+									"test_coverage": 100.0,
+									"average_dd": 94.6,
+									"average_tested": 94.3,
+									"average_assumed": 95.33
+								}
+							}
+						],
+						"summary": {
+							"total_profiles": 1,
+							"total_links": 3,
+							"status_distribution": {
+								"Healthy": 2,
+								"Warning": 0,
+								"Critical": 1
+							},
+							"sla_coverage": {
+								"dd_coverage": 100.0,
+								"test_coverage": 100.0,
+								"average_dd": 94.6,
+								"average_tested": 94.3,
+								"average_assumed": 95.33
+							},
+							"network_distribution": {
+								"Togo Cell (Togo Telecom)": {
+									"mcc": "615",
+									"mnc": "1",
+									"links": 1
+								},
+								"Kuwait Virgin Mobile": {
+									"mcc": "419",
+									"mnc": "9",
+									"links": 2
+								}
+							},
+							"provider_distribution": {
+								"Infobip": 1,
+								"AMD Telecom": 1,
+								"Twilio": 1
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Get All Routes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/routes?product_name=Talabat_Jordan&mcc=615&mnc=1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "routes"],
+					"query": [
+						{
+							"key": "product_name",
+							"value": "Talabat_Jordan",
+							"description": "Filter by product name"
+						},
+						{
+							"key": "mcc",
+							"value": "615",
+							"description": "Filter by Mobile Country Code"
+						},
+						{
+							"key": "mnc",
+							"value": "1",
+							"description": "Filter by Mobile Network Code"
+						}
+					]
+				},
+				"description": "Get routes with their SLA information from all sources"
+			}
+		},
+		{
+			"name": "Get Product Profiles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/profiles",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "profiles"]
+				},
+				"description": "Get product profiles with their route counts and SLA coverage statistics"
+			}
+		},
+		{
+			"name": "Get Available Profiles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/profiles/available?mcc=615&mnc=1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "profiles", "available"],
+					"query": [
+						{
+							"key": "mcc",
+							"value": "615",
+							"description": "Filter by Mobile Country Code"
+						},
+						{
+							"key": "mnc",
+							"value": "1",
+							"description": "Filter by Mobile Network Code"
+						}
+					]
+				},
+				"description": "Get available profiles with their network coverage"
+			}
+		},
+		{
+			"name": "Get Product SLA Expectations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/profiles/sla?product_name=Talabat_Jordan",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "profiles", "sla"],
+					"query": [
+						{
+							"key": "product_name",
+							"value": "Talabat_Jordan",
+							"description": "Filter by product name"
+						}
+					]
+				},
+				"description": "Get SLA expectations and thresholds for products"
+			}
+		},
+		{
+			"name": "Get Route SLA Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/routes/615/1/sla?product_name=Talabat_Jordan",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "routes", "615", "1", "sla"],
+					"query": [
+						{
+							"key": "product_name",
+							"value": "Talabat_Jordan",
+							"description": "Filter by product name"
+						}
+					]
+				},
+				"description": "Get SLA information for routes with specific MCC/MNC combination"
+			}
+		},
+		{
+			"name": "Get Routes Summary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/routes/summary",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "routes", "summary"]
+				},
+				"description": "Get summary statistics about routes and their SLA coverage"
+			}
+		},
+		{
+			"name": "Get Price Changes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/routes/price-changes?status=Increased&min_margin=-5000&max_margin=-100",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "routes", "price-changes"],
+					"query": [
+						{
+							"key": "status",
+							"value": "Increased",
+							"description": "Filter by price change status (Increased/Decreased)"
+						},
+						{
+							"key": "min_margin",
+							"value": "-5000",
+							"description": "Filter by minimum margin percentage"
+						},
+						{
+							"key": "max_margin",
+							"value": "-100",
+							"description": "Filter by maximum margin percentage"
+						}
+					]
+				},
+				"description": "Get routes with price changes, filtered by status and margin range"
+			},
+			"response": [
+				{
+					"name": "Price Changes Sample",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": {
+						"count": 2,
+						"routes": [
+							{
+								"reference_id": "450271",
+								"product_name": "Talabat_Jordan",
+								"provider_name": "AMD Telecom",
+								"network_name": "Togo Cell (Togo Telecom)",
+								"mcc": "615",
+								"mnc": "1",
+								"old_rate": 0.1011,
+								"new_rate": 0.2415,
+								"margin_percentage": -2459.62,
+								"price_change_status": "Increased",
+								"created_on": "2025-02-06T12:43:18.763Z",
+								"sla_dd": 97.5,
+								"sla_tested": 95.8,
+								"sla_assumed": 94.0
+							},
+							{
+								"reference_id": "450271",
+								"product_name": "Cequens_Premium_EUR",
+								"provider_name": "AMD Telecom",
+								"network_name": "Togo Cell (Togo Telecom)",
+								"mcc": "615",
+								"mnc": "1",
+								"old_rate": 0.1011,
+								"new_rate": 0.2415,
+								"margin_percentage": -119.55,
+								"price_change_status": "Increased",
+								"created_on": "2025-02-06T12:43:26.167Z",
+								"sla_dd": null,
+								"sla_tested": 94.5,
+								"sla_assumed": 94.0
+							}
+						],
+						"summary": {
+							"increased_count": 2,
+							"decreased_count": 0,
+							"average_margin": -1289.59
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Refresh Mock Data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/mock/refresh",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "mock", "refresh"]
+				},
+				"description": "Refresh the mock data (for testing purposes)"
+			}
+		}
+	]
+}

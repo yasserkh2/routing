@@ -1,0 +1,178 @@
+[
+    {
+        "product_name": "Talabat_Jordan",
+        "expected_sla": 98.0,
+        "priority": "High",
+        "description": "Premium service for Talabat in Jordan",
+        "sla_thresholds": {
+            "critical": 97.0,
+            "warning": 97.5,
+            "target": 98.0
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Operators_Premium",
+        "expected_sla": 98.5,
+        "priority": "High",
+        "description": "Premium operator services",
+        "sla_thresholds": {
+            "critical": 97.5,
+            "warning": 98.0,
+            "target": 98.5
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Premium_EUR",
+        "expected_sla": 98.0,
+        "priority": "High",
+        "description": "Premium European services",
+        "sla_thresholds": {
+            "critical": 97.0,
+            "warning": 97.5,
+            "target": 98.0
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Premium_OTP_EUR",
+        "expected_sla": 98.5,
+        "priority": "Critical",
+        "description": "OTP services for European market",
+        "sla_thresholds": {
+            "critical": 98.0,
+            "warning": 98.2,
+            "target": 98.5
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Alibaba",
+        "expected_sla": 97.5,
+        "priority": "High",
+        "description": "Services for Alibaba",
+        "sla_thresholds": {
+            "critical": 96.5,
+            "warning": 97.0,
+            "target": 97.5
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Verify_INTL",
+        "expected_sla": 98.5,
+        "priority": "Critical",
+        "description": "International verification services",
+        "sla_thresholds": {
+            "critical": 98.0,
+            "warning": 98.2,
+            "target": 98.5
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Standard_Operators_USD",
+        "expected_sla": 97.0,
+        "priority": "Medium",
+        "description": "Standard operator services",
+        "sla_thresholds": {
+            "critical": 96.0,
+            "warning": 96.5,
+            "target": 97.0
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Standard_AED",
+        "expected_sla": 97.0,
+        "priority": "Medium",
+        "description": "Standard services for UAE market",
+        "sla_thresholds": {
+            "critical": 96.0,
+            "warning": 96.5,
+            "target": 97.0
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Cequens_Standard_USD",
+        "expected_sla": 97.0,
+        "priority": "Medium",
+        "description": "Standard USD services",
+        "sla_thresholds": {
+            "critical": 96.0,
+            "warning": 96.5,
+            "target": 97.0
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Regional_Enterprise_INTL_ADV",
+        "expected_sla": 98.0,
+        "priority": "High",
+        "description": "Advanced international enterprise services",
+        "sla_thresholds": {
+            "critical": 97.0,
+            "warning": 97.5,
+            "target": 98.0
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    },
+    {
+        "product_name": "Regional_Enterprise_INTL_OTP",
+        "expected_sla": 98.5,
+        "priority": "Critical",
+        "description": "OTP services for international enterprises",
+        "sla_thresholds": {
+            "critical": 98.0,
+            "warning": 98.2,
+            "target": 98.5
+        },
+        "fallback_tiers": {
+            "europe": 98.5,
+            "north_america": 96.0,
+            "asia_africa": 94.0
+        }
+    }
+]

@@ -1,255 +1,164 @@
-# Routing Optimization Project - Working Before Data
+# Routing Optimization System
 
-## API Structure
+A system for optimizing routing decisions based on SLA requirements and profit maximization.
 
-### 1. Root Endpoint
-```
-GET /
+## Components
 
-Response 200:
-{
-    "name": "Routing SLA API",
-    "version": "1.0.0",
-    "status": "operational",
-    "endpoints": {
-        "routes": "/api/routes - Get routes with SLA data",
-        "profiles": "/api/profiles - Get product profiles with SLA coverage",
-        "sla": "/api/routes/{mcc}/{mnc}/sla - Get SLA data for specific route",
-        "summary": "/api/routes/summary - Get SLA coverage statistics"
-    }
-}
-```
+### 1. Data Models
 
-### 2. Get All Routes
-```
-GET /api/routes
+#### SLA Data (`sla_data.py`)
+- Handles SLA information from multiple sources:
+  * DataDog (current performance)
+  * Auto Router V1 (testing results)
+  * Tiering-based assumptions
+- Provides best available SLA selection
 
-Query Parameters:
-- product_name (optional): Filter by product name
-- mcc (optional): Filter by Mobile Country Code
-- mnc (optional): Filter by Mobile Network Code
+#### Link (`link.py`)
+- Represents routing links with properties:
+  * Link ID and operator information
+  * SLA data and status
+  * Routing priority
+  * Active/inactive status
+- Methods for SLA validation and usability checks
 
-Response 200:
-{
-    "count": 20,
-    "routes": [
-        {
-            "reference_id": "450000",
-            "product_name": "Cequens_Premium_EUR",
-            "provider_name": "Twilio",
-            "name": "Cequens_STC Kuwait_Twilio",
-            "network_name": "STC Kuwait",
-            "mcc": "419",
-            "mnc": "2",
-            "old_rate": 0.0717,
-            "new_rate": 0.0725,
-            "margin_percentage": 1.12,
-            "price_change_status": "Increased",
-            "created_on": "2025-01-26T20:54:45.611681",
-            "sla_dd": null,
-            "sla_tested": null,
-            "sla_assumed": 96.0
-        }
-    ]
-}
+#### Profile (`profile.py`)
+- Manages routing profiles with:
+  * Expected SLA requirements
+  * Associated links
+  * Priority levels
+- Methods for link management and SLA verification
 
-Error Response 500:
-{
-    "detail": "Internal server error message"
-}
-```
+### 2. Optimization System
 
-### 3. Get Product Profiles
-```
-GET /api/profiles
+#### Route Optimizer (`optimizer.py`)
+- Linear programming model for profit maximization
+- Constraints:
+  * SLA requirements per profile
+  * Link capacity limits
+  * Volume distribution
+- Provides optimal routing plans
 
-Response 200:
-{
-    "count": integer,
-    "profiles": [
-        {
-            "product_name": string,
-            "route_count": integer,
-            "average_margin": float,
-            "dd_coverage": float,
-            "test_coverage": float
-        }
-    ]
-}
+### 3. API Integration
 
-Error Response 500:
-{
-    "detail": "Internal server error message"
-}
-```
+#### API Strategies (`api_strategy.py`)
+- Query1: GetProfilesRelatedToLink(link, mnc)
+  * Gets profiles associated with a link
+  * Shows expected SLA per profile
+  * Includes link-specific information
 
-### 4. Get Route SLA Data
-```
-GET /api/routes/{mcc}/{mnc}/sla
+- Query2: GetLinksSLAByMNC(mnc)
+  * Gets all links for an MNC
+  * Shows SLA from different sources
+  * Includes performance metrics
 
-Path Parameters:
-- mcc: Mobile Country Code
-- mnc: Mobile Network Code
+- Query3: GetProfilesWithLinks()
+  * Gets all profiles with their links
+  * Shows routing priorities
+  * Includes active status
 
-Query Parameters:
-- product_name (optional): Filter by product name
+## Installation
 
-Response 200:
-{
-    "mcc": string,
-    "mnc": string,
-    "products": {
-        "product_name": {
-            "routes": [Route],
-            "sla_dd_available": integer,
-            "sla_tested_available": integer,
-            "average_sla_dd": float,
-            "average_sla_tested": float,
-            "sla_assumed": float
-        }
-    }
-}
-
-Error Response 404:
-{
-    "detail": "No routes found for MCC: {mcc}, MNC: {mnc}"
-}
-
-Error Response 500:
-{
-    "detail": "Internal server error message"
-}
-```
-
-### 5. Get Routes Summary
-```
-GET /api/routes/summary
-
-Response 200:
-{
-    "total_routes": integer,
-    "sla_coverage": {
-        "datadog": float,
-        "tested": float,
-        "assumed": float
-    },
-    "unique_products": integer,
-    "unique_networks": integer,
-    "timestamp": string (ISO format)
-}
-
-Error Response 500:
-{
-    "detail": "Internal server error message"
-}
-```
-
-### 6. Refresh Mock Data
-```
-POST /api/mock/refresh
-
-Response 200:
-{
-    "message": "Mock data refreshed successfully"
-}
-
-Error Response 500:
-{
-    "detail": "Internal server error message"
-}
-```
-
-## Mock Data Structure
-
-### SLA Data Sources
-
-1. **Datadog API (MockDatadogAPI)**
-   - Coverage: 30% of routes
-   - SLA Range: 95.0-99.9%
-   - Returns: Optional[float]
-
-2. **Auto Router V1 (MockAutoRouterAPI)**
-   - Coverage: 40% of routes
-   - SLA Range: 90.0-99.0%
-   - Returns: Optional[float]
-
-3. **Tiering Data (MockTieringAPI)**
-   - Coverage: 100% (fallback)
-   - Tier Mapping:
-     * Europe (MCC 100-299): 98.5%
-     * North America (MCC 300-499): 96.0%
-     * Asia & Africa (MCC 500-799): 94.0%
-   - Returns: float
-
-### Route Data Structure
-
-```python
-{
-    "reference_id": str,          # Format: "45XXXX"
-    "product_name": str,          # e.g., "Cequens_Premium_EUR"
-    "provider_name": str,         # e.g., "Twilio"
-    "name": str,                  # Combined name
-    "network_name": str,          # e.g., "Vodafone Egypt"
-    "mcc": str,                   # Mobile Country Code
-    "mnc": str,                   # Mobile Network Code
-    "old_rate": float,           # Previous rate
-    "new_rate": float,           # Current rate
-    "margin_percentage": float,   # Rate change percentage
-    "price_change_status": str,   # "Increased" or "Decreased"
-    "created_on": str,           # ISO format datetime
-    "sla_dd": Optional[float],   # Datadog SLA if available
-    "sla_tested": Optional[float], # Test results if available
-    "sla_assumed": float         # Tiering-based SLA
-}
-```
-
-## Setup and Running
-
-1. Create virtual environment:
-```bash
-cd working_befor_data
-python -m venv venv
-```
-
-2. Activate virtual environment:
-```bash
-source venv/Scripts/activate  # Git Bash
-```
-
-3. Install dependencies:
+1. Clone the repository
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Run the FastAPI server:
-```bash
-python -m uvicorn app.main:app --reload
+## Usage
+
+### Basic Usage
+
+```python
+from optimizer import RoutingOptimizer
+from profile import Profile
+
+# Create profiles with links
+profiles = [...]
+
+# Initialize optimizer
+optimizer = RoutingOptimizer(profiles)
+
+# Set volumes per profile
+profile_volumes = {
+    'PROF_1': 2000.0,
+    'PROF_2': 5000.0
+}
+
+# Setup and solve
+optimizer.setup_model(profile_volumes)
+if optimizer.solve():
+    routing_plan = optimizer.get_routing_plan()
+    stats = optimizer.get_optimization_stats()
 ```
 
-## Testing the API
+### Example Output
 
-Basic tests with curl:
+```
+Profile: Premium_Gold_Profile (99.5% SLA)
+- Link 450271: 1619 units at 99.9% SLA
+- Link 450272: 381 units at 97.8% SLA
 
-```bash
-# Get all routes
-curl http://localhost:8000/api/routes
+Profile: Standard_Profile (97.0% SLA)
+- Link 450272: 5000 units at 97.8% SLA
 
-# Get profiles
-curl http://localhost:8000/api/profiles
-
-# Get SLA for specific route
-curl http://localhost:8000/api/routes/602/2/sla
-
-# Get summary statistics
-curl http://localhost:8000/api/routes/summary
-
-# Filter routes by product
-curl http://localhost:8000/api/routes?product_name=Talabat_Jordan
-
-# Refresh mock data
-curl -X POST http://localhost:8000/api/mock/refresh
+Total Profit: $7,000.00
+Total Volume: 7,000 units
 ```
 
-For prettier JSON output:
+## Features
+
+1. Multi-Source SLA Data:
+   - Real-time performance (DataDog)
+   - Testing results
+   - Assumed values
+
+2. Profit Optimization:
+   - Maximizes revenue while meeting SLA
+   - Considers link costs and capacity
+   - Balances traffic distribution
+
+3. Profile Management:
+   - Flexible link assignment
+   - Priority-based routing
+   - SLA requirement validation
+
+4. API Integration:
+   - Profile and link queries
+   - SLA data retrieval
+   - Real-time updates
+
+## Development
+
+### Running Tests
 ```bash
-curl http://localhost:8000/api/routes | python -m json.tool
+pytest tests/
+```
+
+### Code Style
+```bash
+black .
+pylint app/
+mypy app/
+```
+
+## Requirements
+
+See `requirements.txt` for full list of dependencies:
+- pulp: Linear programming solver
+- python-dateutil: Date handling
+- typing-extensions: Enhanced typing
+- pytest: Testing framework
+- black: Code formatter
+- pylint: Code linter
+- mypy: Static type checker
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+This project is proprietary and confidential.

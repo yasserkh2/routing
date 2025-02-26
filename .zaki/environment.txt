@@ -1,6 +1,6 @@
 # SYSTEM INFORMATION
 Operating System: Windows_NT 10.0.26100
-Default Shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Default Shell: C:\Program Files\Git\bin\bash.exe
 Home Directory: C:\Users\y.khira
 Current Working Directory: c:\yasser\Cequens_projects\2025\routing_project\routing_repo
 Platform: win32
@@ -10,25 +10,80 @@ Total Memory: 16GB
 Free Memory: 3GB
 CPU Cores: 12
 
-Current Time: 2/20/2025, 4:03:42 PM (Africa/Cairo, UTC+2:00)
+Current Time: 2/25/2025, 3:15:43 PM (Africa/Cairo, UTC+2:00)
 
 # EDITOR STATE
 
 Visible Files:
-  README.md
+  working_befor_data\app\api_selector.py
 
 Open Tabs:
-  project_design\README.md
-  README.md
+  working_befor_data\app\event_handler.py
+  working_befor_data\app\api_strategy.py
+  working_befor_data\app\api_selector.py
+  working_befor_data\app\event_handler_example.py
 
 # WORKSPACE SUMMARY
 
 Important Project Files:
+  .gitignore
   README.md
 
 Files:
+  .gitignore
   README.md
+  .gitattributes
   project_design/
+  working_befor_data/
+  project_design/architecture/
   project_design/architecture.md
+  project_design/data/
+  project_design/decision_making/
+  project_design/deployment/
   project_design/design.md
+  project_design/ml/
+  project_design/optimization/
   project_design/README.md
+  project_design/security/
+  project_design/testing/
+  working_befor_data/app/
+  working_befor_data/mock_data/
+  working_befor_data/README.md
+  working_befor_data/readme_2.md
+  working_befor_data/requirements.txt
+  working_befor_data/Routing_SLA_API.postman_collection.json
+  project_design/data/data_model.md
+  project_design/data/data_sources.md
+  project_design/deployment/ci_cd.md
+  project_design/deployment/deployment_strategy.md
+  project_design/deployment/monitoring.md
+  project_design/decision_making/approval_workflow.md
+  project_design/decision_making/decision_logic.md
+  project_design/architecture/components.md
+  project_design/architecture/scalability.md
+  project_design/architecture/system_architecture.md
+  project_design/architecture/technology_stack.md
+  project_design/ml/ml_models.md
+  project_design/optimization/objective_function.md
+  project_design/optimization/optimization_algorithm.md
+  project_design/security/data_privacy.md
+  project_design/security/security_considerations.md
+  project_design/testing/testing_strategy.md
+  project_design/testing/test_cases.md
+  working_befor_data/mock_data/available_profiles.json
+  working_befor_data/mock_data/links_sla.json
+  working_befor_data/mock_data/output.csv
+  working_befor_data/mock_data/price_changes.json
+  working_befor_data/mock_data/profiles.json
+  working_befor_data/mock_data/profile_sla.json
+  working_befor_data/mock_data/routes.json
+  working_befor_data/mock_data/route_sla.json
+  working_befor_data/mock_data/route_sla_samples.json
+  working_befor_data/mock_data/summary.json
+  working_befor_data/app/api_selector.py
+  working_befor_data/app/api_strategy.py
+  working_befor_data/app/event_handler.py
+  working_befor_data/app/event_handler_example.py
+  working_befor_data/app/main.py
+  working_befor_data/app/mock_services.py
+  working_befor_data/app/models.py
