@@ -1,88 +1,73 @@
-from typing import List, Dict, Any, Optional
+from typing import Dict, Any
 from pulp import *
 from profile import Profile
-from link import Link
 
 class RoutingOptimizer:
-    """Linear optimization model for maximizing profit while meeting SLA requirements"""
+    """Linear optimization model for minimizing cost while meeting SLA requirements"""
     
-    def __init__(self, profiles: List[Profile], default_volume: float = 1000.0):
-        self.profiles = profiles
-        self.default_volume = default_volume
+    SOLVER = PULP_CBC_CMD(msg=0)  # Default solver configuration
+    
+    def __init__(self, profile: Profile):
+        self.profile = profile
         self.model = None
         self.variables = {}
         self.results = {}
 
-    def setup_model(self, profile_volumes: Optional[Dict[str, float]] = None):
-        """Setup the linear programming model"""
-        # Create optimization model
-        self.model = LpProblem("Routing_Optimization", LpMaximize)
-        
-        # Create decision variables for each profile-link combination
-        # x[i,j] = volume of traffic from profile i through link j
-        self.variables = {}
-        for profile in self.profiles:
-            volume = profile_volumes.get(profile.profile_id, self.default_volume) if profile_volumes else self.default_volume
-            for link in profile.links:
-                if link.is_usable():
-                    var_name = f"x_{profile.profile_id}_{link.link_id}"
-                    self.variables[var_name] = LpVariable(var_name, 0, volume)
-
-        # Objective function: Maximize profit
-        # Profit = Sum(volume * (price_difference))
-        objective = []
-        for profile in self.profiles:
-            for link in profile.links:
-                if link.is_usable():
-                    var_name = f"x_{profile.profile_id}_{link.link_id}"
-                    # Assuming price_difference is stored in link data
-                    price_diff = link.price_difference if hasattr(link, 'price_difference') else 1.0
-                    objective.append(self.variables[var_name] * price_diff)
-        
-        self.model += lpSum(objective)
-
-        # Constraints
-        for profile in self.profiles:
-            volume = profile_volumes.get(profile.profile_id, self.default_volume) if profile_volumes else self.default_volume
-            
-            # 1. Volume constraint: Total volume through all links must equal profile volume
-            profile_vars = [
-                self.variables[f"x_{profile.profile_id}_{link.link_id}"]
-                for link in profile.links
-                if link.is_usable()
-            ]
-            if profile_vars:
-                self.model += lpSum(profile_vars) == volume
-
-            # 2. SLA constraint: Average SLA must meet profile requirement
-            sla_constraint = []
-            for link in profile.links:
-                if link.is_usable():
-                    var_name = f"x_{profile.profile_id}_{link.link_id}"
-                    effective_sla = link.get_effective_sla() or 0
-                    sla_constraint.append(self.variables[var_name] * effective_sla)
-            
-            if sla_constraint:
-                self.model += lpSum(sla_constraint) >= profile.expected_sla * volume
-
-            # 3. Link capacity constraints (if available)
-            for link in profile.links:
-                if link.is_usable() and hasattr(link, 'capacity'):
-                    var_name = f"x_{profile.profile_id}_{link.link_id}"
-                    self.model += self.variables[var_name] <= link.capacity
+    def _prepare_links_data(self) -> Dict[str, Dict[str, float]]:
+        """Convert Profile's links to the format needed for optimization"""
+        links_data = {}
+        for link in self.profile.links:
+            if link.is_usable():
+                links_data[link.link_id] = {
+                    "SLA": link.average_sla / 100.0,  # Convert to decimal
+                    "Price": float(link.price)
+                }
+        return links_data
 
     def solve(self) -> bool:
-        """Solve the optimization model"""
-        if not self.model:
-            raise ValueError("Model not set up. Call setup_model first.")
-            
-        status = self.model.solve()
+        """
+        Solve the optimization problem to minimize cost while meeting SLA requirements
+        
+        Returns:
+            bool: True if optimization was successful, False otherwise
+        """
+        # Prepare links data
+        links = self._prepare_links_data()
+        if not links:
+            return False
+
+        # Create a minimization LP problem
+        self.model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
+
+        # Decision variables: fraction of traffic on each link
+        self.variables = {}
+        for link_id in links:
+            self.variables[link_id] = LpVariable(f"x_{link_id}", lowBound=0, upBound=1, cat='Continuous')
+
+        # Objective: minimize sum(x_i * price_i)
+        objective = []
+        for link_id, link_data in links.items():
+            objective.append(self.variables[link_id] * link_data['Price'])
+        self.model += lpSum(objective), "Total_Cost"
+
+        # Constraint 1: Fractions sum to 1 (all traffic allocated)
+        self.model += lpSum(self.variables.values()) == 1, "TotalTraffic"
+
+        # Constraint 2: Weighted SLA >= target_sla
+        target_sla = self.profile.expected_sla / 100.0  # Convert to decimal
+        sla_constraint = []
+        for link_id, link_data in links.items():
+            sla_constraint.append(self.variables[link_id] * link_data['SLA'])
+        self.model += lpSum(sla_constraint) >= target_sla, "SLA_Requirement"
+
+        # Solve the problem
+        status = self.model.solve(self.SOLVER)
         
         # Store results if optimization was successful
         if status == 1:  # LpStatusOptimal
             self.results = {
-                var.name: var.varValue
-                for var in self.model.variables()
+                link_id: var.varValue
+                for link_id, var in self.variables.items()
             }
             return True
         return False
@@ -92,46 +77,46 @@ class RoutingOptimizer:
         if not self.results:
             raise ValueError("No results available. Solve the model first.")
 
-        routing_plan = {}
-        for profile in self.profiles:
-            profile_routes = []
-            for link in profile.links:
-                if link.is_usable():
-                    var_name = f"x_{profile.profile_id}_{link.link_id}"
-                    if var_name in self.results and self.results[var_name] > 0:
-                        profile_routes.append({
-                            'link_id': link.link_id,
-                            'volume': self.results[var_name],
-                            'effective_sla': link.get_effective_sla(),
-                            'routing_priority': link.routing_priority
-                        })
-            
-            if profile_routes:
-                routing_plan[profile.profile_id] = {
-                    'name': profile.name,
-                    'expected_sla': profile.expected_sla,
-                    'routes': sorted(profile_routes, key=lambda x: x['routing_priority'])
-                }
+        # Get allocation for all links
+        routes = []
+        for link in self.profile.links:
+            if link.is_usable():
+                percentage = self.results.get(link.link_id, 0) * 100  # Convert fraction to percentage
+                routes.append({
+                    'link_id': link.link_id,
+                    'percentage': percentage,
+                    'sla': link.average_sla,
+                    'price': link.price
+                })
 
-        return routing_plan
+        return {
+            'profile_id': self.profile.profile_id,
+            'name': self.profile.name,
+            'expected_sla': self.profile.expected_sla,
+            'routes': sorted(routes, key=lambda x: (-x['percentage'], -x['sla']))
+        }
 
     def get_optimization_stats(self) -> Dict[str, Any]:
         """Get optimization statistics"""
         if not self.results:
             raise ValueError("No results available. Solve the model first.")
 
-        total_profit = value(self.model.objective)
-        total_volume = sum(
-            volume for var_name, volume in self.results.items()
-            if volume > 0
+        # Calculate total cost and achieved SLA
+        links = self._prepare_links_data()
+        total_cost = sum(
+            self.results[link_id] * link_data['Price']
+            for link_id, link_data in links.items()
         )
+        achieved_sla = sum(
+            self.results[link_id] * link_data['SLA']
+            for link_id, link_data in links.items()
+        ) * 100  # Convert back to percentage
 
         stats = {
-            'total_profit': total_profit,
-            'total_volume': total_volume,
-            'profiles_optimized': len(self.profiles),
-            'links_used': len([v for v in self.results.values() if v > 0]),
-            'objective_value': value(self.model.objective)
+            'total_cost': total_cost,
+            'links_used': len([v for v in self.results.values() if v > 0.001]),  # Ignore very small allocations
+            'achieved_sla': achieved_sla,
+            'expected_sla': self.profile.expected_sla
         }
 
         return stats

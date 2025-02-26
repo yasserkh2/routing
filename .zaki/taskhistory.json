@@ -95,6 +95,28 @@
       "totalCost": 0.17651235,
       "size": 137636,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1740573595920",
+      "ts": 1740573600234,
+      "task": "hi",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "totalCost": 0,
+      "size": 8148,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1740573630960",
+      "ts": 1740574573057,
+      "task": "hi",
+      "tokensIn": 15016,
+      "tokensOut": 75,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.05697027,
+      "size": 9384,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }
