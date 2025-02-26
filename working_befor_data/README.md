@@ -1,164 +1,125 @@
 # Routing Optimization System
 
-A system for optimizing routing decisions based on SLA requirements and profit maximization.
+A system for optimizing traffic routing across multiple links while balancing SLA requirements and costs.
 
 ## Components
 
-### 1. Data Models
+### SLA Data Management
+- `SLAData`: Manages SLA information for links
+- Stores average SLA values
+- Handles SLA data conversion and calculations
 
-#### SLA Data (`sla_data.py`)
-- Handles SLA information from multiple sources:
-  * DataDog (current performance)
-  * Auto Router V1 (testing results)
-  * Tiering-based assumptions
-- Provides best available SLA selection
-
-#### Link (`link.py`)
-- Represents routing links with properties:
-  * Link ID and operator information
-  * SLA data and status
+### Link Management
+- `Link`: Represents a routing link with its properties
+  * Link ID, operator, MNC
+  * SLA data
+  * Price information
   * Routing priority
-  * Active/inactive status
-- Methods for SLA validation and usability checks
+  * Active status
 
-#### Profile (`profile.py`)
-- Manages routing profiles with:
+### Profile Management
+- `Profile`: Represents a routing profile
   * Expected SLA requirements
   * Associated links
   * Priority levels
-- Methods for link management and SLA verification
+- `ProfileManager`: Manages multiple profiles
+  * Profile creation and updates
+  * SLA requirement tracking
+  * Link associations
 
-### 2. Optimization System
+### Cost Optimization
+- `RoutingOptimizer`: Implements linear programming optimization
+  * Minimizes total routing cost
+  * Ensures SLA requirements are met
+  * Distributes traffic across available links
 
-#### Route Optimizer (`optimizer.py`)
-- Linear programming model for profit maximization
-- Constraints:
-  * SLA requirements per profile
-  * Link capacity limits
-  * Volume distribution
-- Provides optimal routing plans
+## Optimization Model
 
-### 3. API Integration
+### Variables
+- Traffic allocation fractions for each link (0-100%)
 
-#### API Strategies (`api_strategy.py`)
-- Query1: GetProfilesRelatedToLink(link, mnc)
-  * Gets profiles associated with a link
-  * Shows expected SLA per profile
-  * Includes link-specific information
+### Objective
+- Minimize total cost: sum(price_i * fraction_i) for each link i
 
-- Query2: GetLinksSLAByMNC(mnc)
-  * Gets all links for an MNC
-  * Shows SLA from different sources
-  * Includes performance metrics
+### Constraints
+1. Total allocation must equal 100%
+2. Weighted average SLA must meet or exceed target SLA
+3. Optional capacity constraints per link
 
-- Query3: GetProfilesWithLinks()
-  * Gets all profiles with their links
-  * Shows routing priorities
-  * Includes active status
-
-## Installation
-
-1. Clone the repository
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-### Basic Usage
+## Usage Example
 
 ```python
-from optimizer import RoutingOptimizer
-from profile import Profile
+# Create a profile with links and SLA requirement
+profile = Profile(
+    profile_id="PROF_1",
+    name="Standard_Profile",
+    expected_sla=70.0,  # Target SLA requirement
+    priority="MEDIUM",
+    links=[...]  # List of available links
+)
 
-# Create profiles with links
-profiles = [...]
-
-# Initialize optimizer
-optimizer = RoutingOptimizer(profiles)
-
-# Set volumes per profile
-profile_volumes = {
-    'PROF_1': 2000.0,
-    'PROF_2': 5000.0
-}
-
-# Setup and solve
-optimizer.setup_model(profile_volumes)
+# Create and run optimizer
+optimizer = RoutingOptimizer(profile)
 if optimizer.solve():
+    # Get optimization results
     routing_plan = optimizer.get_routing_plan()
     stats = optimizer.get_optimization_stats()
-```
 
-### Example Output
-
-```
-Profile: Premium_Gold_Profile (99.5% SLA)
-- Link 450271: 1619 units at 99.9% SLA
-- Link 450272: 381 units at 97.8% SLA
-
-Profile: Standard_Profile (97.0% SLA)
-- Link 450272: 5000 units at 97.8% SLA
-
-Total Profit: $7,000.00
-Total Volume: 7,000 units
+    # Example output:
+    # Link 450273: 100.0% (SLA: 85.00%, Price: $60.00)
+    # Total Cost: $60.00
+    # Achieved SLA: 85.00%
 ```
 
 ## Features
 
-1. Multi-Source SLA Data:
-   - Real-time performance (DataDog)
-   - Testing results
-   - Assumed values
+1. Cost-Effective Routing
+   - Finds minimum cost solution
+   - Maintains required service levels
+   - Optimizes traffic distribution
 
-2. Profit Optimization:
-   - Maximizes revenue while meeting SLA
-   - Considers link costs and capacity
-   - Balances traffic distribution
+2. SLA Management
+   - Supports multiple SLA sources
+   - Calculates average SLA values
+   - Ensures SLA requirements are met
 
-3. Profile Management:
-   - Flexible link assignment
-   - Priority-based routing
-   - SLA requirement validation
+3. Flexible Configuration
+   - Configurable SLA requirements
+   - Adjustable link priorities
+   - Optional capacity constraints
 
-4. API Integration:
-   - Profile and link queries
-   - SLA data retrieval
-   - Real-time updates
+4. Clear Reporting
+   - Detailed routing plans
+   - Cost and SLA statistics
+   - Link utilization information
 
-## Development
+## Implementation Details
 
-### Running Tests
-```bash
-pytest tests/
-```
+The system uses the PuLP library for linear programming optimization:
 
-### Code Style
-```bash
-black .
-pylint app/
-mypy app/
-```
+1. Problem Definition
+   ```python
+   model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
+   ```
+
+2. Decision Variables
+   ```python
+   x = LpVariable("x_link_id", lowBound=0, upBound=1)  # Traffic fraction
+   ```
+
+3. Objective Function
+   ```python
+   model += lpSum([x[i] * price[i] for i in links])  # Minimize total cost
+   ```
+
+4. Constraints
+   ```python
+   model += lpSum(x) == 1  # Total allocation = 100%
+   model += lpSum([x[i] * sla[i] for i in links]) >= target_sla
+   ```
 
 ## Requirements
 
-See `requirements.txt` for full list of dependencies:
-- pulp: Linear programming solver
-- python-dateutil: Date handling
-- typing-extensions: Enhanced typing
-- pytest: Testing framework
-- black: Code formatter
-- pylint: Code linter
-- mypy: Static type checker
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-This project is proprietary and confidential.
+- Python 3.7+
+- PuLP (Linear Programming Toolkit)
+- Additional dependencies in requirements.txt

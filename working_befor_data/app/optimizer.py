@@ -17,7 +17,7 @@ class RoutingOptimizer:
         """Convert Profile's links to the format needed for optimization"""
         links_data = {}
         for link in self.profile.links:
-            if link.is_usable():
+            if link.average_sla > 0:
                 links_data[link.link_id] = {
                     "SLA": link.average_sla / 100.0,  # Convert to decimal
                     "Price": float(link.price)
@@ -80,7 +80,7 @@ class RoutingOptimizer:
         # Get allocation for all links
         routes = []
         for link in self.profile.links:
-            if link.is_usable():
+            if link.average_sla > 0:
                 percentage = self.results.get(link.link_id, 0) * 100  # Convert fraction to percentage
                 routes.append({
                     'link_id': link.link_id,

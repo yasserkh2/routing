@@ -26,9 +26,6 @@ def create_sample_data():
             link_id="450271",
             operator="Operator1",
             mnc="01",
-            routing_priority=1,
-            is_active=True,
-            last_used=datetime.now(),
             sla_data=sla_data1,
             price=100.0  # Higher price for better SLA
         ),
@@ -36,9 +33,6 @@ def create_sample_data():
             link_id="450272",
             operator="Operator1",
             mnc="01",
-            routing_priority=2,
-            is_active=True,
-            last_used=datetime.now(),
             sla_data=sla_data2,
             price=80.0   # Medium price for medium SLA
         ),
@@ -46,9 +40,6 @@ def create_sample_data():
             link_id="450273",
             operator="Operator2",
             mnc="02",
-            routing_priority=3,
-            is_active=True,
-            last_used=datetime.now(),
             sla_data=sla_data3,
             price=60.0   # Lower price for lower SLA
         )

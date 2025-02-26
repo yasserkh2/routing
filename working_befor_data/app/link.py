@@ -9,9 +9,6 @@ class Link:
     link_id: str
     operator: str
     mnc: str
-    routing_priority: int
-    is_active: bool
-    last_used: datetime
     sla_data: Optional[SLAData] = None
     price: float = 0.0
     average_sla: float = field(init=False)
@@ -35,15 +32,8 @@ class Link:
             link_id=data['link_id'],
             operator=data['operator'],
             mnc=data['mnc'],
-            routing_priority=data.get('routing_priority', 0),
-            is_active=data.get('is_active', True),
-            last_used=datetime.fromisoformat(data['last_used'].replace('Z', '+00:00')),
             sla_data=sla_data
         )
-
-    def is_usable(self) -> bool:
-        """Check if the link is usable based on active status and average SLA"""
-        return self.is_active and self.average_sla > 0
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert Link to dictionary"""
@@ -51,15 +41,12 @@ class Link:
             'link_id': self.link_id,
             'operator': self.operator,
             'mnc': self.mnc,
-            'routing_priority': self.routing_priority,
-            'is_active': self.is_active,
-            'last_used': self.last_used.isoformat(),
             'average_sla': self.average_sla
         }
 
     def meets_sla_requirement(self, required_sla: float) -> bool:
         """Check if the link meets the required SLA"""
-        return self.is_usable() and self.average_sla >= required_sla
+        return self.average_sla >= required_sla
 
     @staticmethod
     def extract_all_links(profiles: List['Profile']) -> List['Link']:
@@ -76,7 +63,7 @@ class Link:
         unique_links: Set[Link] = set()
         for profile in profiles:
             unique_links.update(profile.links)
-        return sorted(unique_links, key=lambda x: (x.mnc, x.routing_priority))
+        return sorted(unique_links, key=lambda x: x.mnc)
 
     @staticmethod
     def get_links_with_mnc_sla(profiles: List['Profile']) -> List[Dict[str, Any]]:
@@ -96,8 +83,6 @@ class Link:
                 'mnc': link.mnc,
                 'operator': link.operator,
                 'sla': link.average_sla,
-                'routing_priority': link.routing_priority,
-                'is_active': link.is_active,
                 'sla_data': {
                     'sla_details': link.sla_data.to_dict() if link.sla_data else None
                 }
@@ -122,9 +107,7 @@ class Link:
                 'link_id': link.link_id,
                 'operator': link.operator,
                 'mnc': link.mnc,
-                'average_sla': link.average_sla,
-                'routing_priority': link.routing_priority,
-                'is_active': link.is_active
+                'average_sla': link.average_sla
             }
             for link in unique_links
         ]
@@ -141,10 +124,7 @@ class Link:
         Returns:
             List of Link objects matching the MNC
         """
-        return sorted(
-            [link for link in links if link.mnc == mnc],
-            key=lambda x: x.routing_priority
-        )
+        return [link for link in links if link.mnc == mnc]
 
     @staticmethod
     def get_links_by_mnc(profiles: List['Profile'], mnc: str) -> List[Dict[str, Any]]:
@@ -165,10 +145,8 @@ class Link:
             {
                 'link_id': link.link_id,
                 'operator': link.operator,
-                'sla': link.average_sla,
-                'routing_priority': link.routing_priority,
-                'is_active': link.is_active,
-                'last_used': link.last_used.isoformat()
+                'mnc': link.mnc,
+                'sla': link.average_sla
             }
             for link in filtered_links
         ]
