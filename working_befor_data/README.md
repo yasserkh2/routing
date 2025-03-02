@@ -22,7 +22,6 @@ A system for optimizing traffic routing across multiple links while balancing SL
   * Expected SLA requirements
   * Associated links
   * Priority levels
-- `ProfileManager`: Manages multiple profiles
   * Profile creation and updates
   * SLA requirement tracking
   * Link associations
