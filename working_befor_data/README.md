@@ -13,7 +13,7 @@ A system for optimizing traffic routing across multiple links while balancing SL
 - `Link`: Represents a routing link with its properties
   * Link ID, operator, MNC
   * SLA data
-  * Price information
+  * Price information and history
   * Routing priority
   * Active status
 
@@ -27,11 +27,56 @@ A system for optimizing traffic routing across multiple links while balancing SL
   * SLA requirement tracking
   * Link associations
 
+### Event Handling System
+- `EventHandler`: Manages system events
+  * Price change events
+  * Route updates
+  * SLA updates
+- `Event`: Represents system events with:
+  * Event type
+  * Timestamp
+  * Event-specific data
+
 ### Cost Optimization
 - `RoutingOptimizer`: Implements linear programming optimization
   * Minimizes total routing cost
   * Ensures SLA requirements are met
   * Distributes traffic across available links
+  * Handles price change impacts
+
+## Price Change Management
+
+### Event Flow
+1. Price change detected and event created
+2. Event processed through API service
+3. Affected links updated with new prices
+4. Affected profiles identified
+5. Routes re-optimized for each affected profile
+
+### Revenue Impact Analysis
+- Per-profile revenue tracking
+- Before/after optimization comparison
+- Total system revenue impact
+- Routing plan adjustments
+
+Example revenue impact:
+```python
+# Revenue Impact Dashboard
+Profile: Ultra_Premium_OTP (99.0% SLA)
+Before: $0.2415
+After:  $0.2800
+Change: +15.94%
+
+Profile: Premium_2FA (95.0% SLA)
+Before: $0.1972
+After:  $0.1972
+Change: +0.00%
+
+Total System Impact:
+Before: $0.8640
+After:  $0.9089
+Change: +5.20%
+```
 
 ## Optimization Model
 
@@ -77,21 +122,29 @@ if optimizer.solve():
    - Finds minimum cost solution
    - Maintains required service levels
    - Optimizes traffic distribution
+   - Adapts to price changes
 
 2. SLA Management
    - Supports multiple SLA sources
    - Calculates average SLA values
    - Ensures SLA requirements are met
 
-3. Flexible Configuration
+3. Event Handling
+   - Price change detection and processing
+   - Automatic route re-optimization
+   - Revenue impact analysis
+   - Historical price tracking
+
+4. Flexible Configuration
    - Configurable SLA requirements
    - Adjustable link priorities
    - Optional capacity constraints
 
-4. Clear Reporting
+5. Clear Reporting
    - Detailed routing plans
    - Cost and SLA statistics
    - Link utilization information
+   - Revenue impact metrics
 
 ## Implementation Details
 
