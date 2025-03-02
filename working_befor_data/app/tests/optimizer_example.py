@@ -1,7 +1,7 @@
-from optimizer import RoutingOptimizer
-from profile import Profile
-from link import Link
-from sla_data import SLAData
+from ..core.optimizer import RoutingOptimizer
+from ..models.profile import Profile
+from ..models.link import Link
+from ..models.sla_data import SLAData
 from datetime import datetime
 
 def create_sample_data():
