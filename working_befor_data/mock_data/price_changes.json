@@ -1,15 +1,12 @@
 [
     {
-        "reference_id": "LINK_021",
+        "reference_id": "LINK_001",
         "old_rate": 0.2050,
-        "new_rate": 0.1890,
+        "new_rate": 0.15,
         "provider_name": "MessageBird",
         "network_name": "Stc Bahrain",
         "mcc": "426",
         "mnc": "21",
-        "sla_dd": 80.0,
-        "sla_tested": 79.5,
-        "sla_assumed": 78.0,
         "status": "Decreased",
         "timestamp": "2025-03-03T12:40:00.000Z"
     }

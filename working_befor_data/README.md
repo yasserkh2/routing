@@ -1,40 +1,56 @@
 # Routing Optimization System
 
-A system for optimizing traffic routing across multiple links while balancing SLA requirements and costs.
+A system for optimizing traffic routing across multiple links while balancing SLA requirements and costs, with a focus on handling price change events.
+
+## Quick Start
+
+To run the optimizer:
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Ensure required mock data files are present in `mock_data/` directory:
+   - links_data.json
+   - profiles.json
+   - price_changes.json
+
+3. Run the optimizer:
+   ```bash
+   python -m app.tests.run_optimizer
+   ```
+
+The optimizer will output the optimized routing configuration, including traffic distribution, SLA compliance, and cost analysis.
 
 ## Components
 
 ### SLA Data Management
 - `SLAData`: Manages SLA information for links
-- Stores average SLA values
+- Stores average SLA values (DD, Tested, Assumed)
 - Handles SLA data conversion and calculations
 
 ### Link Management
 - `Link`: Represents a routing link with its properties
   * Link ID, operator, MNC
-  * SLA data
+  * SLA data (average of DD, Tested, and Assumed values)
   * Price information and history
-  * Routing priority
-  * Active status
+  * Status tracking
 
 ### Profile Management
 - `Profile`: Represents a routing profile
   * Expected SLA requirements
   * Associated links
   * Priority levels
-  * Profile creation and updates
-  * SLA requirement tracking
   * Link associations
+  * Methods for finding profiles affected by price changes
 
-### Event Handling System
-- `EventHandler`: Manages system events
-  * Price change events
-  * Route updates
-  * SLA updates
-- `Event`: Represents system events with:
-  * Event type
-  * Timestamp
-  * Event-specific data
+### Price Change Handling
+- Detects and processes price changes
+- Identifies affected profiles
+- Re-optimizes routes for affected profiles
+- Analyzes cost impact
+- Maintains price history
 
 ### Cost Optimization
 - `RoutingOptimizer`: Implements linear programming optimization
@@ -43,38 +59,64 @@ A system for optimizing traffic routing across multiple links while balancing SL
   * Distributes traffic across available links
   * Handles price change impacts
 
-## Price Change Management
+## Price Change Analysis
 
-### Event Flow
-1. Price change detected and event created
-2. Event processed through API service
-3. Affected links updated with new prices
-4. Affected profiles identified
-5. Routes re-optimized for each affected profile
+### Process Flow
+1. Price change detected for specific link
+2. Affected profiles identified using Profile class method
+3. Each affected profile analyzed:
+   - Current routing plan captured
+   - New prices applied
+   - Routes re-optimized
+   - Cost impact calculated
 
-### Revenue Impact Analysis
-- Per-profile revenue tracking
-- Before/after optimization comparison
-- Total system revenue impact
-- Routing plan adjustments
+### Example Output
+```
+PRICE CHANGE DETAILS FOR LINK_021
+--------------------------------------------------
+Provider:     MessageBird
+Network:      Stc Bahrain
+Old Price:    $0.205
+New Price:    $0.189
+Change:       Decreased
+SLA:         80.0%
 
-Example revenue impact:
-```python
-# Revenue Impact Dashboard
-Profile: Ultra_Premium_OTP (99.0% SLA)
-Before: $0.2415
-After:  $0.2800
-Change: +15.94%
+Affected Profile: Standard_Bulk_Plus
+--------------------------------------------------
+Expected SLA:    80.0%
+Available Links: 5
 
-Profile: Premium_2FA (95.0% SLA)
-Before: $0.1972
-After:  $0.1972
-Change: +0.00%
+BEFORE PRICE CHANGE:
+Link LINK_021:
+  Traffic:    86.7%
+  SLA:        79.2%
+  Price:      $0.205
+Link LINK_017:
+  Traffic:    13.3%
+  SLA:        85.4%
+  Price:      $0.210
 
-Total System Impact:
-Before: $0.8640
-After:  $0.9089
-Change: +5.20%
+Total Cost:    $0.192
+Active Links:  2
+Achieved SLA:  80.00%
+
+AFTER PRICE CHANGE:
+Link LINK_021:
+  Traffic:    86.7%
+  SLA:        79.2%
+  Price:      $0.189
+Link LINK_017:
+  Traffic:    13.3%
+  SLA:        85.4%
+  Price:      $0.210
+
+Total Cost:    $0.189
+Active Links:  2
+Achieved SLA:  80.00%
+
+COST IMPACT:
+Savings:      $0.003
+Percentage:   1.5%
 ```
 
 ## Optimization Model
@@ -88,31 +130,27 @@ Change: +5.20%
 ### Constraints
 1. Total allocation must equal 100%
 2. Weighted average SLA must meet or exceed target SLA
-3. Optional capacity constraints per link
 
 ## Usage Example
 
 ```python
-# Create a profile with links and SLA requirement
-profile = Profile(
-    profile_id="PROF_1",
-    name="Standard_Profile",
-    expected_sla=70.0,  # Target SLA requirement
-    priority="MEDIUM",
-    links=[...]  # List of available links
-)
+# Get profiles affected by price change
+affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_id)
 
-# Create and run optimizer
-optimizer = RoutingOptimizer(profile)
-if optimizer.solve():
-    # Get optimization results
-    routing_plan = optimizer.get_routing_plan()
-    stats = optimizer.get_optimization_stats()
+# For each affected profile
+for profile in affected_profiles:
+    # Run initial optimization
+    optimizer = RoutingOptimizer(profile)
+    if optimizer.solve():
+        initial_plan = optimizer.get_routing_plan()
+        initial_stats = optimizer.get_optimization_stats()
 
-    # Example output:
-    # Link 450273: 100.0% (SLA: 85.00%, Price: $60.00)
-    # Total Cost: $60.00
-    # Achieved SLA: 85.00%
+        # Apply price change and re-optimize
+        profile.update_link_price(link_id, new_price)
+        optimizer = RoutingOptimizer(profile)
+        if optimizer.solve():
+            new_plan = optimizer.get_routing_plan()
+            new_stats = optimizer.get_optimization_stats()
 ```
 
 ## Features
@@ -124,26 +162,21 @@ if optimizer.solve():
    - Adapts to price changes
 
 2. SLA Management
-   - Supports multiple SLA sources
+   - Supports multiple SLA metrics (DD, Tested, Assumed)
    - Calculates average SLA values
    - Ensures SLA requirements are met
 
-3. Event Handling
-   - Price change detection and processing
-   - Automatic route re-optimization
-   - Revenue impact analysis
+3. Price Change Analysis
+   - Automatic affected profile detection
+   - Before/after comparison
+   - Cost impact calculation
    - Historical price tracking
 
-4. Flexible Configuration
-   - Configurable SLA requirements
-   - Adjustable link priorities
-   - Optional capacity constraints
-
-5. Clear Reporting
+4. Clear Reporting
    - Detailed routing plans
    - Cost and SLA statistics
    - Link utilization information
-   - Revenue impact metrics
+   - Cost impact metrics
 
 ## Implementation Details
 

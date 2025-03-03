@@ -56,14 +56,23 @@ class Link:
         """Check if the link meets the required SLA"""
         return self.average_sla >= required_sla
     
-    def with_updated_price(self, new_price: float) -> 'Link':
+    def with_updated_price(self, new_price: float, old_price: Optional[float] = None) -> 'Link':
         """Create a new Link instance with updated price"""
-        new_history = list(self.price_history)  # Create a copy of the history
+        new_history = []
+        
+        # Store the old price first
+        if old_price is not None:
+            new_history.append({
+                'price': old_price,
+                'timestamp': datetime.now().isoformat(),
+                'type': 'initial'
+            })
+        
+        # Add new price to history
         new_history.append({
             'price': new_price,
             'timestamp': datetime.now().isoformat(),
-            'type': 'update',
-            'old_price': self.price
+            'type': 'update'
         })
         
         return Link(
@@ -82,6 +91,24 @@ class Link:
             previous = self.price_history[-2]['price']
             if previous > 0:
                 return ((current - previous) / previous) * 100
+        return None
+
+    def get_previous_price(self) -> float:
+        """Get the previous price from history"""
+        if self.price_history:
+            for entry in reversed(self.price_history):
+                if entry['type'] == 'initial':
+                    return entry['price']
+        return self.price
+
+    def get_current_price(self) -> float:
+        """Get the current price"""
+        return self.price
+
+    def get_price_at_index(self, index: int) -> Optional[float]:
+        """Get price at specific index in history"""
+        if 0 <= index < len(self.price_history):
+            return self.price_history[index]['price']
         return None
     
     @staticmethod

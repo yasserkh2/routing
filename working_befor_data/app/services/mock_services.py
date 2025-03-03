@@ -18,12 +18,12 @@ class MockAPIService:
         with open(file_path, 'r') as f:
             return json.load(f)
     
-    def handle_price_change(self, link_id: str, new_price: float) -> Event:
+    def handle_price_change(self, link_id: str, new_price: float, old_price: Optional[float] = None) -> Event:
         """Handle price change event for a link"""
         # Create price change event
         event_data = {
             'link_id': link_id,
-            'old_price': None,  # Will be set from current data
+            'old_price': old_price,
             'new_price': new_price,
             'timestamp': datetime.now().isoformat()
         }
@@ -33,7 +33,10 @@ class MockAPIService:
             links_data = self._read_json_file('links_data.json')
             for link in links_data:
                 if link['link_id'] == link_id:
-                    event_data['old_price'] = link['price']
+                    # Keep track of the old price
+                    if old_price is None:
+                        old_price = link['price']
+                    event_data['old_price'] = old_price
                     event_data['operator'] = link['operator']
                     event_data['mnc'] = link['mnc']
                     # Update price in links_data
@@ -46,8 +49,11 @@ class MockAPIService:
             with open(file_path, 'w') as f:
                 json.dump(links_data, f, indent=4)
             
-            # Store price update in memory too
-            self.price_updates[link_id] = new_price
+            # Store both old and new prices in memory
+            self.price_updates[link_id] = {
+                'old_price': old_price,
+                'new_price': new_price
+            }
             
             # Create and return event
             return self.event_handler.create_event(
@@ -68,8 +74,9 @@ class MockAPIService:
             # Apply any price updates
             for link in data:
                 if link['link_id'] in self.price_updates:
-                    link['price'] = self.price_updates[link['link_id']]
-                    print(f"Applied price update for {link['link_id']}: ${link['price']}")
+                    update = self.price_updates[link['link_id']]
+                    link['price'] = update['new_price']
+                    print(f"Applied price update for {link['link_id']}: ${link['price']} (was ${update['old_price']})")
             
             # Filter by MNC if provided
             if mnc:

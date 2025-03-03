@@ -4,12 +4,12 @@
         "operator": "Vodafone",
         "mnc": "01",
         "provider": "AMD Telecom",
-        "price": 0.3,
+        "price": 0.15,
         "sla_dd": 98.5,
         "sla_tested": 97.8,
         "sla_assumed": 94.0,
         "status": "Healthy",
-        "last_updated": "2025-03-03T13:15:16.184322"
+        "last_updated": "2025-03-03T14:54:56.265348"
     },
     {
         "link_id": "LINK_002",
@@ -249,7 +249,7 @@
         "sla_tested": 79.5,
         "sla_assumed": 78.0,
         "status": "Critical",
-        "last_updated": "2025-03-03T13:15:47.113145"
+        "last_updated": "2025-03-03T13:34:57.775606"
     },
     {
         "link_id": "LINK_022",

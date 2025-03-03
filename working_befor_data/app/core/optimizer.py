@@ -23,11 +23,14 @@ class RoutingOptimizer:
         # Get links data
         links_data = {}
         for link in self.profile.links:
-            optimizer_data = {
-                "SLA": link.average_sla / 100.0,  # Convert to decimal
-                "Price": float(link.price)
-            }
-            links_data[link.link_id] = optimizer_data
+            # Get the current price from the link
+            price = link.get_current_price()
+            if price is not None:
+                optimizer_data = {
+                    "SLA": link.average_sla / 100.0,  # Convert to decimal
+                    "Price": float(price)
+                }
+                links_data[link.link_id] = optimizer_data
         
         if not links_data:
             return False
@@ -35,15 +38,17 @@ class RoutingOptimizer:
         # Create a minimization LP problem
         self.model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
 
-        # Decision variables: fraction of traffic on each link
+        # Decision variables: fraction of traffic on each link (only for links with valid prices)
         self.variables = {}
-        for link_id in links_data:
-            self.variables[link_id] = LpVariable(f"x_{link_id}", lowBound=0, upBound=1, cat='Continuous')
+        for link_id, link_data in links_data.items():
+            if 'Price' in link_data:  # Only create variables for links with valid prices
+                self.variables[link_id] = LpVariable(f"x_{link_id}", lowBound=0, upBound=1, cat='Continuous')
 
         # Objective: minimize sum(x_i * price_i)
         objective = []
         for link_id, link_data in links_data.items():
-            objective.append(self.variables[link_id] * link_data['Price'])
+            if 'Price' in link_data:  # Only include links with valid prices
+                objective.append(self.variables[link_id] * link_data['Price'])
         self.model += lpSum(objective), "Total_Cost"
 
         # Constraint 1: Fractions sum to 1 (all traffic allocated)
@@ -84,12 +89,16 @@ class RoutingOptimizer:
         routes = []
         for link in self.profile.links:
             percentage = self.results.get(link.link_id, 0) * 100  # Convert fraction to percentage
-            routes.append({
-                'link_id': link.link_id,
-                'percentage': percentage,
-                'sla': link.average_sla,
-                'price': link.price
-            })
+            if percentage > 0:  # Only include routes with traffic
+                # Get the current price
+                price = link.get_current_price()
+                if price is not None:
+                    routes.append({
+                        'link_id': link.link_id,
+                        'percentage': percentage,
+                        'sla': link.average_sla,
+                        'price': price
+                    })
 
         return {
             'profile_id': self.profile.profile_id,
