@@ -30,15 +30,23 @@ class MockAPIService:
         
         try:
             # Get current link data
-            links_data = self._read_json_file('mock_links_data.json')
+            links_data = self._read_json_file('links_data.json')
             for link in links_data:
                 if link['link_id'] == link_id:
                     event_data['old_price'] = link['price']
                     event_data['operator'] = link['operator']
                     event_data['mnc'] = link['mnc']
+                    # Update price in links_data
+                    link['price'] = new_price
+                    link['last_updated'] = datetime.now().isoformat()
                     break
             
-            # Store price update
+            # Write updated data back to file
+            file_path = os.path.join(self.mock_data_dir, 'links_data.json')
+            with open(file_path, 'w') as f:
+                json.dump(links_data, f, indent=4)
+            
+            # Store price update in memory too
             self.price_updates[link_id] = new_price
             
             # Create and return event
@@ -55,7 +63,7 @@ class MockAPIService:
         """Get SLA data for links"""
         try:
             # Get base data
-            data = self._read_json_file('mock_links_data.json')
+            data = self._read_json_file('links_data.json')
             
             # Apply any price updates
             for link in data:
@@ -76,7 +84,7 @@ class MockAPIService:
     async def get_profile_config(self, profile_id: Optional[str] = None) -> List[Dict]:
         """Get profile configurations"""
         try:
-            data = self._read_json_file('mock_profiles.json')
+            data = self._read_json_file('profiles.json')
             if profile_id:
                 data = [p for p in data if p['profile_id'] == profile_id]
             return data

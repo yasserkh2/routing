@@ -26,28 +26,28 @@ class DataPreparationService:
         """
         # Get all links first
         links_data = await self.mock_api.get_links_sla_data()
-        print("\nDebug - Links data:")
-        for link in links_data:
-            print(f"Link {link['link_id']}: SLA_DD={link.get('sla_dd')}, SLA_Tested={link.get('sla_tested')}, SLA_Assumed={link.get('sla_assumed')}")
-        
         links = []
         for link_data in links_data:
             link = Link.from_api_data(link_data)
-            print(f"Created Link {link.link_id}: Average SLA={link.average_sla}%")
             links.append(link)
         
         # Get profiles
         profiles_data = await self.mock_api.get_profile_config(profile_id)
-        print("\nDebug - Creating profiles:")
         profiles = []
         for profile_data in profiles_data:
             profile = Profile.from_api_data(profile_data, links)
-            print(f"Profile {profile.name}: {len(profile.links)} links")
-            for link in profile.links:
-                print(f"- Link {link.link_id}: SLA={link.average_sla}%")
             profiles.append(profile)
         
         return profiles
+    
+    async def get_all_profiles(self) -> List[Profile]:
+        """
+        Get all profiles ready for optimization
+        
+        Returns:
+            List of Profile objects ready for optimization
+        """
+        return await self.prepare_data_for_optimizer(None)
     
     async def get_profile_for_optimization(self, profile_id: str) -> Optional[Profile]:
         """

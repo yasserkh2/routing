@@ -22,7 +22,7 @@ class Link:
             data.get('sla_assumed', 0)
         ]
         sla_values = [v for v in sla_values if v is not None and v > 0]
-        average_sla = max(sla_values) if sla_values else 0
+        average_sla = sum(sla_values) / len(sla_values) if sla_values else 0
         
         # Get price and price history
         price = data.get('price', 0.0)

@@ -28,20 +28,12 @@ class RoutingOptimizer:
                 "Price": float(link.price)
             }
             links_data[link.link_id] = optimizer_data
-            print(f"Processing link {link.link_id}: SLA={link.average_sla}%, Price=${link.price}")
-        
-        print("\nPreparing optimization model:")
-        print(f"- Number of usable links: {len(links_data)}")
-        for link_id, data in links_data.items():
-            print(f"- Link {link_id}: SLA={data['SLA']*100:.1f}%, Price=${data['Price']:.2f}")
         
         if not links_data:
-            print("No usable links found!")
             return False
 
         # Create a minimization LP problem
         self.model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
-        print("\nSetting up optimization constraints:")
 
         # Decision variables: fraction of traffic on each link
         self.variables = {}
@@ -59,22 +51,12 @@ class RoutingOptimizer:
 
         # Constraint 2: Try to achieve target SLA
         target_sla = self.profile.expected_sla / 100.0  # Convert to decimal
-        print(f"- Target SLA: {self.profile.expected_sla}%")
-        
-        # Analyze available SLAs
-        sla_values = [(link_id, link_data['SLA']) for link_id, link_data in links_data.items()]
-        print("\nAvailable SLAs:")
-        for link_id, sla in sorted(sla_values, key=lambda x: -x[1]):
-            print(f"- {link_id}: {sla * 100:.1f}%")
         
         # Find best available SLA
-        best_sla = max(sla for _, sla in sla_values)
-        print(f"\n- Best Available SLA: {best_sla * 100:.1f}%")
-        print(f"- Target SLA: {target_sla * 100:.1f}%")
+        best_sla = max(link_data['SLA'] for link_data in links_data.values())
         
         # If target SLA is higher than best available, use best available
         effective_target = min(target_sla, best_sla)
-        print(f"- Using Effective Target SLA: {effective_target * 100:.1f}%")
         
         sla_constraint = []
         for link_id, link_data in links_data.items():
@@ -82,7 +64,6 @@ class RoutingOptimizer:
         self.model += lpSum(sla_constraint) >= effective_target, "SLA_Requirement"
 
         # Solve the problem
-        print("\nSolving optimization problem...")
         status = self.model.solve(self.SOLVER)
         
         # Store results if optimization was successful
@@ -91,10 +72,7 @@ class RoutingOptimizer:
                 link_id: var.varValue
                 for link_id, var in self.variables.items()
             }
-            print("Found optimal solution!")
             return True
-            
-        print(f"Failed to find optimal solution. Status: {LpStatus[status]}")
         return False
 
     def get_routing_plan(self) -> Dict[str, Any]:

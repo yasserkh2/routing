@@ -1,18 +1,16 @@
 [
     {
-        "reference_id": "LINK_001",
-        "product_name": "Cequens_Premium",
-        "provider_name": "AMD Telecom",
-        "network_name": "Vodafone",
-        "mcc": "123",
-        "mnc": "01",
-        "old_rate": 0.2415,
-        "new_rate": 0.2800,
-        "margin_percentage": -15.94,
-        "price_change_status": "Increased",
-        "created_on": "2025-03-02T14:28:00.000Z",
-        "sla_dd": 98.5,
-        "sla_tested": 97.8,
-        "sla_assumed": 94.0
+        "reference_id": "LINK_021",
+        "old_rate": 0.2050,
+        "new_rate": 0.1890,
+        "provider_name": "MessageBird",
+        "network_name": "Stc Bahrain",
+        "mcc": "426",
+        "mnc": "21",
+        "sla_dd": 80.0,
+        "sla_tested": 79.5,
+        "sla_assumed": 78.0,
+        "status": "Decreased",
+        "timestamp": "2025-03-03T12:40:00.000Z"
     }
 ]
