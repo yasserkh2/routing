@@ -182,3 +182,54 @@ class Profile:
     def calculate_total_traffic(self, routing_plan: Dict[str, Any]) -> float:
         """Calculate total traffic allocation"""
         return sum(route['percentage'] for route in routing_plan['routes'])
+
+    @classmethod
+    async def prepare_data_for_optimizer(cls, mock_api, profile_id: Optional[str] = None) -> List['Profile']:
+        """
+        Prepare data for the optimizer by:
+        1. Getting link data and creating Link objects
+        2. Getting profile data and creating Profile objects with their links
+        3. Converting data into format needed by optimizer
+        
+        Args:
+            mock_api: MockAPIService instance
+            profile_id: Optional profile ID to prepare data for specific profile
+            
+        Returns:
+            List of Profile objects ready for optimization
+        """
+        # Get all links first
+        links_data = await mock_api.get_links_sla_data()
+        links = [Link.from_api_data(link_data) for link_data in links_data]
+        
+        # Get profiles
+        profiles_data = await mock_api.get_profile_config(profile_id)
+        return [cls.from_api_data(profile_data, links) for profile_data in profiles_data]
+
+    @classmethod
+    async def get_all_profiles(cls, mock_api) -> List['Profile']:
+        """
+        Get all profiles ready for optimization
+        
+        Args:
+            mock_api: MockAPIService instance
+            
+        Returns:
+            List of Profile objects ready for optimization
+        """
+        return await cls.prepare_data_for_optimizer(mock_api, None)
+
+    @classmethod
+    async def get_profile_for_optimization(cls, mock_api, profile_id: str) -> Optional['Profile']:
+        """
+        Get a single profile ready for optimization
+        
+        Args:
+            mock_api: MockAPIService instance
+            profile_id: ID of the profile to prepare
+            
+        Returns:
+            Profile object ready for optimization, or None if not found
+        """
+        profiles = await cls.prepare_data_for_optimizer(mock_api, profile_id)
+        return profiles[0] if profiles else None

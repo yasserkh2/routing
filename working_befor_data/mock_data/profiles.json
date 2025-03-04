@@ -58,7 +58,7 @@
     {
         "profile_id": "PROF_008",
         "name": "Premium_Banking",
-        "expected_sla": 97.0,
+        "expected_sla": 90.0,
         "priority": "Critical",
         "links": ["LINK_001", "LINK_004", "LINK_008", "LINK_013", "LINK_020"],
         "description": "Premium banking notifications with very high SLA"

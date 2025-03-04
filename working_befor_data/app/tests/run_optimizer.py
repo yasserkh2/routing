@@ -1,8 +1,8 @@
 import asyncio
-from ..services.data_preparation_service import DataPreparationService
 from ..services.mock_services import MockAPIService
 from ..core.optimizer import RoutingOptimizer
 from ..models.profile import Profile
+from ..models.link import Link
 import json
 import os
 
@@ -12,9 +12,8 @@ async def run_optimizer_test():
     print("          PRICE CHANGE IMPACT ANALYSIS")
     print("="*50 + "\n")
     
-    # Initialize services
+    # Initialize mock API service
     mock_api = MockAPIService()
-    data_service = DataPreparationService()
     
     try:
         # Load price changes
@@ -22,8 +21,8 @@ async def run_optimizer_test():
         with open(price_changes_path, 'r') as f:
             price_changes = json.load(f)
         
-        # Get all profiles
-        all_profiles = await data_service.get_all_profiles()
+        # Get all profiles using Profile class method
+        all_profiles = await Profile.get_all_profiles(mock_api)
         
         # For each price change, find affected profiles and optimize
         for change in price_changes:
@@ -65,40 +64,44 @@ async def run_optimizer_test():
                     
                     print("\nBEFORE PRICE CHANGE:")
                     print("-" * 30)
-                    for route_info in profile.format_routing_display(initial_plan):
-                        print(f"Link {route_info['link_id']}:")
-                        print(f"  Traffic:    {route_info['traffic']:.1f}%")
-                        print(f"  SLA:        {route_info['sla']:.1f}%")
-                        print(f"  Price:      ${old_rate if route_info['link_id'] == link_id else route_info['price']:.3f}")
+                    for route in initial_plan['routes']:
+                        current_link = Link.find_by_id(profile.links, route['link_id'])
+                        if current_link:
+                            # Use old_rate for the changed link
+                            override_price = old_rate if route['link_id'] == link_id else None
+                            route_info = current_link.format_display_info(route['percentage'], override_price)
+                            print(f"Link {route_info['link_id']}:")
+                            print(f"  Traffic:    {route_info['traffic']:.1f}%")
+                            print(f"  SLA:        {route_info['sla']:.1f}%")
+                            print(f"  Price:      ${route_info['price']:.3f}")
                     
-                    # For initial stats, use old_rate for the changed link
+                    # Calculate initial stats using Link's methods
                     total_cost = 0.0
                     active_links = 0
                     for route in initial_plan['routes']:
                         if route['percentage'] > 0:
                             active_links += 1
-                            traffic_ratio = route['percentage'] / 100.0
-                            if route['link_id'] == link_id:
-                                total_cost += traffic_ratio * old_rate
-                            else:
-                                total_cost += traffic_ratio * route['price']
+                            current_link = Link.find_by_id(profile.links, route['link_id'])
+                            if current_link:
+                                # Use old_rate for the changed link
+                                override_price = old_rate if route['link_id'] == link_id else None
+                                total_cost += current_link.calculate_cost_for_traffic(route['percentage'], override_price)
                     
                     print(f"\nTotal Cost:    ${total_cost:.3f}")
                     print(f"Active Links:  {active_links}")
                     print(f"Achieved SLA:  {profile.calculate_achieved_sla(initial_plan):.2f}%")
                     
-                    # Apply the price change
-                    # First update the link with both old and new prices
-                    for link in profile.links:
-                        if link.link_id == link_id:
-                            profile.update_link_price(link_id, new_rate, old_rate)
-                            break
+                    # Apply the price change using Link's functionality
+                    target_link = Link.find_by_id(profile.links, link_id)
+                    if target_link:
+                        updated_link = target_link.with_updated_price(new_rate, old_rate)
+                        profile.update_link_price(link_id, updated_link.price, old_rate)
                     
                     # Then handle the price change in mock API with both old and new rates
                     mock_api.handle_price_change(link_id, new_rate, old_rate)
                     
-                    # Get fresh profile data with updated prices
-                    updated_profile = await data_service.get_profile_for_optimization(profile.profile_id)
+                    # Get fresh profile data with updated prices using Profile class method
+                    updated_profile = await Profile.get_profile_for_optimization(mock_api, profile.profile_id)
                     optimizer = RoutingOptimizer(updated_profile)
                     success = optimizer.solve()
                     
@@ -108,23 +111,28 @@ async def run_optimizer_test():
                         
                         print("\nAFTER PRICE CHANGE:")
                         print("-" * 30)
-                        for route_info in updated_profile.format_routing_display(after_plan):
-                            print(f"Link {route_info['link_id']}:")
-                            print(f"  Traffic:    {route_info['traffic']:.1f}%")
-                            print(f"  SLA:        {route_info['sla']:.1f}%")
-                            print(f"  Price:      ${new_rate if route_info['link_id'] == link_id else route_info['price']:.3f}")
+                        for route in after_plan['routes']:
+                            current_link = Link.find_by_id(updated_profile.links, route['link_id'])
+                            if current_link:
+                                # Use new_rate for the changed link
+                                override_price = new_rate if route['link_id'] == link_id else None
+                                route_info = current_link.format_display_info(route['percentage'], override_price)
+                                print(f"Link {route_info['link_id']}:")
+                                print(f"  Traffic:    {route_info['traffic']:.1f}%")
+                                print(f"  SLA:        {route_info['sla']:.1f}%")
+                                print(f"  Price:      ${route_info['price']:.3f}")
                         
-                        # For after stats, use new_rate for the changed link
+                        # Calculate after stats using Link's methods
                         total_cost = 0.0
                         active_links = 0
                         for route in after_plan['routes']:
                             if route['percentage'] > 0:
                                 active_links += 1
-                                traffic_ratio = route['percentage'] / 100.0
-                                if route['link_id'] == link_id:
-                                    total_cost += traffic_ratio * new_rate
-                                else:
-                                    total_cost += traffic_ratio * route['price']
+                                current_link = Link.find_by_id(updated_profile.links, route['link_id'])
+                                if current_link:
+                                    # Use new_rate for the changed link
+                                    override_price = new_rate if route['link_id'] == link_id else None
+                                    total_cost += current_link.calculate_cost_for_traffic(route['percentage'], override_price)
                         
                         print(f"\nTotal Cost:    ${total_cost:.3f}")
                         print(f"Active Links:  {active_links}")

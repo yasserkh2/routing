@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from pulp import *
 from ..models.profile import Profile
+from ..models.link import Link
 
 class RoutingOptimizer:
     """Linear optimization model for minimizing cost while meeting SLA requirements"""
@@ -20,17 +21,12 @@ class RoutingOptimizer:
         Returns:
             bool: True if optimization was successful, False otherwise
         """
-        # Get links data
+        # Get links data using the Link class's to_optimizer_format method
         links_data = {}
         for link in self.profile.links:
-            # Get the current price from the link
             price = link.get_current_price()
             if price is not None:
-                optimizer_data = {
-                    "SLA": link.average_sla / 100.0,  # Convert to decimal
-                    "Price": float(price)
-                }
-                links_data[link.link_id] = optimizer_data
+                links_data[link.link_id] = link.to_optimizer_format()
         
         if not links_data:
             return False
@@ -57,11 +53,11 @@ class RoutingOptimizer:
         # Constraint 2: Try to achieve target SLA
         target_sla = self.profile.expected_sla / 100.0  # Convert to decimal
         
-        # Find best available SLA
-        best_sla = max(link_data['SLA'] for link_data in links_data.values())
+        # Calculate average SLA using Link class method
+        avg_sla = Link.calculate_average_sla(self.profile.links) / 100.0  # Convert to decimal
         
-        # If target SLA is higher than best available, use best available
-        effective_target = min(target_sla, best_sla)
+        # If target SLA is higher than average available, use average
+        effective_target = min(target_sla, avg_sla)
         
         sla_constraint = []
         for link_id, link_data in links_data.items():
@@ -90,15 +86,13 @@ class RoutingOptimizer:
         for link in self.profile.links:
             percentage = self.results.get(link.link_id, 0) * 100  # Convert fraction to percentage
             if percentage > 0:  # Only include routes with traffic
-                # Get the current price
-                price = link.get_current_price()
-                if price is not None:
-                    routes.append({
-                        'link_id': link.link_id,
-                        'percentage': percentage,
-                        'sla': link.average_sla,
-                        'price': price
-                    })
+                optimizer_data = link.to_optimizer_format()
+                routes.append({
+                    'link_id': link.link_id,
+                    'percentage': percentage,
+                    'sla': link.average_sla,
+                    'price': optimizer_data['Price']
+                })
 
         return {
             'profile_id': self.profile.profile_id,
@@ -119,8 +113,9 @@ class RoutingOptimizer:
         for link in self.profile.links:
             allocation = self.results.get(link.link_id, 0)
             if allocation > 0:
-                total_cost += allocation * link.price
-                achieved_sla += allocation * (link.average_sla / 100.0)
+                optimizer_data = link.to_optimizer_format()
+                total_cost += allocation * optimizer_data['Price']
+                achieved_sla += allocation * optimizer_data['SLA']
 
         return {
             'total_cost': total_cost,

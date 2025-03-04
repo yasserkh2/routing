@@ -128,3 +128,31 @@ class Link:
     def get_links_with_price_changes(links: List['Link']) -> List['Link']:
         """Get all links that have price changes in their history"""
         return [link for link in links if len(link.price_history) > 1]
+
+    @staticmethod
+    def calculate_average_sla(links: List['Link']) -> float:
+        """Calculate average SLA across all links"""
+        if not links:
+            return 0.0
+        total_sla = sum(link.average_sla for link in links)
+        return total_sla / len(links)
+
+    def format_display_info(self, traffic_percentage: float, override_price: Optional[float] = None) -> Dict[str, Any]:
+        """Format link information for display"""
+        return {
+            'link_id': self.link_id,
+            'traffic': traffic_percentage,
+            'sla': self.average_sla,
+            'price': override_price if override_price is not None else self.price
+        }
+
+    def calculate_cost_for_traffic(self, traffic_percentage: float, override_price: Optional[float] = None) -> float:
+        """Calculate cost for given traffic percentage"""
+        traffic_ratio = traffic_percentage / 100.0
+        price = override_price if override_price is not None else self.price
+        return traffic_ratio * price
+
+    @staticmethod
+    def find_by_id(links: List['Link'], link_id: str) -> Optional['Link']:
+        """Find a link by its ID"""
+        return next((link for link in links if link.link_id == link_id), None)

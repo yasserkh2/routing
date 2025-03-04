@@ -5,11 +5,11 @@
         "mnc": "01",
         "provider": "AMD Telecom",
         "price": 0.15,
-        "sla_dd": 98.5,
-        "sla_tested": 97.8,
-        "sla_assumed": 94.0,
+        "sla_dd": 100,
+        "sla_tested": 100,
+        "sla_assumed": 60,
         "status": "Healthy",
-        "last_updated": "2025-03-04T10:32:21.468167"
+        "last_updated": "2025-03-04T10:58:20.218606"
     },
     {
         "link_id": "LINK_002",
