@@ -3,30 +3,34 @@ from event_handler import EventHandler, EventType, Event, EventPriority
 from api_selector import APISelector
 from api_strategy import MockAPIClient
 
-# Mock price change data from the CSV
-MOCK_PRICE_DATA = {
-    "product_id": "450271",
-    "product_name": "Cequens_AMD Telec Premium_Togo Cell",
-    "old_price": 0.1011,
-    "new_price": 0.2415,
-    "change_amount": -3124.78,
-    "status": "Increased",
-    "timestamp": "2025-02-06T12:43:26.163Z"
+# Mock price update event data
+MOCK_EVENT_DATA = {
+    "Type": "PriceUpdate",
+    "Payload": {
+        "old_rate": 0.2050,
+        "new_rate": 0.15,
+        "status": "Decreased"
+    },
+    "link": "LINK_001",
+    "mcc": "426",
+    "mnc": "21",
+    "timestamp": "2025-03-03T12:40:00.000Z"
 }
 
 async def handle_price_change(event: Event) -> None:
     """
-    Handler for price change events that demonstrates:
+    Handler for price update events that demonstrates:
     1. Query1: GetProfilesRelatedToLink(link, mnc)
     2. Query2: GetLinksSLAByMNC(mnc)
     3. Query3: GetProfilesWithLinks()
     """
-    print(f"\nProcessing price change event:")
-    print(f"Product ID: {event.data.get('product_id')}")
-    print(f"Product: {event.data.get('product_name')}")
-    print(f"Price Change: ${event.data.get('old_price'):.4f} -> ${event.data.get('new_price'):.4f}")
-    print(f"Change Amount: ${event.data.get('change_amount'):.2f}")
-    print(f"Status: {event.data.get('status')}")
+    print(f"\nProcessing price update event:")
+    print(f"Link: {event.link}")
+    print(f"MCC: {event.mcc}")
+    print(f"MNC: {event.mnc}")
+    print(f"Price Change: ${event.payload['old_rate']:.4f} -> ${event.payload['new_rate']:.4f}")
+    print(f"Status: {event.payload['status']}")
+    print(f"Timestamp: {event.timestamp}")
     
     # Create API selector with mock client
     api_client = MockAPIClient()
@@ -75,7 +79,7 @@ async def handle_price_change(event: Event) -> None:
         print(f"MNC: {links_data['mnc']}")
         print("\nLinks SLA Data:")
         for link in links_data['links']:
-            print(f"\nLink ID: {link['link_id']}")
+            print(f"\nLink: {link['link']}")
             print(f"Operator: {link['operator']}")
             print(f"MNC: {link['mnc']}")
             print("SLA Data:")
@@ -96,7 +100,7 @@ async def handle_price_change(event: Event) -> None:
             print(f"Priority: {profile['priority']}")
             print("\nAssociated Links:")
             for link in profile['links']:
-                print(f"\n  Link ID: {link['link_id']}")
+                print(f"\n  Link: {link['link']}")
                 print(f"  Operator: {link['operator']}")
                 print(f"  MNC: {link['mnc']}")
                 print(f"  Routing Priority: {link['routing_priority']}")
@@ -107,23 +111,21 @@ async def main():
     # Create event handler
     handler = EventHandler()
 
-    # Register price change handler
-    handler.register_handler(EventType.PRICE_CHANGE, handle_price_change, is_async=True)
+    # Register price update handler
+    handler.register_handler("PriceUpdate", handle_price_change, is_async=True)
 
-    # Create price change event
-    price_change_event = handler.create_event(
-        EventType.PRICE_CHANGE,
-        data=MOCK_PRICE_DATA,
-        priority=EventPriority.HIGH
-    )
+    # Create price update event
+    price_update_event = handler.create_event(MOCK_EVENT_DATA)
 
     # Process the event
-    await handler.handle_event(price_change_event)
+    await handler.handle_event(price_update_event)
 
     # Print event metadata
     print("\nEvent Processing Metadata:")
-    print(f"APIs Called: {price_change_event.metadata.get('apis_called')}")
-    print(f"Processing Complete: {price_change_event.metadata.get('processing_complete')}")
+    print(f"Event Type: {price_update_event.type}")
+    print(f"Link: {price_update_event.link}")
+    print(f"MCC/MNC: {price_update_event.mcc}/{price_update_event.mnc}")
+    print(f"Timestamp: {price_update_event.timestamp}")
 
     print("\nImplemented API Queries:")
     print("1. Query1 - GetProfilesRelatedToLink(link, mnc)")

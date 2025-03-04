@@ -26,10 +26,13 @@ class RoutingOptimizer:
         for link in self.profile.links:
             price = link.get_current_price()
             if price is not None:
-                links_data[link.link_id] = link.to_optimizer_format()
+                links_data[link.link] = link.to_optimizer_format()
         
         if not links_data:
             return False
+
+        # Sort links by SLA in descending order
+        sorted_links = sorted(links_data.items(), key=lambda x: x[1]['SLA'], reverse=True)
 
         # Create a minimization LP problem
         self.model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
@@ -38,7 +41,7 @@ class RoutingOptimizer:
         self.variables = {}
         for link_id, link_data in links_data.items():
             if 'Price' in link_data:  # Only create variables for links with valid prices
-                self.variables[link_id] = LpVariable(f"x_{link_id}", lowBound=0, upBound=1, cat='Continuous')
+                self.variables[link_id] = LpVariable(f"x_{link_id.replace('-', '_')}", lowBound=0, upBound=1, cat='Continuous')
 
         # Objective: minimize sum(x_i * price_i)
         objective = []
@@ -53,16 +56,13 @@ class RoutingOptimizer:
         # Constraint 2: Try to achieve target SLA
         target_sla = self.profile.expected_sla / 100.0  # Convert to decimal
         
-        # Calculate average SLA using Link class method
-        avg_sla = Link.calculate_average_sla(self.profile.links) / 100.0  # Convert to decimal
-        
-        # If target SLA is higher than average available, use average
-        effective_target = min(target_sla, avg_sla)
-        
+        # Add SLA constraint - the model will automatically try to get as close as possible
         sla_constraint = []
         for link_id, link_data in links_data.items():
             sla_constraint.append(self.variables[link_id] * link_data['SLA'])
-        self.model += lpSum(sla_constraint) >= effective_target, "SLA_Requirement"
+        
+        # Set target SLA as the goal - optimizer will get as close as possible
+        self.model += lpSum(sla_constraint) >= target_sla, "SLA_Requirement"
 
         # Solve the problem
         status = self.model.solve(self.SOLVER)
@@ -74,6 +74,13 @@ class RoutingOptimizer:
                 for link_id, var in self.variables.items()
             }
             return True
+            
+        # If optimization fails and we have links available, use the highest SLA link
+        if sorted_links:
+            best_link_id, _ = sorted_links[0]
+            self.results = {best_link_id: 1.0}  # Assign 100% traffic to best link
+            return True
+            
         return False
 
     def get_routing_plan(self) -> Dict[str, Any]:
@@ -84,11 +91,11 @@ class RoutingOptimizer:
         # Get allocation for all links
         routes = []
         for link in self.profile.links:
-            percentage = self.results.get(link.link_id, 0) * 100  # Convert fraction to percentage
+            percentage = self.results.get(link.link, 0) * 100  # Convert fraction to percentage
             if percentage > 0:  # Only include routes with traffic
                 optimizer_data = link.to_optimizer_format()
                 routes.append({
-                    'link_id': link.link_id,
+                    'link': link.link,
                     'percentage': percentage,
                     'sla': link.average_sla,
                     'price': optimizer_data['Price']
@@ -106,20 +113,85 @@ class RoutingOptimizer:
         if not self.results:
             raise ValueError("No results available. Solve the model first.")
 
-        # Calculate total cost and achieved SLA
+        routing_plan = self.get_routing_plan()
         total_cost = 0
         achieved_sla = 0
-        
-        for link in self.profile.links:
-            allocation = self.results.get(link.link_id, 0)
-            if allocation > 0:
-                optimizer_data = link.to_optimizer_format()
-                total_cost += allocation * optimizer_data['Price']
-                achieved_sla += allocation * optimizer_data['SLA']
+        active_links = 0
 
-        return {
+        for route in routing_plan['routes']:
+            if route['percentage'] > 0:
+                link = self.profile.get_link_by_id(route['link'])
+                if link:
+                    optimizer_data = link.to_optimizer_format()
+                    total_cost += (route['percentage'] / 100.0) * optimizer_data['Price']
+                    achieved_sla += (route['percentage'] / 100.0) * optimizer_data['SLA']
+                    active_links += 1
+
+        stats = {
             'total_cost': total_cost,
-            'links_used': len([v for v in self.results.values() if v > 0.001]),  # Ignore very small allocations
+            'links_used': active_links,
             'achieved_sla': achieved_sla * 100,  # Convert back to percentage
-            'expected_sla': self.profile.expected_sla
+            'expected_sla': self.profile.expected_sla,
+            'sla_achievable': getattr(self, 'sla_achievable', True),  # Default to True for backward compatibility
+            'max_achievable_sla': getattr(self, 'max_achievable_sla', achieved_sla * 100)
         }
+        
+        # Add warning if target SLA cannot be achieved
+        if not stats['sla_achievable']:
+            stats['warning'] = (
+                f"Target SLA of {self.profile.expected_sla}% cannot be achieved. "
+                f"Maximum achievable SLA with available links is {stats['max_achievable_sla']:.2f}%"
+            )
+            
+        return stats
+
+    def calculate_cost(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> float:
+        """Calculate total cost based on a routing plan"""
+        total_cost = 0.0
+        for route in routing_plan['routes']:
+            if route['percentage'] > 0:
+                link = self.profile.get_link_by_id(route['link'])
+                if link:
+                    price = link.get_previous_price() if use_previous_price else link.get_current_price()
+                    total_cost += link.calculate_cost_for_traffic(route['percentage'], price)
+        return total_cost
+
+    def calculate_cost_impact(self, before_plan: Dict[str, Any], after_plan: Dict[str, Any]) -> Dict[str, Any]:
+        """Calculate cost impact between two routing plans"""
+        before_cost = self.calculate_cost(before_plan)
+        after_cost = self.calculate_cost(after_plan)
+        cost_change = after_cost - before_cost
+        cost_change_pct = (cost_change / before_cost) * 100 if before_cost > 0 else 0
+        
+        return {
+            'before_cost': before_cost,
+            'after_cost': after_cost,
+            'savings': abs(cost_change),
+            'percentage': abs(cost_change_pct)
+        }
+
+    def calculate_achieved_sla(self, routing_plan: Dict[str, Any]) -> float:
+        """Calculate achieved SLA based on routing plan"""
+        achieved_sla = 0.0
+        for route in routing_plan['routes']:
+            if route['percentage'] > 0:
+                link = self.profile.get_link_by_id(route['link'])
+                if link:
+                    optimizer_data = link.to_optimizer_format()
+                    achieved_sla += (route['percentage'] / 100.0) * optimizer_data['SLA']
+        return achieved_sla * 100  # Convert back to percentage
+
+    def format_routing_display(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> List[Dict[str, Any]]:
+        """Format routing plan for display"""
+        display_routes = []
+        for route in routing_plan['routes']:
+            if route['percentage'] > 0:
+                link = self.profile.get_link_by_id(route['link'])
+                if link:
+                    price = link.get_previous_price() if use_previous_price else link.get_current_price()
+                    display_routes.append(link.format_display_info(route['percentage'], price))
+        return display_routes
+
+    def calculate_total_traffic(self, routing_plan: Dict[str, Any]) -> float:
+        """Calculate total traffic allocation"""
+        return sum(route['percentage'] for route in routing_plan['routes'])

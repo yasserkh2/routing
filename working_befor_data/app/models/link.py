@@ -5,7 +5,7 @@ from datetime import datetime
 @dataclass(eq=True, frozen=True)
 class Link:
     """Represents a routing link with its properties"""
-    link_id: str
+    link: str
     operator: str
     mnc: str
     price: float = 0.0
@@ -37,7 +37,7 @@ class Link:
             })
         
         return cls(
-            link_id=data['link_id'],
+            link=data['link'],
             operator=data['operator'],
             mnc=data['mnc'],
             price=float(price),
@@ -76,7 +76,7 @@ class Link:
         })
         
         return Link(
-            link_id=self.link_id,
+            link=self.link,
             operator=self.operator,
             mnc=self.mnc,
             price=new_price,
@@ -125,6 +125,11 @@ class Link:
         return [link for link in links if link.mnc == mnc]
     
     @staticmethod
+    def filter_by_operator(links: List['Link'], operator: str) -> List['Link']:
+        """Filter links by operator"""
+        return [link for link in links if link.operator == operator]
+    
+    @staticmethod
     def get_links_with_price_changes(links: List['Link']) -> List['Link']:
         """Get all links that have price changes in their history"""
         return [link for link in links if len(link.price_history) > 1]
@@ -140,7 +145,7 @@ class Link:
     def format_display_info(self, traffic_percentage: float, override_price: Optional[float] = None) -> Dict[str, Any]:
         """Format link information for display"""
         return {
-            'link_id': self.link_id,
+            'link': self.link,
             'traffic': traffic_percentage,
             'sla': self.average_sla,
             'price': override_price if override_price is not None else self.price
@@ -153,6 +158,6 @@ class Link:
         return traffic_ratio * price
 
     @staticmethod
-    def find_by_id(links: List['Link'], link_id: str) -> Optional['Link']:
-        """Find a link by its ID"""
-        return next((link for link in links if link.link_id == link_id), None)
+    def find_by_id(links: List['Link'], link_name: str) -> Optional['Link']:
+        """Find a link by its name"""
+        return next((link for link in links if link.link == link_name), None)

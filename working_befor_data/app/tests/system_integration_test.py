@@ -30,7 +30,7 @@ async def test_system_integration():
     print("\nStep 2: Creating Price Change Event")
     price_change = price_changes[0]
     event_data = {
-        'link_id': price_change['reference_id'],
+        'link': price_change['reference_id'],
         'old_price': price_change['old_rate'],
         'new_price': price_change['new_rate'],
         'provider': price_change['provider_name'],
@@ -47,7 +47,7 @@ async def test_system_integration():
     print("\nStep 3: Processing Event Through API Service")
     # Handle price change through mock API service
     api_event = mock_api.handle_price_change(
-        event_data['link_id'],
+        event_data['link'],
         event_data['new_price']
     )
     print(f"API processed event: {api_event}")
@@ -55,22 +55,22 @@ async def test_system_integration():
     print("\nStep 4: Verifying Link Updates")
     # Get updated link data
     updated_links = await mock_api.get_links_sla_data(mnc=event_data['mnc'])
-    affected_link = next((link for link in updated_links if link['link_id'] == event_data['link_id']), None)
+    affected_link = next((link for link in updated_links if link['link'] == event_data['link']), None)
     if affected_link:
-        print(f"Link {affected_link['link_id']} updated price: ${affected_link['price']}")
+        print(f"Link {affected_link['link']} updated price: ${affected_link['price']}")
     
     print("\nStep 5: Creating Link Objects")
     # Create Link objects with updated data
     available_links = [Link.from_api_data(link_data) for link_data in links_data]
     for link in available_links:
-        if link.link_id == event_data['link_id']:
+        if link.link == event_data['link']:
             print(f"Link object created: {link}")
             print(f"Price history: {link.price_history}")
     
     print("\nStep 6: Creating and Updating Profiles")
     # Create Profile objects
     profiles = [Profile.from_api_data(profile_data, available_links) for profile_data in profiles_data]
-    affected_profiles = Profile.get_profiles_affected_by_price_change(profiles, event_data['link_id'])
+    affected_profiles = Profile.get_profiles_affected_by_price_change(profiles, event_data['link'])
     print(f"Found {len(affected_profiles)} affected profiles")
     
     print("\nStep 7: Running Optimization for Affected Profiles")
@@ -90,9 +90,9 @@ async def test_system_integration():
             total_old_revenue += old_revenue
             
             # Update link price for the affected link
-            affected_link = profile.get_link_by_id(event_data['link_id'])
+            affected_link = profile.get_link_by_id(event_data['link'])
             if affected_link:
-                profile.update_link_price(event_data['link_id'], event_data['new_price'])
+                profile.update_link_price(event_data['link'], event_data['new_price'])
             
             # Calculate revenue after price change and optimization
             optimizer_after = RoutingOptimizer(profile)
@@ -118,13 +118,13 @@ async def test_system_integration():
                 print("Before:")
                 for route in plan_before['routes']:
                     if route['percentage'] > 0:
-                        print(f"- Link {route['link_id']}: {route['percentage']:.1f}% "
+                        print(f"- Link {route['link']}: {route['percentage']:.1f}% "
                               f"(SLA: {route['sla']}%, Price: ${route['price']})")
                 
                 print("After:")
                 for route in plan_after['routes']:
                     if route['percentage'] > 0:
-                        print(f"- Link {route['link_id']}: {route['percentage']:.1f}% "
+                        print(f"- Link {route['link']}: {route['percentage']:.1f}% "
                               f"(SLA: {route['sla']}%, Price: ${route['price']})")
     
     # Calculate total impact

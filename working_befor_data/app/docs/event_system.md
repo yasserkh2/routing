@@ -8,7 +8,7 @@ The system is designed to handle price change events efficiently, focusing on de
 
 ### Price Change Event
 The system processes price changes with the following information:
-- Link ID
+- Link identifier
 - Old and new prices
 - Provider and network details
 - SLA metrics (DD, Tested, Assumed)
@@ -45,7 +45,7 @@ handler = EventHandler()
 event = handler.create_event(
     EventType.PRICE_CHANGE,
     data={
-        'link_id': 'LINK_021',
+        'link': 'LINK_021',
         'old_price': 0.2050,
         'new_price': 0.1890,
         'provider': 'MessageBird',
@@ -64,7 +64,7 @@ results = await api_selector.execute_strategies(event)
 The system implements two main queries:
 
 1. **GetProfilesRelatedToLink**
-   - Input: link ID, MNC
+   - Input: link, MNC
    - Output: Profiles using the specified link
    - Purpose: Identify affected profiles when price changes
 
