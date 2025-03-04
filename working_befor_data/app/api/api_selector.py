@@ -9,10 +9,8 @@ from api_interfaces import (
 )
 from api_strategy import (
     DefaultAPIStrategyFactory,
-    GetProfilesRelatedToLinkStrategy,
-    GetLinksSLAByMNCStrategy,
-    GetProfilesWithLinksStrategy,
-    RouteDetailsAPIStrategy
+    GetLinksSLADataStrategy,
+    GetProfileConfigStrategy
 )
 
 class DefaultAPIRegistry(APIRegistry):
@@ -24,17 +22,13 @@ class DefaultAPIRegistry(APIRegistry):
         self._setup_default_strategies()
     
     def _setup_default_strategies(self) -> None:
-        """Initialize default strategy mappings for price change events"""
+        """Initialize default strategy mappings for events"""
         self._strategies = {
             EventType.PRICE_CHANGE: [
-                # First get route details
-                RouteDetailsAPIStrategy,
-                # Query1: Get profiles related to link
-                GetProfilesRelatedToLinkStrategy,
-                # Query2: Get all links' SLA data for the MNC
-                GetLinksSLAByMNCStrategy,
-                # Query3: Get all profiles with their associated links
-                GetProfilesWithLinksStrategy
+                # Get SLA data for links
+                GetLinksSLADataStrategy,
+                # Get profile configurations
+                GetProfileConfigStrategy
             ]
         }
     

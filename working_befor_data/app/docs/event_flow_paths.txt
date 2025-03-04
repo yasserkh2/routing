@@ -1,0 +1,91 @@
+Event Handling System Flow and Paths
+==================================
+
+1. Event Creation Path
+---------------------
+Entry Point: working_befor_data/app/services/event_handler.py
+- EventHandler class creates and manages events
+- Supports multiple event types: PRICE_CHANGE, ROUTE_UPDATE, SLA_UPDATE
+- Events contain type, data, and timestamp
+
+2. API Integration Path
+----------------------
+Location: working_befor_data/app/api/
+- api_selector.py: Coordinates API strategy selection
+- api_strategy.py: Implements different API strategies
+- api_interfaces.py: Defines API interfaces
+
+Key API Queries:
+a) GetProfilesRelatedToLink
+   - Input: link ID, MNC
+   - Output: Affected profiles
+   - Purpose: Find profiles using specific links
+
+b) GetLinksSLAByMNC
+   - Input: MNC code
+   - Output: SLA data for all links
+   - Purpose: Get performance metrics
+
+3. Data Models Path
+------------------
+Location: working_befor_data/app/models/
+- profile.py: Profile configuration and requirements
+- link.py: Link properties and SLA data
+- sla_data.py: SLA metrics structure
+
+4. Mock Services Path
+--------------------
+Location: working_befor_data/app/services/mock_services.py
+Mock Data Files:
+- mock_data/profiles.json: Profile configurations
+- mock_data/links_data.json: Link information
+- mock_data/price_changes.json: Price change events
+
+5. Optimization Path
+-------------------
+Location: working_befor_data/app/core/optimizer.py
+Process:
+1. Receives affected profiles and links
+2. Analyzes current routing
+3. Calculates optimal routes
+4. Determines cost impact
+
+Complete Flow Example
+--------------------
+1. Price change event created in event_handler.py
+2. APISelector queries affected profiles and links
+3. Optimizer receives data and calculates new routes
+4. Results analyzed for cost impact
+5. Routes updated if beneficial
+
+File Structure Overview
+----------------------
+/app
+  /api          - API integration components
+  /core         - Core optimization logic
+  /docs         - System documentation
+  /models       - Data structures
+  /services     - Event handling and mock services
+  /tests        - Example implementations
+  /utils        - Utility functions
+
+Integration Points
+-----------------
+1. Event Handler → API Selector
+   Purpose: Get affected components
+
+2. API Selector → Models
+   Purpose: Create data structures
+
+3. Models → Optimizer
+   Purpose: Process optimization
+
+4. Optimizer → Event Handler
+   Purpose: Update results
+
+Testing Examples
+---------------
+Location: working_befor_data/app/tests/
+- event_handler_example.py: Basic event handling
+- run_optimizer.py: Optimization process
+- system_integration_test.py: Full system testing

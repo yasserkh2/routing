@@ -10,7 +10,6 @@ Project Structure:
 
 - core/: Core business logic
     - optimizer.py: Linear programming optimization for routing
-    - simple_optimizer.py: Simplified optimization implementation
 
 - models/: Data models
     - link.py: Link model representing routing paths
