@@ -6,11 +6,10 @@ from pydantic import BaseModel
 from typing import Optional
 import os
 import sys
-import os
 import json
 from datetime import datetime
 
-# Add parent directory to path so we can import from app
+# Add src directory to path so we can import from app
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.services.mock_services import MockAPIService
@@ -111,7 +110,7 @@ async def analyze_price_change(request: PriceChangeRequest):
                             routes_info.append(route_info)
                 
                 # Get profile's sell price
-                profiles_path = os.path.join(os.path.dirname(__file__), '../mock_data/profiles.json')
+                profiles_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'mock_data/profiles.json')
                 with open(profiles_path, 'r') as f:
                     profiles_data = json.load(f)
                     profile_data = next(p for p in profiles_data if p["profile_id"] == profile.profile_id)

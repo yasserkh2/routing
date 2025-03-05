@@ -10,19 +10,13 @@ Total Memory: 16GB
 Free Memory: 3GB
 CPU Cores: 12
 
-Current Time: 3/5/2025, 1:43:01 PM (Africa/Cairo, UTC+2:00)
+Current Time: 3/5/2025, 2:03:26 PM (Africa/Cairo, UTC+2:00)
 
 # EDITOR STATE
 
 Visible Files:
-  working_befor_data\web_interface\server.py
 
 Open Tabs:
-  working_befor_data\app\tests\system_integration_test.py
-  working_befor_data\mock_data\price_changes.json
-  working_befor_data\web_interface\server.py
-  working_befor_data\web_interface\index.html
-  working_befor_data\app\tests\run_optimizer.py
 
 # WORKSPACE SUMMARY
 
@@ -35,15 +29,8 @@ Files:
   README.md
   .gitattributes
   project_design/
+  src/
   SYSTEM_OVERVIEW.md
-  working_befor_data/
-  working_befor_data/app/
-  working_befor_data/mock_data/
-  working_befor_data/README.md
-  working_befor_data/readme_2.md
-  working_befor_data/requirements.txt
-  working_befor_data/Routing_SLA_API.postman_collection.json
-  working_befor_data/web_interface/
   project_design/architecture/
   project_design/architecture.md
   project_design/data/
@@ -55,66 +42,70 @@ Files:
   project_design/README.md
   project_design/security/
   project_design/testing/
-  working_befor_data/app/api/
-  working_befor_data/app/core/
-  working_befor_data/app/docs/
-  working_befor_data/app/models/
-  working_befor_data/app/services/
-  working_befor_data/app/tests/
-  working_befor_data/app/utils/
-  working_befor_data/app/__init__.py
-  project_design/architecture/components.md
-  project_design/architecture/scalability.md
-  project_design/architecture/system_architecture.md
-  project_design/architecture/technology_stack.md
-  working_befor_data/mock_data/links_data.json
-  working_befor_data/mock_data/price_changes.json
-  working_befor_data/mock_data/profiles.json
-  working_befor_data/mock_data/README.md
-  working_befor_data/web_interface/index.html
-  working_befor_data/web_interface/server.py
+  src/app/
+  src/mock_data/
+  src/requirements.txt
+  src/web/
   project_design/data/data_model.md
   project_design/data/data_sources.md
   project_design/decision_making/approval_workflow.md
   project_design/decision_making/decision_logic.md
+  project_design/architecture/components.md
+  project_design/architecture/scalability.md
+  project_design/architecture/system_architecture.md
+  project_design/architecture/technology_stack.md
+  project_design/deployment/ci_cd.md
+  project_design/deployment/deployment_strategy.md
+  project_design/deployment/monitoring.md
   project_design/ml/ml_models.md
+  project_design/testing/testing_strategy.md
+  project_design/testing/test_cases.md
   project_design/optimization/objective_function.md
   project_design/optimization/optimization_algorithm.md
   project_design/security/data_privacy.md
   project_design/security/security_considerations.md
-  project_design/deployment/ci_cd.md
-  project_design/deployment/deployment_strategy.md
-  project_design/deployment/monitoring.md
-  project_design/testing/testing_strategy.md
-  project_design/testing/test_cases.md
-  working_befor_data/app/api/api_interfaces.py
-  working_befor_data/app/api/api_selector.py
-  working_befor_data/app/api/api_strategy.py
-  working_befor_data/app/api/main.py
-  working_befor_data/app/api/README.md
-  working_befor_data/app/api/__init__.py
-  working_befor_data/app/core/optimizer.py
-  working_befor_data/app/core/README.md
-  working_befor_data/app/core/__init__.py
-  working_befor_data/app/services/data_preparation_service.py
-  working_befor_data/app/services/event_handler.py
-  working_befor_data/app/services/mock_services.py
-  working_befor_data/app/services/README.md
-  working_befor_data/app/services/__init__.py
-  working_befor_data/app/models/link.py
-  working_befor_data/app/models/models.py
-  working_befor_data/app/models/profile.py
-  working_befor_data/app/models/README.md
-  working_befor_data/app/models/sla_data.py
-  working_befor_data/app/models/__init__.py
-  working_befor_data/app/tests/event_handler_example.py
-  working_befor_data/app/tests/README.md
-  working_befor_data/app/tests/run_optimizer.py
-  working_befor_data/app/tests/system_integration_test.py
-  working_befor_data/app/tests/__init__.py
-  working_befor_data/app/docs/api_structure.md
-  working_befor_data/app/docs/event_flow_paths.txt
-  working_befor_data/app/docs/event_system.md
-  working_befor_data/app/docs/README.md
-  working_befor_data/app/utils/README.md
-  working_befor_data/app/utils/__init__.py
+  src/app/api/
+  src/app/core/
+  src/app/docs/
+  src/app/models/
+  src/app/services/
+  src/app/tests/
+  src/app/utils/
+  src/app/__init__.py
+  src/mock_data/links_data.json
+  src/mock_data/price_changes.json
+  src/mock_data/profiles.json
+  src/mock_data/README.md
+  src/web/index.html
+  src/web/server.py
+  src/app/api/api_interfaces.py
+  src/app/api/api_selector.py
+  src/app/api/api_strategy.py
+  src/app/api/main.py
+  src/app/api/README.md
+  src/app/api/__init__.py
+  src/app/docs/api_structure.md
+  src/app/docs/event_flow_paths.txt
+  src/app/docs/event_system.md
+  src/app/docs/README.md
+  src/app/tests/event_handler_example.py
+  src/app/tests/README.md
+  src/app/tests/run_optimizer.py
+  src/app/tests/system_integration_test.py
+  src/app/tests/__init__.py
+  src/app/utils/README.md
+  src/app/utils/__init__.py
+  src/app/models/link.py
+  src/app/models/models.py
+  src/app/models/profile.py
+  src/app/models/README.md
+  src/app/models/sla_data.py
+  src/app/models/__init__.py
+  src/app/services/data_preparation_service.py
+  src/app/services/event_handler.py
+  src/app/services/mock_services.py
+  src/app/services/README.md
+  src/app/services/__init__.py
+  src/app/core/optimizer.py
+  src/app/core/README.md
+  src/app/core/__init__.py

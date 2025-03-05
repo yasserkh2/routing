@@ -1,65 +1,71 @@
-# AI/ML Optimization Project
+# Routing Optimizer
 
-This project aims to provide an AI/ML-powered optimization solution for product pricing and decision-making. It includes the following components:
+A FastAPI-based web application for analyzing and optimizing routing decisions based on price changes and SLA requirements.
 
-## Server
-- **server/**: Contains the FastAPI server and web interface
-  - **server.py**: FastAPI server implementation for handling price change analysis
-  - **index.html**: Web interface for interacting with the optimization system
+## Project Structure
 
-### Running the Server
-1. Install dependencies:
-```bash
-pip install fastapi uvicorn
+```
+routing_repo/
+├── project_design/       # Project documentation and design decisions
+├── src/                 # Source code
+│   ├── app/            # Core application code
+│   │   ├── api/       # API interfaces and strategies
+│   │   ├── core/      # Core optimization logic
+│   │   ├── models/    # Data models
+│   │   ├── services/  # Business logic services
+│   │   ├── tests/     # Test cases
+│   │   └── utils/     # Utility functions
+│   ├── mock_data/     # Mock data for testing
+│   ├── web/           # Web interface
+│   │   ├── server.py  # FastAPI server
+│   │   └── index.html # Web UI
+│   └── requirements.txt # Python dependencies
+└── SYSTEM_OVERVIEW.md   # System architecture overview
 ```
 
-2. Run the server:
+## Setup
+
+1. Create a virtual environment:
 ```bash
-python server/server.py
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
-The server will start at http://127.0.0.1:8000
 
-3. Access the web interface at: http://127.0.0.1:8000
+2. Install dependencies:
+```bash
+cd src
+pip install -r requirements.txt
+```
 
-## API
-- **routes/**: Individual route handlers for different functionality (products, providers, pricing, optimization, decisions, SLAs)
-- **main.py**: Main API entry point
-- **dependencies.py**: Common dependencies like database and logging
+## Running the Application
 
-## Models
-- **base.py**: Base class for all database models
-- **provider.py**: Model for provider data
-- **product.py**: Model for product data
-- **pricing.py**: Model for price tracking
-- **sla_link.py**: Model for SLA network details
-- **optimization_result.py**: Model for optimization results
-- **decision.py**: Model for decision storage
+1. Start the FastAPI server:
+```bash
+cd src/web
+python server.py
+```
 
-## Services
-- **pricing_service.py**: Handles price data processing
-- **ai_service.py**: AI/ML model serving and predictions
-- **optimization_service.py**: Runs linear optimization
-- **decision_service.py**: Manages business logic for decisions
+2. Open your browser and navigate to:
+```
+http://127.0.0.1:8000
+```
 
-## Database
-- **database.py**: Database connection and session management
-- **redis_cache.py**: Redis caching setup
+## Features
 
-## Config
-- **config.py**: Global application settings
-- **logging_config.py**: Logging configuration
+- Real-time price change impact analysis
+- SLA-aware routing optimization
+- Interactive web interface for:
+  - Submitting price changes
+  - Viewing affected profiles
+  - Analyzing cost and profit impacts
+  - Monitoring SLA compliance
 
-## Utils
-- **data_loader.py**: Loads initial data
-- **event_handler.py**: Handles event-driven actions
+## Development
 
-## Tests
-- **test_api.py**: Tests API endpoints
-- **test_ml.py**: Tests AI model predictions
-- **test_optimization.py**: Tests optimization logic
+- Core optimization logic is in `src/app/core/`
+- API interfaces and strategies in `src/app/api/`
+- Data models in `src/app/models/`
+- Mock services in `src/app/services/`
+- Test cases in `src/app/tests/`
 
-## Other Files
-- **.env**: Environment variables
-- **requirements.txt**: Dependencies
-- **Dockerfile**: Docker container configuration
-- **docker-compose.yml**: Multi-container setup
+For detailed system architecture and design decisions, see the documentation in the `project_design/` directory.
