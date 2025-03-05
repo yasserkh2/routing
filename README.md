@@ -2,6 +2,25 @@
 
 This project aims to provide an AI/ML-powered optimization solution for product pricing and decision-making. It includes the following components:
 
+## Server
+- **server/**: Contains the FastAPI server and web interface
+  - **server.py**: FastAPI server implementation for handling price change analysis
+  - **index.html**: Web interface for interacting with the optimization system
+
+### Running the Server
+1. Install dependencies:
+```bash
+pip install fastapi uvicorn
+```
+
+2. Run the server:
+```bash
+python server/server.py
+```
+The server will start at http://127.0.0.1:8000
+
+3. Access the web interface at: http://127.0.0.1:8000
+
 ## API
 - **routes/**: Individual route handlers for different functionality (products, providers, pricing, optimization, decisions, SLAs)
 - **main.py**: Main API entry point
