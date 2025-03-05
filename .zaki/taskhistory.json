@@ -117,6 +117,125 @@
       "totalCost": 0.05697027,
       "size": 9384,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1740995858096",
+      "ts": 1740996809921,
+      "task": "python -m app.tests.run_optimizer\nC:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo\\venv\\Scripts\\python.exe: Error while finding module specification for 'app.tests.run_optimizer' (ModuleNotFoundError: No module named 'app')",
+      "tokensIn": 413070,
+      "tokensOut": 4392,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.0522036,
+      "size": 276909,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1740998387968",
+      "ts": 1741001507604,
+      "task": "put some links slas 80 and 70 between 70 and 98 make a varity",
+      "tokensIn": 2064352,
+      "tokensOut": 15162,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.40898169000000006,
+      "size": 878177,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741001593753",
+      "ts": 1741003090106,
+      "task": "update the read me with the way to run the optimizer",
+      "tokensIn": 634013,
+      "tokensOut": 6294,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.16573716,
+      "size": 312735
+    },
+    {
+      "id": "1741003579152",
+      "ts": 1741005228291,
+      "task": "run the optimizer",
+      "tokensIn": 1225317,
+      "tokensOut": 10420,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.15329004,
+      "size": 383197,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741005293886",
+      "ts": 1741005297131,
+      "task": "hi",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0,
+      "size": 18524,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741076099573",
+      "ts": 1741076103156,
+      "task": "run the project",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0,
+      "size": 15904,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741167230449",
+      "ts": 1741167234023,
+      "task": "hi",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0,
+      "size": 15865,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741171881825",
+      "ts": 1741171888532,
+      "task": "hi",
+      "tokensIn": 15033,
+      "tokensOut": 76,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.00184956,
+      "size": 8916,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741171940845",
+      "ts": 1741172432362,
+      "task": "{\n        \"Type\": \"PriceUpdate\"\n        \"Payload\": {\n            \"old_rate\": 0.2050,\n            \"new_rate\": 0.15,\n            \"status\": \"Decreased\", //will be calculated\n        }\n        \"link\": \"LINK_001\",\n            \"mcc\": \"426\",\n            \"mnc\": \"21\",\n       }\n       \"timestamp\": \"2025-03-03T12:40:00.000Z\"\n    }   we should put our event in that structure did you ?",
+      "tokensIn": 570666,
+      "tokensOut": 5509,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.07178532,
+      "size": 229469,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741172538492",
+      "ts": 1741173548720,
+      "task": "can you make a web view to take the event and give the report of the optizizer",
+      "tokensIn": 561124,
+      "tokensOut": 6683,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.07134468,
+      "size": 600156,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }

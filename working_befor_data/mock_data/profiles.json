@@ -3,23 +3,23 @@
         "profile_id": "PROF_001",
         "name": "Ultra_Premium_OTP",
         "expected_sla": 95.0,
-        "links": ["LINK_001", "LINK_004", "LINK_008", "LINK_013", "LINK_020"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
         "description": "Ultra premium OTP service with highest SLA requirement",
-        "sell_price": 307.50
+        "sell_price": 1
     },
     {
         "profile_id": "PROF_002",
-        "name": "Premium_2FA",
-        "expected_sla": 95.0,
-        "links": ["LINK_001", "LINK_004", "LINK_013", "LINK_016", "LINK_020"],
+        "name": "Normal",
+        "expected_sla": 89.0,
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
         "description": "Premium 2FA service with very high SLA requirement",
-        "sell_price": 307.50
+        "sell_price": 0.8
     },
     {
         "profile_id": "PROF_003",
         "name": "Enterprise_SMS",
         "expected_sla": 90.0,
-        "links": ["LINK_002", "LINK_007", "LINK_011", "LINK_016", "LINK_018"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
         "description": "Enterprise messaging with high SLA requirement",
         "sell_price": 287.00
     },
@@ -27,7 +27,7 @@
         "profile_id": "PROF_004",
         "name": "Standard_OTP",
         "expected_sla": 85.0,
-        "links": ["LINK_005", "LINK_009", "LINK_014", "LINK_015", "LINK_018"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
         "description": "Standard OTP service with moderate SLA requirement",
         "sell_price": 287.00
     },

@@ -17,38 +17,33 @@ async def run_optimizer_test():
     data_service = DataPreparationService()
     
     try:
-        # Load price changes
+        # Load price change
         price_changes_path = os.path.join(os.path.dirname(__file__), '../../mock_data/price_changes.json')
         with open(price_changes_path, 'r') as f:
-            price_changes = json.load(f)
+            change = json.load(f)
         
         # Get all profiles using DataPreparationService
         all_profiles = await data_service.get_all_profiles()
         
-        # For each price change, find affected profiles and optimize
-        for change in price_changes:
-            link_name = change['link']
-            old_rate = change['old_rate']
-            new_rate = change['new_rate']
-            status = change['status']
-            provider = change['provider_name']
-            network = change['network_name']
+        # Process the price change
+        link_name = change['link']
+        old_rate = change['Payload']['old_rate']
+        new_rate = change['Payload']['new_rate']
+        status = change['Payload']['status']
             
-            # Find affected profiles
-            affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_name)
+        # Find affected profiles
+        affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_name)
+        
+        print("\n" + "-"*50)
+        print(f"PRICE CHANGE DETAILS FOR {link_name}")
+        print("-"*50)
+        print(f"Old Price:    ${old_rate:.3f}")
+        print(f"New Price:    ${new_rate:.3f}")
+        print(f"Change:       {status}")
+        print(f"\nNumber of Affected Profiles: {len(affected_profiles)}")
             
-            print("\n" + "-"*50)
-            print(f"PRICE CHANGE DETAILS FOR {link_name}")
-            print("-"*50)
-            print(f"Provider:     {provider}")
-            print(f"Network:      {network}")
-            print(f"Old Price:    ${old_rate:.3f}")
-            print(f"New Price:    ${new_rate:.3f}")
-            print(f"Change:       {status}")
-            print(f"\nNumber of Affected Profiles: {len(affected_profiles)}")
-            
-            # Process each affected profile
-            for profile in affected_profiles:
+        # Process each affected profile
+        for profile in affected_profiles:
                 print("\n" + "-"*50)
                 print(f"PROFILE: {profile.name}")
                 print("-"*50)

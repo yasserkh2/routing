@@ -51,3 +51,30 @@ Thumbs.db
 
 # Git line endings
 * text=auto eol=lf
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# Local development settings
+local_settings.py

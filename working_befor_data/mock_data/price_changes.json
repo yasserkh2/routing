@@ -1,13 +1,12 @@
-[
-    {
-        "link": "LINK_001",
-        "old_rate": 205.00,
-        "new_rate": 150.00,
-        "provider_name": "MessageBird",
-        "network_name": "Stc Bahrain",
-        "mcc": "426",
-        "mnc": "21",
-        "status": "Decreased",
-        "timestamp": "2025-03-03T12:40:00.000Z"
-    }
-]
+{
+    "Type": "PriceUpdate",
+    "Payload": {
+        "old_rate": 0.8,
+        "new_rate": 0.78,
+        "status": "Decreased"
+    },
+    "link": "LINK_001",
+    "mcc": "426",
+    "mnc": "21",
+    "timestamp": "2025-03-03T12:40:00.000Z"
+}

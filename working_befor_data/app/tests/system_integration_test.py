@@ -30,25 +30,27 @@ async def test_system_integration():
     print("\nStep 2: Creating Price Change Event")
     price_change = price_changes[0]
     event_data = {
-        'link': price_change['reference_id'],
-        'old_price': price_change['old_rate'],
-        'new_price': price_change['new_rate'],
-        'provider': price_change['provider_name'],
-        'network': price_change['network_name'],
+        'Type': 'PriceUpdate',
+        'Payload': {
+            'old_rate': price_change['Payload']['old_rate'],
+            'new_rate': price_change['Payload']['new_rate'],
+            'status': price_change['Payload']['status']
+        },
+        'link': price_change['link'],
         'mcc': price_change['mcc'],
         'mnc': price_change['mnc'],
         'timestamp': datetime.now().isoformat()
     }
     
     # Create event through event handler
-    event = event_handler.create_event(EventType.PRICE_CHANGE, event_data)
+    event = event_handler.create_event(event_data)
     print(f"Created event: {event}")
     
     print("\nStep 3: Processing Event Through API Service")
     # Handle price change through mock API service
     api_event = mock_api.handle_price_change(
         event_data['link'],
-        event_data['new_price']
+        event_data['Payload']['new_rate']
     )
     print(f"API processed event: {api_event}")
     
@@ -57,7 +59,7 @@ async def test_system_integration():
     updated_links = await mock_api.get_links_sla_data(mnc=event_data['mnc'])
     affected_link = next((link for link in updated_links if link['link'] == event_data['link']), None)
     if affected_link:
-        print(f"Link {affected_link['link']} updated price: ${affected_link['price']}")
+        print(f"Link {affected_link['link']} updated price: ${affected_link['price']:.3f}")
     
     print("\nStep 5: Creating Link Objects")
     # Create Link objects with updated data
@@ -92,7 +94,7 @@ async def test_system_integration():
             # Update link price for the affected link
             affected_link = profile.get_link_by_id(event_data['link'])
             if affected_link:
-                profile.update_link_price(event_data['link'], event_data['new_price'])
+                profile.update_link_price(event_data['link'], event_data['Payload']['new_rate'])
             
             # Calculate revenue after price change and optimization
             optimizer_after = RoutingOptimizer(profile)
