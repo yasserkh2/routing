@@ -81,7 +81,7 @@ async def analyze_price_change(request: PriceChangeRequest):
             profile_result = {
                 "name": profile.name,
                 "expected_sla": profile.expected_sla,
-                "available_links": len(profile.links),
+                "available_links": len(profile.links),  # Show total number of links
                 "before": {},
                 "after": {}
             }
@@ -130,16 +130,15 @@ async def analyze_price_change(request: PriceChangeRequest):
                     "max_achievable_sla": initial_stats.get('max_achievable_sla')
                 }
                 
-                # Apply price change
-                target_link = Link.find_by_id(profile.links, link_name)
+                # Create a temporary copy of the profile for simulation
+                updated_profile = profile.clone()
+                
+                # Update the price in the temporary profile without persisting
+                target_link = Link.find_by_id(updated_profile.links, link_name)
                 if target_link:
                     updated_link = target_link.with_updated_price(new_rate, old_rate)
-                    profile.update_link_price(link_name, updated_link.price, old_rate)
-                
-                mock_api.handle_price_change(link_name, new_rate, old_rate)
-                
-                # Get fresh profile data and optimize
-                updated_profile = await data_service.get_profile_for_optimization(profile.profile_id)
+                    # Update the link in the temporary profile
+                    updated_profile.links = [updated_link if l.link == link_name else l for l in updated_profile.links]
                 optimizer = RoutingOptimizer(updated_profile)
                 success = optimizer.solve()
                 
