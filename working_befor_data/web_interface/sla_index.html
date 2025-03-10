@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLA Change Impact Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #report {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .profile-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .route-info {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .before, .after {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .sla-increase {
+            color: green;
+        }
+        .sla-decrease {
+            color: red;
+        }
+        .warning {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .sla-type {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .preview {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        .preview pre {
+            background-color: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SLA Change Impact Analysis</h1>
+            <p>Upload SLA change event JSON or enter SLA changes manually</p>
+        </div>
+
+        <form id="slaChangeForm">
+            <div class="form-group">
+                <label for="eventFile">Load from JSON file (optional):</label>
+                <input type="file" id="eventFile" accept=".json">
+            </div>
+
+            <div class="form-group">
+                <label for="link">Link ID:</label>
+                <input type="text" id="link" name="link" required placeholder="e.g., LINK_001">
+            </div>
+
+            <div class="sla-type">
+                <h3>DD SLA</h3>
+                <div class="form-group">
+                    <label for="dd_old">Old DD SLA (%):</label>
+                    <input type="number" id="dd_old" name="dd_old" step="0.1" min="0" max="100" required placeholder="e.g., 99.0">
+                </div>
+
+                <div class="form-group">
+                    <label for="dd_new">New DD SLA (%):</label>
+                    <input type="number" id="dd_new" name="dd_new" step="0.1" min="0" max="100" required placeholder="e.g., 78.0">
+                </div>
+            </div>
+
+            <div class="sla-type">
+                <h3>Tested SLA</h3>
+                <div class="form-group">
+                    <label for="tested_old">Old Tested SLA (%):</label>
+                    <input type="number" id="tested_old" name="tested_old" step="0.1" min="0" max="100" required placeholder="e.g., 99.0">
+                </div>
+
+                <div class="form-group">
+                    <label for="tested_new">New Tested SLA (%):</label>
+                    <input type="number" id="tested_new" name="tested_new" step="0.1" min="0" max="100" required placeholder="e.g., 80.0">
+                </div>
+            </div>
+
+            <div class="sla-type">
+                <h3>Assumed SLA</h3>
+                <div class="form-group">
+                    <label for="assumed_old">Old Assumed SLA (%):</label>
+                    <input type="number" id="assumed_old" name="assumed_old" step="0.1" min="0" max="100" required placeholder="e.g., 99.0">
+                </div>
+
+                <div class="form-group">
+                    <label for="assumed_new">New Assumed SLA (%):</label>
+                    <input type="number" id="assumed_new" name="assumed_new" step="0.1" min="0" max="100" required placeholder="e.g., 79.0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mcc">MCC:</label>
+                <input type="text" id="mcc" name="mcc" required placeholder="e.g., 426">
+            </div>
+
+            <div class="form-group">
+                <label for="mnc">MNC:</label>
+                <input type="text" id="mnc" name="mnc" required placeholder="e.g., 22">
+            </div>
+
+            <button type="submit" id="analyzeBtn">Analyze Impact</button>
+        </form>
+
+        <div id="loading" class="loading">Analyzing SLA change impact...</div>
+        <div id="report"></div>
+    </div>
+
+    <script>
+        let eventData = null;
+
+        document.getElementById('eventFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const text = await file.text();
+                    eventData = JSON.parse(text);
+                    
+                    // Fill form fields with event data
+                    document.getElementById('link').value = eventData.link;
+                    document.getElementById('mcc').value = eventData.mcc;
+                    document.getElementById('mnc').value = eventData.mnc;
+                    
+                    if (eventData.Payload.changed_sla.DD) {
+                        document.getElementById('dd_old').value = eventData.Payload.changed_sla.DD.old;
+                        document.getElementById('dd_new').value = eventData.Payload.changed_sla.DD.new;
+                    }
+                    
+                    if (eventData.Payload.changed_sla.Tested) {
+                        document.getElementById('tested_old').value = eventData.Payload.changed_sla.Tested.old;
+                        document.getElementById('tested_new').value = eventData.Payload.changed_sla.Tested.new;
+                    }
+
+                    if (eventData.Payload.changed_sla.Assumed) {
+                        document.getElementById('assumed_old').value = eventData.Payload.changed_sla.Assumed.old;
+                        document.getElementById('assumed_new').value = eventData.Payload.changed_sla.Assumed.new;
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    alert('Invalid JSON file. Please check the file format.');
+                }
+            }
+        });
+
+        document.getElementById('slaChangeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingDiv = document.getElementById('loading');
+            const reportDiv = document.getElementById('report');
+            
+            analyzeBtn.disabled = true;
+            loadingDiv.style.display = 'block';
+            reportDiv.style.display = 'none';
+
+            // Get all SLA values
+            const ddOld = parseFloat(document.getElementById('dd_old').value);
+            const ddNew = parseFloat(document.getElementById('dd_new').value);
+            const testedOld = parseFloat(document.getElementById('tested_old').value);
+            const testedNew = parseFloat(document.getElementById('tested_new').value);
+            const assumedOld = parseFloat(document.getElementById('assumed_old').value);
+            const assumedNew = parseFloat(document.getElementById('assumed_new').value);
+
+            // Determine overall status based on all SLA changes
+            let status = "Unchanged";
+            if (ddNew < ddOld && testedNew < testedOld && assumedNew < assumedOld) {
+                status = "Decreased";
+            } else if (ddNew > ddOld && testedNew > testedOld && assumedNew > assumedOld) {
+                status = "Increased";
+            } else {
+                // If mixed changes, use DD SLA as primary indicator
+                status = ddNew < ddOld ? "Decreased" : ddNew > ddOld ? "Increased" : "Unchanged";
+            }
+            
+            const formData = {
+                Type: "SLA_UPDATE",
+                Payload: {
+                    changed_sla: {
+                        DD: {
+                            old: ddOld,
+                            new: ddNew
+                        },
+                        Tested: {
+                            old: testedOld,
+                            new: testedNew
+                        },
+                        Assumed: {
+                            old: assumedOld,
+                            new: assumedNew
+                        }
+                    },
+                    status: status
+                },
+                link: document.getElementById('link').value,
+                mcc: document.getElementById('mcc').value,
+                mnc: document.getElementById('mnc').value,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('/analyze-sla-change', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                displayReport(result);
+            } catch (error) {
+                console.error('Error:', error);
+                reportDiv.innerHTML = `<div class="error">
+                    Error analyzing SLA change: ${error.message}<br>
+                    Please ensure the backend server is running and try again
+                </div>`;
+                reportDiv.style.display = 'block';
+            } finally {
+                analyzeBtn.disabled = false;
+                loadingDiv.style.display = 'none';
+            }
+        });
+
+        function displayReport(result) {
+            const reportDiv = document.getElementById('report');
+            
+            let html = `
+                <h2>SLA Change Impact Analysis</h2>
+                <div class="profile-section">
+                    <h3>SLA Change Details for ${result.sla_change.link}</h3>
+            `;
+
+            // Display SLA changes
+            for (const [slaType, values] of Object.entries(result.sla_change.changes)) {
+                const changeClass = values.difference > 0 ? 'sla-increase' : 'sla-decrease';
+                html += `
+                    <div class="sla-type">
+                        <h4>${slaType} SLA</h4>
+                        <p>Old Value: ${values.old.toFixed(1)}%</p>
+                        <p>New Value: ${values.new.toFixed(1)}%</p>
+                        <p class="${changeClass}">Change: ${values.difference > 0 ? '+' : ''}${values.difference.toFixed(1)}%</p>
+                    </div>
+                `;
+            }
+
+            html += `
+                    <p>Status: ${result.sla_change.status}</p>
+                    <p>Number of Affected Profiles: ${result.sla_change.affected_profiles_count}</p>
+                </div>
+            `;
+
+            // Display profile impacts
+            result.profiles.forEach(profile => {
+                html += `
+                    <div class="profile-section">
+                        <h3>Profile: ${profile.name}</h3>
+                        <p>Expected SLA: ${profile.expected_sla}%</p>
+                        <p>Available Links: ${profile.available_links}</p>
+                        
+                        <div class="comparison">
+                            <div class="before">
+                                <h4>Before SLA Change</h4>
+                                ${formatRoutes(profile.before.routes)}
+                                <p>Active Links: ${profile.before.active_links}</p>
+                                <p>Achieved SLA: ${profile.before.achieved_sla.toFixed(2)}%</p>
+                                ${formatSLAWarning(profile.before)}
+                            </div>
+                            
+                            <div class="after">
+                                <h4>After SLA Change</h4>
+                                ${formatRoutes(profile.after.routes)}
+                                <p>Active Links: ${profile.after.active_links}</p>
+                                <p>Achieved SLA: ${profile.after.achieved_sla.toFixed(2)}%</p>
+                                <p class="${profile.after.sla_impact.absolute > 0 ? 'sla-increase' : 'sla-decrease'}">
+                                    SLA Impact: ${profile.after.sla_impact.absolute > 0 ? '+' : ''}${profile.after.sla_impact.absolute.toFixed(2)}%
+                                    (${profile.after.sla_impact.percentage > 0 ? '+' : ''}${profile.after.sla_impact.percentage.toFixed(2)}%)
+                                </p>
+                                ${formatSLAWarning(profile.after)}
+                                ${formatTrafficShifts(profile.after.traffic_shifts)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            reportDiv.innerHTML = html;
+            reportDiv.style.display = 'block';
+        }
+
+        function formatRoutes(routes) {
+            if (!routes || routes.length === 0) return '<p>No routes available</p>';
+            
+            return routes.map(route => `
+                <div class="route-info">
+                    <p>Link ${route.link}:</p>
+                    <p>Traffic: ${route.traffic.toFixed(1)}%</p>
+                    <p>SLA: ${route.sla.toFixed(1)}%</p>
+                </div>
+            `).join('');
+        }
+
+        function formatSLAWarning(data) {
+            if (!data.sla_achievable) {
+                return `
+                    <div class="warning">
+                        Warning: Target SLA cannot be achieved<br>
+                        Max Achievable SLA: ${data.max_achievable_sla.toFixed(2)}%
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        function formatTrafficShifts(shifts) {
+            if (!shifts || shifts.length === 0) return '';
+            
+            let html = '<div class="traffic-shifts"><h4>Traffic Shifts</h4>';
+            shifts.forEach(shift => {
+                const changeClass = shift.change > 0 ? 'sla-increase' : 'sla-decrease';
+                html += `
+                    <p>Link ${shift.link}: 
+                        <span class="${changeClass}">
+                            ${shift.change > 0 ? '+' : ''}${shift.change.toFixed(1)}%
+                        </span>
+                        (${shift.before.toFixed(1)}% → ${shift.after.toFixed(1)}%)
+                    </p>
+                `;
+            });
+            html += '</div>';
+            return html;
+        }
+    </script>
+</body>
+</html>
