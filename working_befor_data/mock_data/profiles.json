@@ -2,58 +2,58 @@
     {
         "profile_id": "PROF_001",
         "name": "Ultra_Premium_OTP",
-        "expected_sla": 95.0,
-        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
+        "expected_sla": 96.0,
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Ultra premium OTP service with highest SLA requirement",
-        "sell_price": 1
+        "sell_price": 14.5
     },
     {
         "profile_id": "PROF_002",
         "name": "Normal",
-        "expected_sla": 89.0,
-        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
+        "expected_sla": 95,
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Premium 2FA service with very high SLA requirement",
-        "sell_price": 0.8
+        "sell_price": 9.5
     },
     {
         "profile_id": "PROF_003",
         "name": "Enterprise_SMS",
         "expected_sla": 90.0,
-        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Enterprise messaging with high SLA requirement",
-        "sell_price": 287.00
+        "sell_price": 11.0
     },
     {
         "profile_id": "PROF_004",
         "name": "Standard_OTP",
         "expected_sla": 85.0,
-        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Standard OTP service with moderate SLA requirement",
-        "sell_price": 287.00
+        "sell_price": 9.0
     },
     {
         "profile_id": "PROF_005",
         "name": "Marketing_Premium",
         "expected_sla": 80.0,
-        "links": ["LINK_003", "LINK_005", "LINK_009", "LINK_014", "LINK_017"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Premium marketing service with standard SLA",
-        "sell_price": 266.50
+        "sell_price": 8.5
     },
     {
         "profile_id": "PROF_006",
         "name": "Bulk_SMS_Plus",
         "expected_sla": 75.0,
-        "links": ["LINK_003", "LINK_006", "LINK_010", "LINK_017", "LINK_019"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Enhanced bulk messaging service",
-        "sell_price": 266.50
+        "sell_price": 7.5
     },
     {
         "profile_id": "PROF_007",
         "name": "Basic_Notifications",
         "expected_sla": 70.0,
-        "links": ["LINK_006", "LINK_010", "LINK_012", "LINK_017", "LINK_019"],
+        "links": ["LINK_001", "LINK_002", "LINK_003", "LINK_004","LINK_005","LINK_006"],
         "description": "Basic notification service with minimal SLA requirement",
-        "sell_price": 246.00
+        "sell_price": 6.5
     },
     {
         "profile_id": "PROF_008",
@@ -61,7 +61,7 @@
         "expected_sla": 90.0,
         "links": ["LINK_001", "LINK_004", "LINK_008", "LINK_013", "LINK_020"],
         "description": "Premium banking notifications with very high SLA",
-        "sell_price": 307.50
+        "sell_price": 11.5
     },
     {
         "profile_id": "PROF_009",
@@ -69,7 +69,7 @@
         "expected_sla": 82.0,
         "links": ["LINK_005", "LINK_009", "LINK_014", "LINK_015", "LINK_018"],
         "description": "Standard marketing service",
-        "sell_price": 266.50
+        "sell_price": 8.8
     },
     {
         "profile_id": "PROF_010",
@@ -77,7 +77,7 @@
         "expected_sla": 73.0,
         "links": ["LINK_003", "LINK_006", "LINK_010", "LINK_017", "LINK_019"],
         "description": "Economy alert service with basic SLA",
-        "sell_price": 246.00
+        "sell_price": 7.0
     },
     {
         "profile_id": "PROF_011",
@@ -85,7 +85,7 @@
         "expected_sla": 93.0,
         "links": ["LINK_002", "LINK_008", "LINK_011", "LINK_013", "LINK_016"],
         "description": "Premium alert service with high reliability",
-        "sell_price": 287.00
+        "sell_price": 11.8
     },
     {
         "profile_id": "PROF_012",
@@ -93,7 +93,7 @@
         "expected_sla": 78.0,
         "links": ["LINK_003", "LINK_006", "LINK_010", "LINK_017", "LINK_019"],
         "description": "Basic OTP service for non-critical applications",
-        "sell_price": 266.50
+        "sell_price": 7.8
     },
     {
         "profile_id": "PROF_013",
@@ -101,7 +101,7 @@
         "expected_sla": 72.0,
         "links": ["LINK_006", "LINK_010", "LINK_012", "LINK_017", "LINK_019"],
         "description": "High-volume bulk messaging with basic SLA",
-        "sell_price": 246.00
+        "sell_price": 6.8
     },
     {
         "profile_id": "PROF_014",
@@ -109,7 +109,7 @@
         "expected_sla": 98.0,
         "links": ["LINK_001", "LINK_004", "LINK_008", "LINK_013", "LINK_020"],
         "description": "Critical alert service with near-perfect SLA",
-        "sell_price": 307.50
+        "sell_price": 15.0
     },
     {
         "profile_id": "PROF_015",
@@ -117,7 +117,7 @@
         "expected_sla": 76.0,
         "links": ["LINK_003", "LINK_006", "LINK_010", "LINK_017", "LINK_019"],
         "description": "Value-oriented messaging service",
-        "sell_price": 246.00
+        "sell_price": 7.6
     },
     {
         "profile_id": "PROF_016",
@@ -125,7 +125,7 @@
         "expected_sla": 80.0,
         "links": ["LINK_021", "LINK_006", "LINK_010", "LINK_017", "LINK_019"],
         "description": "Enhanced standard bulk messaging with moderate SLA",
-        "sell_price": 266.50
+        "sell_price": 8.5
     },
     {
         "profile_id": "PROF_017",
@@ -133,6 +133,6 @@
         "expected_sla": 70.0,
         "links": ["LINK_022", "LINK_006", "LINK_010", "LINK_017", "LINK_019"],
         "description": "Cost-effective messaging service with basic SLA",
-        "sell_price": 246.00
+        "sell_price": 6.5
     }
 ]

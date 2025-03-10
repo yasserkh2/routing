@@ -248,6 +248,41 @@
       "totalCost": 0.06660071999999999,
       "size": 172790,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741187806993",
+      "ts": 1741188088345,
+      "task": "run the server.py",
+      "tokensIn": 253393,
+      "tokensOut": 1181,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.031115759999999996,
+      "size": 76796,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741188118470",
+      "ts": 1741188259996,
+      "task": "run server.py",
+      "tokensIn": 173490,
+      "tokensOut": 967,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.021399,
+      "size": 77128,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741597216586",
+      "ts": 1741601110458,
+      "task": "run the optimizer",
+      "tokensIn": 783895,
+      "tokensOut": 14004,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.10246979999999999,
+      "size": 538317
     }
   ]
 }
