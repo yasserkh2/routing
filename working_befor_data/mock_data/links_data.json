@@ -7,8 +7,8 @@
         "price": 11,
         "sla_dd": 99,
         "sla_tested": 99,
-        "sla_assumed": 90,
-        "last_updated": "2025-03-10T12:15:58.485169"
+        "sla_assumed": 99,
+        "last_updated": "2025-03-11T10:19:14.563225"
     },
     {
         "link": "LINK_002",
@@ -181,10 +181,10 @@
         "mnc": "17",
         "provider": "Twilio",
         "price": 7.6,
-        "sla_dd": 86.5,
-        "sla_tested": 85.8,
-        "sla_assumed": 84.0,
-        "last_updated": "2025-02-24T14:52:51.123Z"
+        "sla_dd": 78.0,
+        "sla_tested": 80.0,
+        "sla_assumed": 79.0,
+        "last_updated": "2025-03-10T15:29:54.933920"
     },
     {
         "link": "LINK_018",

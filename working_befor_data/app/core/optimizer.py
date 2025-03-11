@@ -23,10 +23,23 @@ class RoutingOptimizer:
         """
         # Get links data using the Link class's to_optimizer_format method
         links_data = {}
+        required_mnc = "21"  # Required MNC for routing
+        
+        # First filter links by MNC
+        matching_links = []
         for link in self.profile.links:
-            price = link.get_current_price()
-            if price is not None:
-                links_data[link.link] = link.to_optimizer_format()
+            if link.mnc == required_mnc:
+                price = link.get_current_price()
+                if price is not None:
+                    links_data[link.link] = link.to_optimizer_format()
+                    matching_links.append(link)
+        
+        # If no MNC-matching links, fall back to all links
+        if not links_data:
+            for link in self.profile.links:
+                price = link.get_current_price()
+                if price is not None:
+                    links_data[link.link] = link.to_optimizer_format()
         
         if not links_data:
             return False
@@ -178,8 +191,8 @@ class RoutingOptimizer:
                 link = self.profile.get_link_by_id(route['link'])
                 if link:
                     optimizer_data = link.to_optimizer_format()
-                    achieved_sla += (route['percentage'] / 100.0) * optimizer_data['SLA']
-        return achieved_sla * 100  # Convert back to percentage
+                    achieved_sla += (route['percentage'] / 100.0) * (optimizer_data['SLA'] * 100)  # Convert optimizer SLA back to percentage
+        return achieved_sla  # Already in percentage
 
     def format_routing_display(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> List[Dict[str, Any]]:
         """Format routing plan for display"""

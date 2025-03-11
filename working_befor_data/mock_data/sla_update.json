@@ -1,0 +1,24 @@
+{
+    "Type": "SLA_UPDATE",
+    "Payload": {
+        "changed_sla": {
+            "DD": {
+                "old": 99,
+                "new": 78.0
+            },
+            "Tested": {
+                "old": 99,
+                "new": 80.0
+            },
+            "Assumed": {
+                "old": 99,
+                "new": 79.0
+            }
+        },
+        "status": "Decreased"
+    },
+    "link": "LINK_001",
+    "mcc": "426",
+    "mnc": "22",
+    "timestamp": "2025-03-10T13:40:00.000Z"
+}

@@ -82,5 +82,12 @@ class Profile:
         initial_length = len(self.links)
         self.links = [link for link in self.links if link.link != link_name]
         return len(self.links) < initial_length
-    
-    
+
+    def clone(self) -> 'Profile':
+        """Create a copy of the profile"""
+        return Profile(
+            profile_id=self.profile_id,
+            name=self.name,
+            expected_sla=self.expected_sla,
+            links=[link.copy() for link in self.links]
+        )

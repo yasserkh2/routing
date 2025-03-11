@@ -62,22 +62,23 @@ async def analyze_sla_change(request: SLAChangeRequest):
         status = request.Payload.status
         
         try:
-            # Handle SLA change in mock service first
-            print(f"Handling SLA change for link {link_name}")
-            print(f"Changed SLA data: {changed_sla}")
-            mock_api.handle_sla_change(link_name, changed_sla)
-            print("SLA change handled in mock service")
-            
-            # Get all profiles after SLA update
+            # Get all profiles for simulation
             print("Getting all profiles")
             all_profiles = await data_service.get_all_profiles()
             print(f"Got {len(all_profiles)} profiles")
+            
+            # Clone all profiles to avoid modifying originals
+            simulation_profiles = [profile.clone() for profile in all_profiles]
+            
+            # Log simulation info
+            print(f"Will simulate SLA change for link {link_name}")
+            print(f"Changed SLA data: {changed_sla}")
         except Exception as e:
             print(f"Error in initial processing: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Error in initial processing: {str(e)}")
         
-        # Find affected profiles
-        affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_name)
+        # Find affected profiles using the cloned profiles
+        affected_profiles = Profile.get_profiles_affected_by_price_change(simulation_profiles, link_name)
         
         results = {
             "sla_change": {
@@ -137,14 +138,35 @@ async def analyze_sla_change(request: SLAChangeRequest):
                         current_link = Link.find_by_id(profile.links, route['link'])
                         if current_link:
                             route_info = current_link.format_display_info(route['percentage'])
+                            route_info['price'] = current_link.price  # Add price information
                             routes_info.append(route_info)
                 
+                # Calculate initial costs
+                total_cost = 0.0
+                for route in initial_plan['routes']:
+                    if route['percentage'] > 0:
+                        current_link = Link.find_by_id(profile.links, route['link'])
+                        if current_link:
+                            total_cost += current_link.calculate_cost_for_traffic(route['percentage'])
+
+                # Get profile's sell price
+                profiles_path = os.path.join(os.path.dirname(__file__), '../mock_data/profiles.json')
+                with open(profiles_path, 'r') as f:
+                    profiles_data = json.load(f)
+                    profile_data = next(p for p in profiles_data if p["profile_id"] == profile.profile_id)
+                    sell_price = profile_data["sell_price"]
+                
+                initial_profit = sell_price - total_cost
+
                 profile_result["before"] = {
                     "routes": routes_info,
                     "active_links": active_links,
                     "achieved_sla": initial_stats.get('achieved_sla', 0.0),
                     "sla_achievable": initial_stats.get('sla_achievable', False),
-                    "max_achievable_sla": initial_stats.get('max_achievable_sla', 0.0)
+                    "max_achievable_sla": initial_stats.get('max_achievable_sla', 0.0),
+                    "total_cost": total_cost,
+                    "sell_price": sell_price,
+                    "profit": initial_profit
                 }
             except Exception as e:
                 print(f"Error calculating initial metrics: {str(e)}")
@@ -192,14 +214,30 @@ async def analyze_sla_change(request: SLAChangeRequest):
                         current_link = Link.find_by_id(updated_profile.links, route['link'])
                         if current_link:
                             route_info = current_link.format_display_info(route['percentage'])
+                            route_info['price'] = current_link.price  # Add price information
                             routes_info.append(route_info)
                 
+                # Calculate after costs
+                total_cost = 0.0
+                for route in after_plan['routes']:
+                    if route['percentage'] > 0:
+                        current_link = Link.find_by_id(updated_profile.links, route['link'])
+                        if current_link:
+                            total_cost += current_link.calculate_cost_for_traffic(route['percentage'])
+                
+                new_profit = sell_price - total_cost
+                profit_change = new_profit - initial_profit
+
                 profile_result["after"] = {
                     "routes": routes_info,
                     "active_links": active_links,
                     "achieved_sla": after_stats.get('achieved_sla', 0.0),
                     "sla_achievable": after_stats.get('sla_achievable', False),
                     "max_achievable_sla": after_stats.get('max_achievable_sla', 0.0),
+                    "total_cost": total_cost,
+                    "sell_price": sell_price,
+                    "profit": new_profit,
+                    "profit_change": profit_change,
                     "sla_impact": {
                         "absolute": after_stats.get('achieved_sla', 0.0) - initial_stats.get('achieved_sla', 0.0),
                         "percentage": ((after_stats.get('achieved_sla', 0.0) - initial_stats.get('achieved_sla', 0.0)) / initial_stats.get('achieved_sla', 1.0)) * 100 if initial_stats.get('achieved_sla', 0.0) > 0 else 0.0

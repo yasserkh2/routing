@@ -9,24 +9,44 @@ class Link:
     operator: str
     mnc: str
     price: float = 0.0
+    sla_dd: float = 0.0
+    sla_tested: float = 0.0
+    sla_assumed: float = 0.0
     average_sla: float = 0.0
     price_history: List[Dict[str, Any]] = field(default_factory=list, hash=False, compare=False)
+    sla_history: List[Dict[str, Any]] = field(default_factory=list, hash=False, compare=False)
     
     @classmethod
     def from_api_data(cls, data: Dict[str, Any]) -> 'Link':
         """Create a Link instance from API data"""
-        # Calculate average SLA from available metrics
-        sla_values = [
-            data.get('sla_dd', 0),
-            data.get('sla_tested', 0),
-            data.get('sla_assumed', 0)
-        ]
-        sla_values = [v for v in sla_values if v is not None and v > 0]
-        average_sla = sum(sla_values) / len(sla_values) if sla_values else 0
+        # Get individual SLA values and validate them
+        sla_dd = cls._validate_sla_value(data.get('sla_dd'), 'DD')
+        sla_tested = cls._validate_sla_value(data.get('sla_tested'), 'Tested')
+        sla_assumed = cls._validate_sla_value(data.get('sla_assumed'), 'Assumed')
+        
+        # Calculate weighted average SLA using the same weights as other methods
+        # Convert None values to 0 and adjust weights accordingly
+        weights_sum = 0
+        weighted_sum = 0
+        
+        if sla_dd is not None and sla_dd > 0:
+            weighted_sum += sla_dd * 0.4
+            weights_sum += 0.4
+            
+        if sla_tested is not None and sla_tested > 0:
+            weighted_sum += sla_tested * 0.35
+            weights_sum += 0.35
+            
+        if sla_assumed is not None and sla_assumed > 0:
+            weighted_sum += sla_assumed * 0.25
+            weights_sum += 0.25
+        
+        average_sla = weighted_sum / weights_sum if weights_sum > 0 else 0
         
         # Get price and price history
         price = data.get('price', 0.0)
         price_history = []
+        sla_history = []
         
         # Add current price to history if available
         if price > 0:
@@ -36,20 +56,52 @@ class Link:
                 'type': 'initial'
             })
         
+        # Add current SLA values to history
+        timestamp = data.get('last_updated', datetime.now().isoformat())
+        sla_history.append({
+            'sla_dd': sla_dd,
+            'sla_tested': sla_tested,
+            'sla_assumed': sla_assumed,
+            'timestamp': timestamp,
+            'type': 'initial'
+        })
+        
         return cls(
             link=data['link'],
             operator=data['operator'],
             mnc=data['mnc'],
             price=float(price),
+            sla_dd=sla_dd,
+            sla_tested=sla_tested,
+            sla_assumed=sla_assumed,
             average_sla=average_sla,
-            price_history=price_history
+            price_history=price_history,
+            sla_history=sla_history
         )
     
     def to_optimizer_format(self) -> Dict[str, float]:
         """Convert link data to format needed by optimizer"""
+        # Calculate weighted SLA using same approach as other methods
+        weights_sum = 0
+        weighted_sum = 0
+        
+        if self.sla_dd > 0:
+            weighted_sum += self.sla_dd * 0.4
+            weights_sum += 0.4
+            
+        if self.sla_tested > 0:
+            weighted_sum += self.sla_tested * 0.35
+            weights_sum += 0.35
+            
+        if self.sla_assumed > 0:
+            weighted_sum += self.sla_assumed * 0.25
+            weights_sum += 0.25
+        
+        weighted_sla = (weighted_sum / weights_sum if weights_sum > 0 else 0) / 100.0  # Convert to decimal for optimizer
+        
         return {
-            "SLA": self.average_sla / 100.0,  # Convert to decimal
-            "Price": self.price
+            "SLA": weighted_sla,
+            "Price": self.get_current_price()
         }
     
     def meets_sla_requirement(self, required_sla: float) -> bool:
@@ -80,8 +132,89 @@ class Link:
             operator=self.operator,
             mnc=self.mnc,
             price=new_price,
+            sla_dd=self.sla_dd,
+            sla_tested=self.sla_tested,
+            sla_assumed=self.sla_assumed,
             average_sla=self.average_sla,
-            price_history=new_history
+            price_history=new_history,
+            sla_history=self.sla_history
+        )
+
+    @staticmethod
+    def _validate_sla_value(sla: Optional[float], sla_type: str) -> float:
+        """Validate SLA value is within acceptable range"""
+        if sla is None:
+            return 0.0
+        if not isinstance(sla, (int, float)):
+            raise ValueError(f"{sla_type} SLA must be a number")
+        if not 0 <= sla <= 100:
+            raise ValueError(f"{sla_type} SLA must be between 0 and 100")
+        return float(sla)
+
+    def update_sla(self, changed_sla: Dict[str, Dict[str, float]]) -> 'Link':
+        """Update SLA values and return a new Link instance"""
+        # Get new SLA values, keeping existing values if not changed
+        new_sla_dd = self.sla_dd
+        new_sla_tested = self.sla_tested
+        new_sla_assumed = self.sla_assumed
+
+        # Update only the changed SLA values with validation
+        if 'DD' in changed_sla:
+            new_value = changed_sla['DD'].get('new')
+            if new_value is not None:
+                new_sla_dd = self._validate_sla_value(new_value, 'DD')
+        
+        if 'Tested' in changed_sla:
+            new_value = changed_sla['Tested'].get('new')
+            if new_value is not None:
+                new_sla_tested = self._validate_sla_value(new_value, 'Tested')
+        
+        if 'Assumed' in changed_sla:
+            new_value = changed_sla['Assumed'].get('new')
+            if new_value is not None:
+                new_sla_assumed = self._validate_sla_value(new_value, 'Assumed')
+        
+        # Calculate weighted average SLA using the same weights as to_optimizer_format
+        # Handle None or 0 values by adjusting weights
+        weights_sum = 0
+        weighted_sum = 0
+        
+        if new_sla_dd > 0:
+            weighted_sum += new_sla_dd * 0.4
+            weights_sum += 0.4
+            
+        if new_sla_tested > 0:
+            weighted_sum += new_sla_tested * 0.35
+            weights_sum += 0.35
+            
+        if new_sla_assumed > 0:
+            weighted_sum += new_sla_assumed * 0.25
+            weights_sum += 0.25
+        
+        new_average_sla = weighted_sum / weights_sum if weights_sum > 0 else 0
+
+        # Create new history entry
+        new_history = list(self.sla_history)
+        new_history.append({
+            'sla_dd': new_sla_dd,
+            'sla_tested': new_sla_tested,
+            'sla_assumed': new_sla_assumed,
+            'timestamp': datetime.now().isoformat(),
+            'type': 'update'
+        })
+
+        # Create new Link instance with updated SLA values
+        return Link(
+            link=self.link,
+            operator=self.operator,
+            mnc=self.mnc,
+            price=self.price,
+            sla_dd=new_sla_dd,
+            sla_tested=new_sla_tested,
+            sla_assumed=new_sla_assumed,
+            average_sla=new_average_sla,
+            price_history=self.price_history,
+            sla_history=new_history
         )
     
     def get_price_change_percentage(self) -> Optional[float]:
@@ -161,3 +294,18 @@ class Link:
     def find_by_id(links: List['Link'], link_name: str) -> Optional['Link']:
         """Find a link by its name"""
         return next((link for link in links if link.link == link_name), None)
+
+    def copy(self) -> 'Link':
+        """Create a copy of the link instance"""
+        return Link(
+            link=self.link,
+            operator=self.operator,
+            mnc=self.mnc,
+            price=self.price,
+            sla_dd=self.sla_dd,
+            sla_tested=self.sla_tested,
+            sla_assumed=self.sla_assumed,
+            average_sla=self.average_sla,
+            price_history=list(self.price_history),
+            sla_history=list(self.sla_history)
+        )

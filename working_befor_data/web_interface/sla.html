@@ -369,6 +369,9 @@
                             <div class="before">
                                 <h4>Before SLA Change</h4>
                                 ${formatRoutes(profile.before?.routes)}
+                                <p>Total Cost: $${profile.before?.total_cost?.toFixed(3) || '0.000'}</p>
+                                <p>Sell Price: $${profile.before?.sell_price?.toFixed(3) || '0.000'}</p>
+                                <p>Profit: $${profile.before?.profit?.toFixed(3) || '0.000'}</p>
                                 <p>Active Links: ${profile.before?.active_links || 0}</p>
                                 <p>Achieved SLA: ${beforeAchievedSLA.toFixed(2)}%</p>
                                 ${formatSLAWarning(profile.before)}
@@ -377,6 +380,12 @@
                             <div class="after">
                                 <h4>After SLA Change</h4>
                                 ${formatRoutes(profile.after?.routes)}
+                                <p>Total Cost: $${profile.after?.total_cost?.toFixed(3) || '0.000'}</p>
+                                <p>Sell Price: $${profile.after?.sell_price?.toFixed(3) || '0.000'}</p>
+                                <p>Profit: $${profile.after?.profit?.toFixed(3) || '0.000'}</p>
+                                <p class="${profile.after?.profit_change > 0 ? 'sla-increase' : 'sla-decrease'}">
+                                    Profit Change: $${profile.after?.profit_change?.toFixed(3) || '0.000'}
+                                </p>
                                 <p>Active Links: ${profile.after?.active_links || 0}</p>
                                 <p>Achieved SLA: ${afterAchievedSLA.toFixed(2)}%</p>
                                 <p class="${slaImpactAbs > 0 ? 'sla-increase' : 'sla-decrease'}">
@@ -406,6 +415,7 @@
                         <p>Link ${route.link}:</p>
                         <p>Traffic: ${traffic.toFixed(1)}%</p>
                         <p>SLA: ${sla.toFixed(1)}%</p>
+                        <p>Price: $${route.price?.toFixed(3) || '0.000'}</p>
                     </div>
                 `;
             }).join('');
