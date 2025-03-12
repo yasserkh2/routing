@@ -425,7 +425,54 @@
       "cacheWrites": 0,
       "cacheReads": 0,
       "totalCost": 0.190974,
-      "size": 573950,
+      "size": 575668
+    },
+    {
+      "id": "1741685606871",
+      "ts": 1741685626995,
+      "task": "run server.py",
+      "tokensIn": 51918,
+      "tokensOut": 271,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.006392759999999999,
+      "size": 34869,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741691258407",
+      "ts": 1741697804995,
+      "task": "run server.py",
+      "tokensIn": 115645,
+      "tokensOut": 623,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.09682515,
+      "size": 70464,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741702581299",
+      "ts": 1741704483878,
+      "task": "run server.py from web infrence",
+      "tokensIn": 15504,
+      "tokensOut": 183,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.00197028,
+      "size": 25672,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1741773203631",
+      "ts": 1741773352695,
+      "task": "i want to push the current code in this branch in another branch too",
+      "tokensIn": 70499,
+      "tokensOut": 476,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.00874548,
+      "size": 41105,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
