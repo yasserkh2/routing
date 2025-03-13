@@ -1,7 +1,11 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from pulp import *
 from ..models.profile import Profile
 from ..models.link import Link
+from ..utils.logger import setup_logger
+
+# Setup logger
+logger = setup_logger(__name__)
 
 class RoutingOptimizer:
     """Linear optimization model for minimizing cost while meeting SLA requirements"""
@@ -13,6 +17,7 @@ class RoutingOptimizer:
         self.model = None
         self.variables = {}
         self.results = {}
+        logger.info(f"Initialized RoutingOptimizer for profile {profile.profile_id}")
     
     def solve(self) -> bool:
         """
@@ -23,25 +28,14 @@ class RoutingOptimizer:
         """
         # Get links data using the Link class's to_optimizer_format method
         links_data = {}
-        required_mnc = "21"  # Required MNC for routing
-        
-        # First filter links by MNC
-        matching_links = []
         for link in self.profile.links:
-            if link.mnc == required_mnc:
-                price = link.get_current_price()
-                if price is not None:
-                    links_data[link.link] = link.to_optimizer_format()
-                    matching_links.append(link)
-        
-        # If no MNC-matching links, fall back to all links
-        if not links_data:
-            for link in self.profile.links:
-                price = link.get_current_price()
-                if price is not None:
-                    links_data[link.link] = link.to_optimizer_format()
+            price = link.get_current_price()
+            if price is not None:
+                links_data[link.link] = link.to_optimizer_format()
+        logger.info(f"Found {len(links_data)} links with valid prices")
         
         if not links_data:
+            logger.error("No valid links found for optimization")
             return False
 
         # Sort links by SLA in descending order
@@ -49,6 +43,7 @@ class RoutingOptimizer:
 
         # Create a minimization LP problem
         self.model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
+        logger.info("Created LP minimization problem")
 
         # Decision variables: fraction of traffic on each link (only for links with valid prices)
         self.variables = {}
@@ -78,6 +73,7 @@ class RoutingOptimizer:
         self.model += lpSum(sla_constraint) >= target_sla, "SLA_Requirement"
 
         # Solve the problem
+        logger.info("Starting optimization solver")
         status = self.model.solve(self.SOLVER)
         
         # Store results if optimization was successful
@@ -86,19 +82,23 @@ class RoutingOptimizer:
                 link_id: var.varValue
                 for link_id, var in self.variables.items()
             }
+            logger.info("Optimization completed successfully")
             return True
             
         # If optimization fails and we have links available, use the highest SLA link
         if sorted_links:
             best_link_id, _ = sorted_links[0]
             self.results = {best_link_id: 1.0}  # Assign 100% traffic to best link
+            logger.warning("Optimization failed, falling back to highest SLA link")
             return True
             
+        logger.error("Optimization failed and no fallback links available")
         return False
 
     def get_routing_plan(self) -> Dict[str, Any]:
         """Get the optimized routing plan"""
         if not self.results:
+            logger.error("Attempted to get routing plan without results")
             raise ValueError("No results available. Solve the model first.")
 
         # Get allocation for all links
@@ -130,6 +130,7 @@ class RoutingOptimizer:
         total_cost = 0
         achieved_sla = 0
         active_links = 0
+        logger.info("Calculating optimization statistics")
 
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
@@ -148,13 +149,16 @@ class RoutingOptimizer:
             'sla_achievable': getattr(self, 'sla_achievable', True),  # Default to True for backward compatibility
             'max_achievable_sla': getattr(self, 'max_achievable_sla', achieved_sla * 100)
         }
+        logger.info(f"Optimization stats: Cost={total_cost:.2f}, Links={active_links}, SLA={achieved_sla*100:.2f}%")
         
         # Add warning if target SLA cannot be achieved
         if not stats['sla_achievable']:
-            stats['warning'] = (
+            warning_msg = (
                 f"Target SLA of {self.profile.expected_sla}% cannot be achieved. "
                 f"Maximum achievable SLA with available links is {stats['max_achievable_sla']:.2f}%"
             )
+            stats['warning'] = warning_msg
+            logger.warning(warning_msg)
             
         return stats
 
@@ -171,10 +175,12 @@ class RoutingOptimizer:
 
     def calculate_cost_impact(self, before_plan: Dict[str, Any], after_plan: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate cost impact between two routing plans"""
+        logger.info("Calculating cost impact between routing plans")
         before_cost = self.calculate_cost(before_plan)
         after_cost = self.calculate_cost(after_plan)
         cost_change = after_cost - before_cost
         cost_change_pct = (cost_change / before_cost) * 100 if before_cost > 0 else 0
+        logger.info(f"Cost impact: Before={before_cost:.2f}, After={after_cost:.2f}, Change={cost_change_pct:.2f}%")
         
         return {
             'before_cost': before_cost,

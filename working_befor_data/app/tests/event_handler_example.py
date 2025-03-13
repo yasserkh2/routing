@@ -1,21 +1,16 @@
 import asyncio
-from event_handler import EventHandler, EventType, Event, EventPriority
-from api_selector import APISelector
-from api_strategy import MockAPIClient
+from ..services.event_handler import EventHandler, EventType, Event
+from ..api.api_caller import APICaller
+from ..api.api_interfaces import APIClient, APIResponse
+from typing import Dict, Any
 
-# Mock price update event data
-MOCK_EVENT_DATA = {
-    "Type": "PriceUpdate",
-    "Payload": {
-        "old_rate": 0.2050,
-        "new_rate": 0.15,
-        "status": "Decreased"
-    },
-    "link": "LINK_001",
-    "mcc": "426",
-    "mnc": "21",
-    "timestamp": "2025-03-03T12:40:00.000Z"
-}
+import os
+import json
+
+# Read test data from mock directory
+mock_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'mock_data')
+with open(os.path.join(mock_data_dir, 'price_changes.json'), 'r') as f:
+    MOCK_EVENT_DATA = json.load(f)
 
 async def handle_price_change(event: Event) -> None:
     """
@@ -32,93 +27,93 @@ async def handle_price_change(event: Event) -> None:
     print(f"Status: {event.payload['status']}")
     print(f"Timestamp: {event.timestamp}")
     
-    # Create API selector with mock client
-    api_client = MockAPIClient()
-    api_selector = APISelector(api_client=api_client)
+    # Create API caller
+    api_caller = APICaller()
     
-    # Analyze which APIs will be called
-    analysis = api_selector.analyze_strategies(event)
-    print("\nAPI Strategy Analysis:")
-    print(f"Event Type: {analysis['event_type']}")
-    print(f"APIs to call: {', '.join(analysis['strategies'])}")
-    
-    # Execute API calls
-    print("\nExecuting API calls...")
-    results = await api_selector.execute_strategies(event)
+    print("\nExecuting all API calls...")
+    results = await api_caller.call_all_apis(event)
     
     # Process results
-    print("\nRoute Details:")
-    if 'RouteDetailsAPIStrategy' in results:
-        route_data = results['RouteDetailsAPIStrategy']
-        print(f"Operator: {route_data['network']} ({route_data['operator_id']})")
-        print(f"Country: {route_data['country']}")
-        print(f"Quality Score: {route_data['quality_score']}")
-        print(f"Active: {route_data['active']}")
-        print(f"MNC: {route_data['mnc']}")
+    print("\nEvent Details:")
+    print(f"Type: {event.type}")
+    print(f"Link: {event.link}")
+    print(f"MCC/MNC: {event.mcc}/{event.mnc}")
+    print(f"Price Change: ${event.payload['old_rate']:.2f} -> ${event.payload['new_rate']:.2f}")
+    print(f"Status: {event.payload['status']}")
+    print(f"Timestamp: {event.timestamp}")
 
-    print("\nQuery1 - GetProfilesRelatedToLink Results:")
-    if 'GetProfilesRelatedToLinkStrategy' in results:
-        profiles_data = results['GetProfilesRelatedToLinkStrategy']
-        print(f"Link: {profiles_data['link']}")
-        print(f"MNC: {profiles_data['mnc']}")
-        print("\nProfiles for this Link:")
-        for profile in profiles_data['profiles']:
-            print(f"\nProfile: {profile['name']}")
-            print(f"ID: {profile['profile_id']}")
-            print(f"Expected SLA: {profile['expected_sla']}%")
-            print(f"Priority: {profile['priority']}")
-            print("Link Information:")
-            link_info = profile['link_info']
-            print(f"  Active: {link_info['is_active']}")
-            print(f"  Last Used: {link_info['last_used']}")
-            print(f"  Routing Priority: {link_info['routing_priority']}")
+    print("\nLinks Data:")
+    if 'links_data' in results:
+        links_response = results['links_data']
+        print(f"Timestamp: {links_response.timestamp}")
+        if links_response.success:
+            print(f"Total Links: {len(links_response.data)}")
+            for link in links_response.data:
+                print(f"\nLink: {link['link']}")
+                print(f"Operator: {link['operator']}")
+                print(f"MNC: {link['mnc']}")
+                print(f"Provider: {link['provider']}")
+                print(f"Price: ${link['price']}")
+                print("SLA Data:")
+                print(f"  SLA DD: {link['sla_dd'] if link['sla_dd'] is not None else 'Not Available'}")
+                print(f"  SLA Tested: {link['sla_tested'] if link['sla_tested'] is not None else 'Not Available'}")
+                print(f"  SLA Assumed: {link['sla_assumed'] if link['sla_assumed'] is not None else 'Not Available'}")
+                print(f"Last Updated: {link['last_updated']}")
+        else:
+            print(f"Error getting links data: {links_response.error}")
 
-    print("\nQuery2 - GetLinksSLAByMNC Results:")
-    if 'GetLinksSLAByMNCStrategy' in results:
-        links_data = results['GetLinksSLAByMNCStrategy']
-        print(f"MNC: {links_data['mnc']}")
-        print("\nLinks SLA Data:")
-        for link in links_data['links']:
-            print(f"\nLink: {link['link']}")
-            print(f"Operator: {link['operator']}")
-            print(f"MNC: {link['mnc']}")
-            print("SLA Data:")
-            sla = link['sla_data']
-            print(f"  SLA DD: {sla['sla_dd'] if sla['sla_dd'] is not None else 'Not Available'}")
-            print(f"  SLA Tested: {sla['sla_tested'] if sla['sla_tested'] is not None else 'Not Available'}")
-            print(f"  SLA Assumed: {sla['sla_assumed'] if sla['sla_assumed'] is not None else 'Not Available'}")
-            print(f"  Last Updated: {sla['last_updated']}")
-
-    print("\nQuery3 - GetProfilesWithLinks Results:")
-    if 'GetProfilesWithLinksStrategy' in results:
-        profiles_links_data = results['GetProfilesWithLinksStrategy']
-        print("\nProfiles and their Associated Links:")
-        for profile in profiles_links_data['profiles']:
-            print(f"\nProfile: {profile['name']}")
-            print(f"ID: {profile['profile_id']}")
-            print(f"Expected SLA: {profile['expected_sla']}%")
-            print(f"Priority: {profile['priority']}")
-            print("\nAssociated Links:")
-            for link in profile['links']:
-                print(f"\n  Link: {link['link']}")
-                print(f"  Operator: {link['operator']}")
-                print(f"  MNC: {link['mnc']}")
-                print(f"  Routing Priority: {link['routing_priority']}")
-                print(f"  Active: {link['is_active']}")
-                print(f"  Last Used: {link['last_used']}")
+    print("\nProfile Configurations:")
+    if 'profile_config' in results:
+        profile_response = results['profile_config']
+        print(f"Timestamp: {profile_response.timestamp}")
+        if profile_response.success:
+            print(f"Total Profiles: {len(profile_response.data)}")
+            for profile in profile_response.data:
+                print(f"\nProfile: {profile['name']}")
+                print(f"ID: {profile['profile_id']}")
+                print(f"Description: {profile['description']}")
+                print(f"Expected SLA: {profile['expected_sla']}%")
+                print(f"Sell Price: ${profile['sell_price']}")
+                print("Links:")
+                for link in profile['links']:
+                    print(f"  - {link}")
+        else:
+            print(f"Error getting profile data: {profile_response.error}")
 
 async def main():
-    # Create event handler
-    handler = EventHandler()
+    try:
+        print("\nStarting event handler example...")
+        
+        # Create event handler
+        handler = EventHandler()
+        print("Event handler created successfully")
 
-    # Register price update handler
-    handler.register_handler("PriceUpdate", handle_price_change, is_async=True)
+        # Register price update handler
+        print("Registering price update handler...")
+        handler.register_handler("PriceUpdate", handle_price_change, is_async=True)
+        print("Handler registered successfully")
 
-    # Create price update event
-    price_update_event = handler.create_event(MOCK_EVENT_DATA)
+        # Create price update event
+        print("\nCreating price update event...")
+        try:
+            price_update_event = handler.create_event(MOCK_EVENT_DATA)
+            print("Event created successfully")
+        except Exception as e:
+            print(f"Error creating event: {str(e)}")
+            raise
 
-    # Process the event
-    await handler.handle_event(price_update_event)
+        # Process the event
+        print("\nProcessing event...")
+        try:
+            await handler.handle_event(price_update_event)
+            print("Event processed successfully")
+        except Exception as e:
+            print(f"Error processing event: {str(e)}")
+            raise
+
+    except Exception as e:
+        print(f"\nError in main: {str(e)}")
+        raise
 
     # Print event metadata
     print("\nEvent Processing Metadata:")

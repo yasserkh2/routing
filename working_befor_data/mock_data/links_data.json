@@ -15,7 +15,7 @@
         "operator": "Orange",
         "mnc": "02",
         "provider": "Twilio",
-        "price": 7.5,
+        "price": 8,
         "sla_dd": 95,
         "sla_tested": 95,
         "sla_assumed": 95,

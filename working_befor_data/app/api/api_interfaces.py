@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
-from event_handler import Event
+from ..services.event_handler import Event
+from datetime import datetime
+from ..utils.logger import setup_logger
+
+# Setup logger
+logger = setup_logger(__name__)
 
 class APIResponse:
     """Value object for API responses"""
@@ -8,7 +13,11 @@ class APIResponse:
         self.data = data
         self.success = success
         self.error = error
-        self.timestamp = None
+        self.timestamp = datetime.utcnow()
+        if success:
+            logger.info(f"API Response created successfully at {self.timestamp}")
+        else:
+            logger.error(f"API Response created with error: {error}")
 
 class APIClient(ABC):
     """Abstract base class for API clients"""
@@ -17,40 +26,24 @@ class APIClient(ABC):
         """Make API call"""
         pass
 
-class APICallStrategy(ABC):
-    """Abstract base class for API call strategies"""
-    @abstractmethod
-    async def call_api(self, event: Event) -> APIResponse:
-        """Execute the API call based on the event"""
-        pass
-
-    @abstractmethod
-    def can_handle(self, event: Event) -> bool:
-        """Check if strategy can handle this event"""
-        pass
-
-class APIStrategyFactory(ABC):
-    """Abstract factory for creating API strategies"""
-    @abstractmethod
-    def create_strategy(self, strategy_type: str) -> APICallStrategy:
-        """Create a strategy instance"""
-        pass
-
-class APIExecutor(ABC):
-    """Abstract base class for executing API strategies"""
-    @abstractmethod
-    async def execute(self, strategy: APICallStrategy, event: Event) -> APIResponse:
-        """Execute a strategy"""
-        pass
-
-class APIRegistry(ABC):
-    """Abstract base class for strategy registry"""
-    @abstractmethod
-    def register_strategy(self, event_type: str, strategy: APICallStrategy) -> None:
-        """Register a strategy"""
-        pass
-
-    @abstractmethod
-    def get_strategies(self, event: Event) -> list[APICallStrategy]:
-        """Get strategies for an event"""
-        pass
+class APIExecutor:
+    """Base class for executing API calls"""
+    async def execute(self, api_client: APIClient, endpoint: str, params: Dict[str, Any]) -> APIResponse:
+        """Execute an API call"""
+        try:
+            logger.info(f"Executing API call to endpoint: {endpoint}")
+            logger.debug(f"API call parameters: {params}")
+            
+            response = await api_client.call(endpoint, params)
+            
+            if response.success:
+                logger.info(f"API call to {endpoint} completed successfully")
+                logger.debug(f"API response data: {response.data}")
+            else:
+                logger.warning(f"API call to {endpoint} completed with errors: {response.error}")
+            
+            return response
+        except Exception as e:
+            error_msg = f"API call to {endpoint} failed: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            return APIResponse(data={}, success=False, error=error_msg)

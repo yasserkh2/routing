@@ -27,14 +27,6 @@ class Profile:
             links=profile_links
         )
 
-    @classmethod
-    def get_profiles_affected_by_price_change(cls, profiles: List['Profile'], link_name: str) -> List['Profile']:
-        """Get all profiles that contain the link with price change"""
-        return [
-            profile for profile in profiles
-            if any(link.link == link_name for link in profile.links)
-        ]
-    
     def update_link_price(self, link_name: str, new_price: float, old_price: Optional[float] = None) -> bool:
         """Update price for a specific link in the profile"""
         for i, link in enumerate(self.links):

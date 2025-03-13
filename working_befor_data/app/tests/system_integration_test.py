@@ -56,7 +56,7 @@ async def test_system_integration():
     
     print("\nStep 4: Verifying Link Updates")
     # Get updated link data
-    updated_links = await mock_api.get_links_sla_data(mnc=event_data['mnc'])
+    updated_links = await mock_api.get_links_data(mnc=event_data['mnc'])
     affected_link = next((link for link in updated_links if link['link'] == event_data['link']), None)
     if affected_link:
         print(f"Link {affected_link['link']} updated price: ${affected_link['price']:.3f}")

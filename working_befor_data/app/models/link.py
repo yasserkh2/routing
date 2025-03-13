@@ -244,37 +244,6 @@ class Link:
             return self.price_history[index]['price']
         return None
     
-    @staticmethod
-    def extract_all_links(profiles: List['Profile']) -> List['Link']:
-        """Extract all unique links from a list of profiles"""
-        unique_links: Set[Link] = set()
-        for profile in profiles:
-            unique_links.update(profile.links)
-        return sorted(unique_links, key=lambda x: x.mnc)
-    
-    @staticmethod
-    def filter_by_mnc(links: List['Link'], mnc: str) -> List['Link']:
-        """Filter links by MNC"""
-        return [link for link in links if link.mnc == mnc]
-    
-    @staticmethod
-    def filter_by_operator(links: List['Link'], operator: str) -> List['Link']:
-        """Filter links by operator"""
-        return [link for link in links if link.operator == operator]
-    
-    @staticmethod
-    def get_links_with_price_changes(links: List['Link']) -> List['Link']:
-        """Get all links that have price changes in their history"""
-        return [link for link in links if len(link.price_history) > 1]
-
-    @staticmethod
-    def calculate_average_sla(links: List['Link']) -> float:
-        """Calculate average SLA across all links"""
-        if not links:
-            return 0.0
-        total_sla = sum(link.average_sla for link in links)
-        return total_sla / len(links)
-
     def format_display_info(self, traffic_percentage: float, override_price: Optional[float] = None) -> Dict[str, Any]:
         """Format link information for display"""
         return {
@@ -289,11 +258,6 @@ class Link:
         traffic_ratio = traffic_percentage / 100.0
         price = override_price if override_price is not None else self.price
         return traffic_ratio * price
-
-    @staticmethod
-    def find_by_id(links: List['Link'], link_name: str) -> Optional['Link']:
-        """Find a link by its name"""
-        return next((link for link in links if link.link == link_name), None)
 
     def copy(self) -> 'Link':
         """Create a copy of the link instance"""

@@ -32,7 +32,7 @@ async def run_optimizer_test():
         status = change['Payload']['status']
             
         # Find affected profiles
-        affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_name)
+        affected_profiles = data_service.get_profiles_affected_by_price_change(all_profiles, link_name)
         
         print("\n" + "-"*50)
         print(f"PRICE CHANGE DETAILS FOR {link_name}")
@@ -61,7 +61,7 @@ async def run_optimizer_test():
                     print("\nBEFORE PRICE CHANGE:")
                     print("-" * 30)
                     for route in initial_plan['routes']:
-                        current_link = Link.find_by_id(profile.links, route['link'])
+                        current_link = data_service.find_link_by_id(profile.links, route['link'])
                         if current_link:
                             # Use old_rate for the changed link
                             override_price = old_rate if route['link'] == link_name else None
@@ -79,7 +79,7 @@ async def run_optimizer_test():
                     for route in initial_plan['routes']:
                         if route['percentage'] > 0:
                             active_links += 1
-                            current_link = Link.find_by_id(profile.links, route['link'])
+                            current_link = data_service.find_link_by_id(profile.links, route['link'])
                             if current_link:
                                 # Use old_rate for the changed link
                                 override_price = old_rate if route['link'] == link_name else None
@@ -117,7 +117,7 @@ async def run_optimizer_test():
                         print(f"Max Achievable SLA: {stats['max_achievable_sla']:.2f}%")
                     
                     # Apply the price change using Link's functionality
-                    target_link = Link.find_by_id(profile.links, link_name)
+                    target_link = data_service.find_link_by_id(profile.links, link_name)
                     if target_link:
                         updated_link = target_link.with_updated_price(new_rate, old_rate)
                         profile.update_link_price(link_name, updated_link.price, old_rate)
@@ -137,7 +137,7 @@ async def run_optimizer_test():
                         print("\nAFTER PRICE CHANGE:")
                         print("-" * 30)
                         for route in after_plan['routes']:
-                            current_link = Link.find_by_id(updated_profile.links, route['link'])
+                            current_link = data_service.find_link_by_id(updated_profile.links, route['link'])
                             if current_link:
                                 # Use new_rate for the changed link
                                 override_price = new_rate if route['link'] == link_name else None
@@ -153,7 +153,7 @@ async def run_optimizer_test():
                         for route in after_plan['routes']:
                             if route['percentage'] > 0:
                                 active_links += 1
-                                current_link = Link.find_by_id(updated_profile.links, route['link'])
+                                current_link = data_service.find_link_by_id(updated_profile.links, route['link'])
                                 if current_link:
                                     # Use new_rate for the changed link
                                     override_price = new_rate if route['link'] == link_name else None

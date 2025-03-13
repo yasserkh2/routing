@@ -45,12 +45,26 @@ The optimizer will output the optimized routing configuration, including traffic
   * Link associations
   * Methods for finding profiles affected by price changes
 
+### Event Handling System
+- `EventHandler`: Core event processing system
+  * Async event handling with proper error handling
+  * Event registration and callback management
+  * Event metadata tracking
+  * Supports both sync and async handlers
+
+- `APICaller`: Handles data retrieval for events
+  * Async file operations for better performance
+  * Retrieves link and profile data
+  * Comprehensive data access for event processing
+  * Built-in error handling and logging
+
 ### Price Change Handling
-- Detects and processes price changes
-- Identifies affected profiles
+- Detects and processes price changes through event system
+- Identifies affected profiles using event-driven architecture
 - Re-optimizes routes for affected profiles
 - Analyzes cost impact
 - Maintains price history
+- Async processing for better performance
 
 ### Cost Optimization
 - `RoutingOptimizer`: Implements linear programming optimization
@@ -131,9 +145,33 @@ Percentage:   1.5%
 1. Total allocation must equal 100%
 2. Weighted average SLA must meet or exceed target SLA
 
-## Usage Example
+## Event System Usage Example
 
 ```python
+# Initialize event handler
+handler = EventHandler()
+
+# Register price update handler
+handler.register_handler("PriceUpdate", handle_price_change, is_async=True)
+
+# Create and process a price update event
+event_data = {
+    "Type": "PriceUpdate",
+    "Payload": {
+        "old_rate": 10,
+        "new_rate": 11,
+        "status": "Decreased"
+    },
+    "link": "LINK_001",
+    "mcc": "426",
+    "mnc": "21",
+    "timestamp": "2025-03-03T12:40:00.000Z"
+}
+
+# Create and handle the event
+event = handler.create_event(event_data)
+await handler.handle_event(event)
+
 # Get profiles affected by price change
 affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_id)
 
@@ -155,28 +193,48 @@ for profile in affected_profiles:
 
 ## Features
 
-1. Cost-Effective Routing
+1. Event-Driven Architecture
+   - Async event processing
+   - Extensible event handler system
+   - Event metadata tracking
+   - Comprehensive logging
+
+2. Cost-Effective Routing
    - Finds minimum cost solution
    - Maintains required service levels
    - Optimizes traffic distribution
-   - Adapts to price changes
+   - Adapts to price changes through event system
 
-2. SLA Management
+3. SLA Management
    - Supports multiple SLA metrics (DD, Tested, Assumed)
    - Calculates average SLA values
    - Ensures SLA requirements are met
 
-3. Price Change Analysis
+4. Price Change Analysis
    - Automatic affected profile detection
    - Before/after comparison
    - Cost impact calculation
    - Historical price tracking
 
-4. Clear Reporting
+5. Clear Reporting
    - Detailed routing plans
    - Cost and SLA statistics
    - Link utilization information
    - Cost impact metrics
+
+## Running Tests
+
+1. Event Handler Example:
+   ```bash
+   python -m app.tests.event_handler_example
+   ```
+   Shows event processing, data retrieval, and system integration
+
+2. Optimizer Test:
+   ```bash
+   python -m app.tests.run_optimizer
+   ```
+   Demonstrates optimization capabilities
 
 ## Implementation Details
 

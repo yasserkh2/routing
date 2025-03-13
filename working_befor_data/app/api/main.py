@@ -1,7 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from ..services.mock_services import MockAPIService
+from ..utils.logger import setup_logger
+
+# Setup logger
+logger = setup_logger(__name__)
 
 app = FastAPI(
     title="Routing SLA API",
@@ -21,9 +25,18 @@ app.add_middleware(
 # Initialize mock service
 mock_api = MockAPIService()
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log all incoming requests and their responses"""
+    logger.info(f"Incoming {request.method} request to {request.url}")
+    response = await call_next(request)
+    logger.info(f"Completed {request.method} request to {request.url} with status {response.status_code}")
+    return response
+
 @app.get("/")
 async def root():
     """Root endpoint with API information"""
+    logger.info("Root endpoint accessed")
     return {
         "name": "Routing SLA API",
         "version": "1.0.0",
@@ -36,6 +49,7 @@ async def root():
 
 @app.get("/api/links/sla")
 async def get_links_sla(mnc: Optional[str] = None):
+    logger.info(f"Fetching SLA data with MNC filter: {mnc}")
     """
     Get SLA metrics for links
     
@@ -49,7 +63,8 @@ async def get_links_sla(mnc: Optional[str] = None):
         List of links with their SLA metrics
     """
     try:
-        data = await mock_api.get_links_sla_data(mnc)
+        data = await mock_api.get_links_data(mnc)
+        logger.info(f"Successfully retrieved {len(data)} link records")
         return {
             "success": True,
             "count": len(data),
@@ -60,6 +75,7 @@ async def get_links_sla(mnc: Optional[str] = None):
             }
         }
     except Exception as e:
+        logger.error(f"Failed to retrieve SLA data: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail={
@@ -70,6 +86,7 @@ async def get_links_sla(mnc: Optional[str] = None):
 
 @app.get("/api/profiles")
 async def get_profiles(profile_id: Optional[str] = None):
+    logger.info(f"Fetching profiles with ID filter: {profile_id}")
     """
     Get routing profile configurations
     
@@ -84,6 +101,7 @@ async def get_profiles(profile_id: Optional[str] = None):
     """
     try:
         data = await mock_api.get_profile_config(profile_id)
+        logger.info(f"Successfully retrieved {len(data)} profile configurations")
         return {
             "success": True,
             "count": len(data),
@@ -94,6 +112,7 @@ async def get_profiles(profile_id: Optional[str] = None):
             }
         }
     except Exception as e:
+        logger.error(f"Failed to retrieve profile configurations: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail={
@@ -104,4 +123,5 @@ async def get_profiles(profile_id: Optional[str] = None):
 
 if __name__ == "__main__":
     import uvicorn
+    logger.info("Starting FastAPI server")
     uvicorn.run(app, host="0.0.0.0", port=8000)

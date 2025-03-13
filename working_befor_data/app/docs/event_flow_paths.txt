@@ -5,14 +5,14 @@ Event Handling System Flow and Paths
 ---------------------
 Entry Point: working_befor_data/app/services/event_handler.py
 - EventHandler class creates and manages events
-- Supports multiple event types: PRICE_CHANGE, ROUTE_UPDATE, SLA_UPDATE
+- Supports multiple event types: PRICE_CHANGE, SLA_UPDATE
 - Events contain type, data, and timestamp
 
 2. API Integration Path
 ----------------------
 Location: working_befor_data/app/api/
-- api_selector.py: Coordinates API strategy selection
-- api_strategy.py: Implements different API strategies
+- api_caller.py: Executes all available API calls
+- api_strategy.py: Implements API strategies
 - api_interfaces.py: Defines API interfaces
 
 Key API Queries:
@@ -53,7 +53,7 @@ Process:
 Complete Flow Example
 --------------------
 1. Price change event created in event_handler.py
-2. APISelector queries affected profiles and links
+2. APICaller executes all API calls to gather data
 3. Optimizer receives data and calculates new routes
 4. Results analyzed for cost impact
 5. Routes updated if beneficial
@@ -71,10 +71,10 @@ File Structure Overview
 
 Integration Points
 -----------------
-1. Event Handler → API Selector
-   Purpose: Get affected components
+1. Event Handler → API Caller
+   Purpose: Execute all API calls
 
-2. API Selector → Models
+2. API Caller → Models
    Purpose: Create data structures
 
 3. Models → Optimizer

@@ -35,7 +35,7 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 @app.get("/")
 async def read_root():
-    return FileResponse(os.path.join(static_dir, "sla.html"))
+    return FileResponse(os.path.join(static_dir, "sla_index.html"))
 
 class SLAChangePayload(BaseModel):
     changed_sla: Dict[str, Dict[str, float]]  # e.g. {"DD": {"old": 75.0, "new": 78.0}}
@@ -78,7 +78,7 @@ async def analyze_sla_change(request: SLAChangeRequest):
             raise HTTPException(status_code=500, detail=f"Error in initial processing: {str(e)}")
         
         # Find affected profiles using the cloned profiles
-        affected_profiles = Profile.get_profiles_affected_by_price_change(simulation_profiles, link_name)
+        affected_profiles = data_service.get_profiles_affected_by_price_change(simulation_profiles, link_name)
         
         results = {
             "sla_change": {
@@ -135,7 +135,7 @@ async def analyze_sla_change(request: SLAChangeRequest):
                 for route in initial_plan['routes']:
                     if route['percentage'] > 0:
                         active_links += 1
-                        current_link = Link.find_by_id(profile.links, route['link'])
+                        current_link = data_service.find_link_by_id(profile.links, route['link'])
                         if current_link:
                             route_info = current_link.format_display_info(route['percentage'])
                             route_info['price'] = current_link.price  # Add price information
@@ -145,7 +145,7 @@ async def analyze_sla_change(request: SLAChangeRequest):
                 total_cost = 0.0
                 for route in initial_plan['routes']:
                     if route['percentage'] > 0:
-                        current_link = Link.find_by_id(profile.links, route['link'])
+                        current_link = data_service.find_link_by_id(profile.links, route['link'])
                         if current_link:
                             total_cost += current_link.calculate_cost_for_traffic(route['percentage'])
 
@@ -178,7 +178,7 @@ async def analyze_sla_change(request: SLAChangeRequest):
                 updated_profile = profile.clone()
                 
                 # Update the SLA in the temporary profile without persisting
-                target_link = Link.find_by_id(updated_profile.links, link_name)
+                target_link = data_service.find_link_by_id(updated_profile.links, link_name)
                 if target_link:
                     print(f"Found target link {link_name} in profile")
                     # Update the link with new SLA values
@@ -211,7 +211,7 @@ async def analyze_sla_change(request: SLAChangeRequest):
                 for route in after_plan['routes']:
                     if route['percentage'] > 0:
                         active_links += 1
-                        current_link = Link.find_by_id(updated_profile.links, route['link'])
+                        current_link = data_service.find_link_by_id(updated_profile.links, route['link'])
                         if current_link:
                             route_info = current_link.format_display_info(route['percentage'])
                             route_info['price'] = current_link.price  # Add price information
@@ -221,7 +221,7 @@ async def analyze_sla_change(request: SLAChangeRequest):
                 total_cost = 0.0
                 for route in after_plan['routes']:
                     if route['percentage'] > 0:
-                        current_link = Link.find_by_id(updated_profile.links, route['link'])
+                        current_link = data_service.find_link_by_id(updated_profile.links, route['link'])
                         if current_link:
                             total_cost += current_link.calculate_cost_for_traffic(route['percentage'])
                 

@@ -1,65 +1,85 @@
-# AI/ML Optimization Project
+# Routing SLA Optimization Project
 
-This project aims to provide an AI/ML-powered optimization solution for product pricing and decision-making. It includes the following components:
+This project implements an intelligent routing system with SLA (Service Level Agreement) optimization capabilities. The system analyzes network links, optimizes routing paths based on SLAs, and provides both API and web interfaces for interaction.
 
-## Server
-- **server/**: Contains the FastAPI server and web interface
-  - **server.py**: FastAPI server implementation for handling price change analysis
-  - **index.html**: Web interface for interacting with the optimization system
+## Project Structure
 
-### Running the Server
+### Working Data and Implementation
+- **working_befor_data/**: Contains the core implementation
+  - **app/**: Core application modules
+    - **api/**: API implementation including interfaces and strategies
+    - **core/**: Core optimization logic
+    - **models/**: Data models for links, profiles, and SLA data
+    - **services/**: Service implementations including data preparation and event handling
+    - **tests/**: Test cases and examples
+    - **utils/**: Utility functions and helpers
+  - **mock_data/**: Sample data for testing
+    - `links_data.json`: Network link configurations
+    - `profiles.json`: Routing profiles
+    - `price_changes.json`: Price change scenarios
+    - `sla_update.json`: SLA update examples
+  - **web_interface/**: Web-based user interface
+    - `sla.html`: SLA management interface
+    - `sla_server.py`: Web server implementation
+
+### Project Design Documentation
+- **project_design/**: Comprehensive design documentation
+  - **architecture/**: System architecture details
+    - Components, scalability, and technology stack documentation
+  - **data/**: Data model and sources documentation
+  - **decision_making/**: Decision logic and approval workflows
+  - **deployment/**: CI/CD and monitoring strategies
+  - **ml/**: Machine learning model documentation
+  - **optimization/**: Optimization algorithms and objective functions
+  - **security/**: Security considerations and data privacy
+  - **testing/**: Testing strategies and test cases
+
+### Source Code
+- **src/**: New implementation directory
+  - **app/**: Application modules
+    - api/, core/, models/, services/, tests/
+  - **web/**: Web interface components
+
+### Server
+- **server/**: Server implementation
+  - `server.py`: Main server implementation
+  - `index.html`: Server interface
+
+## Getting Started
+
 1. Install dependencies:
 ```bash
-pip install fastapi uvicorn
+pip install -r working_befor_data/requirements.txt
 ```
 
-2. Run the server:
+2. Run the SLA web interface:
 ```bash
-python server/server.py
+python working_befor_data/web_interface/sla_server.py
 ```
-The server will start at http://127.0.0.1:8000
 
-3. Access the web interface at: http://127.0.0.1:8000
+3. For testing the optimization:
+```bash
+python working_befor_data/app/tests/run_optimizer.py
+```
 
-## API
-- **routes/**: Individual route handlers for different functionality (products, providers, pricing, optimization, decisions, SLAs)
-- **main.py**: Main API entry point
-- **dependencies.py**: Common dependencies like database and logging
+## API Documentation
 
-## Models
-- **base.py**: Base class for all database models
-- **provider.py**: Model for provider data
-- **product.py**: Model for product data
-- **pricing.py**: Model for price tracking
-- **sla_link.py**: Model for SLA network details
-- **optimization_result.py**: Model for optimization results
-- **decision.py**: Model for decision storage
+The project includes a Postman collection (`Routing_SLA_API.postman_collection.json`) for testing the API endpoints.
 
-## Services
-- **pricing_service.py**: Handles price data processing
-- **ai_service.py**: AI/ML model serving and predictions
-- **optimization_service.py**: Runs linear optimization
-- **decision_service.py**: Manages business logic for decisions
+## Testing
 
-## Database
-- **database.py**: Database connection and session management
-- **redis_cache.py**: Redis caching setup
+Various test cases are available in the `working_befor_data/app/tests/` directory:
+- `test_optimizer_sla.py`: Tests for SLA optimization
+- `system_integration_test.py`: Integration tests
+- `sla_change_example.py`: Examples of SLA changes
+- `event_handler_example.py`: Event handling examples
 
-## Config
-- **config.py**: Global application settings
-- **logging_config.py**: Logging configuration
+## Documentation
 
-## Utils
-- **data_loader.py**: Loads initial data
-- **event_handler.py**: Handles event-driven actions
-
-## Tests
-- **test_api.py**: Tests API endpoints
-- **test_ml.py**: Tests AI model predictions
-- **test_optimization.py**: Tests optimization logic
-
-## Other Files
-- **.env**: Environment variables
-- **requirements.txt**: Dependencies
-- **Dockerfile**: Docker container configuration
-- **docker-compose.yml**: Multi-container setup
+Detailed documentation is available in the project_design/ directory, covering:
+- System architecture and components
+- Data models and sources
+- Decision-making logic
+- Deployment strategies
+- Security considerations
+- Testing approaches

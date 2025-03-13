@@ -32,7 +32,7 @@ async def run_optimizer_test():
         status = change['Payload']['status']
 
         # Find affected profiles
-        affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_name)
+        affected_profiles = data_service.get_profiles_affected_by_price_change(all_profiles, link_name)
         
         print("\n" + "-"*50)
         print(f"SLA CHANGE DETAILS FOR {link_name}")
@@ -64,7 +64,7 @@ async def run_optimizer_test():
                 print("\nBEFORE SLA CHANGE:")
                 print("-" * 30)
                 for route in initial_plan['routes']:
-                    current_link = Link.find_by_id(profile.links, route['link'])
+                    current_link = data_service.find_link_by_id(profile.links, route['link'])
                     if current_link:
                         route_info = current_link.format_display_info(route['percentage'])
                         print(f"Link {route_info['link']}:")
@@ -77,7 +77,7 @@ async def run_optimizer_test():
                 print(f"\nAchieved SLA:  {stats['achieved_sla']:.2f}%")
                 
                 # Simulate SLA change without modifying database
-                target_link = Link.find_by_id(profile.links, link_name)
+                target_link = data_service.find_link_by_id(profile.links, link_name)
                 if target_link:
                     # Update the link with new SLA values
                     updated_link = target_link.update_sla(changed_sla)
@@ -93,7 +93,7 @@ async def run_optimizer_test():
                     print("\nAFTER SLA CHANGE:")
                     print("-" * 30)
                     for route in after_plan['routes']:
-                        current_link = Link.find_by_id(profile.links, route['link'])
+                        current_link = data_service.find_link_by_id(profile.links, route['link'])
                         if current_link:
                             route_info = current_link.format_display_info(route['percentage'])
                             print(f"Link {route_info['link']}:")
