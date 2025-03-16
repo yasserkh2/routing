@@ -198,3 +198,20 @@ class DataPreparationService:
             'expected_sla': profile.expected_sla,
             'links': links_data
         }
+        
+    @staticmethod
+    def get_active_links(profile: Profile) -> List[Link]:
+        """
+        Get all active links that meet the profile's SLA requirement.
+        
+        Args:
+            profile: Profile object to get active links from
+            
+        Returns:
+            List of Link objects that meet the SLA requirement
+        """
+        logger.debug(f"Getting active links for profile {profile.profile_id}")
+        return [
+            link for link in profile.links 
+            if link.meets_sla_requirement(profile.expected_sla)
+        ]
