@@ -582,6 +582,18 @@
       "totalCost": 0.48806808000000007,
       "size": 1286194,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742133838067",
+      "ts": 1742133945253,
+      "task": "🚨 3️⃣ to_optimizer_format() Should Be Delegated\nIssue:\nThis method formats profile data for optimization.\nBut it modifies link data, which is not Profile's job.\n✅ Solution: Move It to DataPreparationService\n\npython\nCopy\nEdit\nclass DataPreparationService:\n    @staticmethod\n    def convert_profile_to_optimizer_format(profile: Profile) -> Dict[str, Any]:\n        \"\"\"Convert profile and its links to optimizer-friendly format.\"\"\"\n        links_data = {link.link: link.to_optimizer_format() for link in profile.links if link.average_sla > 0}\n        \n        return {\n            'profile_id': profile.profile_id,\n            'name': profile.name,\n            'expected_sla': profile.expected_sla,\n            'links': links_data\n        }\n✅ Why is this better?\n\nNow Profile does not process links—it only stores them.\nPrevents redundant logic when preparing data for different optimizers.",
+      "tokensIn": 202772,
+      "tokensOut": 1549,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.02526204,
+      "size": 146707,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }

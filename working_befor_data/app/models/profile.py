@@ -11,20 +11,6 @@ class Profile:
     expected_sla: float
     links: List[Link]
     
-    def to_optimizer_format(self) -> Dict[str, Any]:
-        """Convert profile data to format needed by optimizer"""
-        links_data = {}
-        for link in self.links:
-            if link.average_sla > 0:
-                links_data[link.link] = link.to_optimizer_format()
-                
-        return {
-            'profile_id': self.profile_id,
-            'name': self.name,
-            'expected_sla': self.expected_sla,
-            'links': links_data
-        }
-    
     def get_active_links(self) -> List[Link]:
         """Get all active links that meet the profile's SLA requirement"""
         return [

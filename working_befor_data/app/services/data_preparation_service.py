@@ -173,3 +173,28 @@ class DataPreparationService:
                 if link.link == link_name:
                     profile.links[i] = link.with_updated_price(new_price, old_price)
                     logger.debug(f"Updated link price in profile {profile.profile_id}")
+                    
+    @staticmethod
+    def convert_profile_to_optimizer_format(profile: Profile) -> Dict[str, Any]:
+        """
+        Convert profile and its links to optimizer-friendly format.
+        
+        Args:
+            profile: Profile object to convert
+            
+        Returns:
+            Dictionary containing profile data in optimizer format
+        """
+        logger.debug(f"Converting profile {profile.profile_id} to optimizer format")
+        links_data = {
+            link.link: link.to_optimizer_format() 
+            for link in profile.links 
+            if link.average_sla > 0
+        }
+        
+        return {
+            'profile_id': profile.profile_id,
+            'name': profile.name,
+            'expected_sla': profile.expected_sla,
+            'links': links_data
+        }
