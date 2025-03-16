@@ -1,4 +1,5 @@
 from typing import Dict, Any, List
+from functools import lru_cache
 from pulp import *
 from ..models.profile import Profile
 from ..models.link import Link
@@ -163,8 +164,16 @@ class RoutingOptimizer:
             
         return stats
 
-    def calculate_cost(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> float:
-        """Calculate total cost based on a routing plan"""
+    @lru_cache(maxsize=128)
+    def _calculate_cost_cached(self, routing_plan_str: str, use_previous_price: bool = False) -> float:
+        """
+        Cached implementation of cost calculation
+        
+        Args:
+            routing_plan_str: JSON string representation of routing plan for cache compatibility
+            use_previous_price: Whether to use previous price instead of current
+        """
+        routing_plan = eval(routing_plan_str)  # Convert string back to dict
         total_cost = 0.0
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
@@ -173,6 +182,12 @@ class RoutingOptimizer:
                     price = link.get_previous_price() if use_previous_price else link.get_current_price()
                     total_cost += link.calculate_cost_for_traffic(route['percentage'], price)
         return total_cost
+
+    def calculate_cost(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> float:
+        """Calculate total cost based on a routing plan"""
+        # Convert dict to string for cache compatibility
+        routing_plan_str = str(routing_plan)
+        return self._calculate_cost_cached(routing_plan_str, use_previous_price)
 
     def calculate_cost_impact(self, before_plan: Dict[str, Any], after_plan: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate cost impact between two routing plans"""
@@ -190,19 +205,40 @@ class RoutingOptimizer:
             'percentage': abs(cost_change_pct)
         }
 
-    def calculate_achieved_sla(self, routing_plan: Dict[str, Any]) -> float:
-        """Calculate achieved SLA based on routing plan"""
+    @lru_cache(maxsize=128)
+    def _calculate_achieved_sla_cached(self, routing_plan_str: str) -> float:
+        """
+        Cached implementation of SLA calculation
+        
+        Args:
+            routing_plan_str: JSON string representation of routing plan for cache compatibility
+        """
+        routing_plan = eval(routing_plan_str)  # Convert string back to dict
         achieved_sla = 0.0
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
                 link = self.link_dict.get(route['link'])
                 if link:
                     optimizer_data = link.to_optimizer_format()
-                    achieved_sla += (route['percentage'] / 100.0) * (optimizer_data['SLA'] * 100)  # Convert optimizer SLA back to percentage
-        return achieved_sla  # Already in percentage
+                    achieved_sla += (route['percentage'] / 100.0) * (optimizer_data['SLA'] * 100)
+        return achieved_sla
 
-    def format_routing_display(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> List[Dict[str, Any]]:
-        """Format routing plan for display"""
+    def calculate_achieved_sla(self, routing_plan: Dict[str, Any]) -> float:
+        """Calculate achieved SLA based on routing plan"""
+        # Convert dict to string for cache compatibility
+        routing_plan_str = str(routing_plan)
+        return self._calculate_achieved_sla_cached(routing_plan_str)
+
+    @lru_cache(maxsize=128)
+    def _format_routing_display_cached(self, routing_plan_str: str, use_previous_price: bool = False) -> str:
+        """
+        Cached implementation of routing display formatting
+        
+        Args:
+            routing_plan_str: JSON string representation of routing plan for cache compatibility
+            use_previous_price: Whether to use previous price instead of current
+        """
+        routing_plan = eval(routing_plan_str)  # Convert string back to dict
         display_routes = []
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
@@ -210,7 +246,14 @@ class RoutingOptimizer:
                 if link:
                     price = link.get_previous_price() if use_previous_price else link.get_current_price()
                     display_routes.append(link.format_display_info(route['percentage'], price))
-        return display_routes
+        return str(display_routes)  # Convert to string for cache compatibility
+
+    def format_routing_display(self, routing_plan: Dict[str, Any], use_previous_price: bool = False) -> List[Dict[str, Any]]:
+        """Format routing plan for display"""
+        # Convert dict to string for cache compatibility
+        routing_plan_str = str(routing_plan)
+        # Get cached result and convert back to list
+        return eval(self._format_routing_display_cached(routing_plan_str, use_previous_price))
 
     def calculate_total_traffic(self, routing_plan: Dict[str, Any]) -> float:
         """Calculate total traffic allocation"""
