@@ -61,10 +61,8 @@ class EventHandler:
 
     async def handle_price_change(self, profile: Profile, link_name: str, new_rate: float, old_rate: float) -> Profile:
         """Handle price change event for a profile"""
-        target_link = self.data_service.find_link_by_id(profile.links, link_name)
-        if target_link:
-            updated_link = target_link.with_updated_price(new_rate, old_rate)
-            profile.update_link_price(link_name, updated_link.price, old_rate)
+        # Use DataPreparationService to update link price
+        DataPreparationService.update_link_price([profile], link_name, new_rate, old_rate)
         self.mock_api.handle_price_change(link_name, new_rate, old_rate)
         return profile
 

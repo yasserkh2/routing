@@ -116,12 +116,14 @@ async def run_optimizer_test():
                         print(f"\nWARNING: {stats['warning']}")
                         print(f"Max Achievable SLA: {stats['max_achievable_sla']:.2f}%")
                     
-                    # Apply the price change using Link's functionality
-                    target_link = data_service.find_link_by_id(profile.links, link_name)
-                    if target_link:
-                        updated_link = target_link.with_updated_price(new_rate, old_rate)
-                        profile.update_link_price(link_name, updated_link.price, old_rate)
-                    
+                    # Apply the price change using DataPreparationService
+                    DataPreparationService.update_link_price(
+                        [profile],
+                        link_name,
+                        new_rate,
+                        old_rate
+                    )
+
                     # Then handle the price change in mock API with both old and new rates
                     mock_api.handle_price_change(link_name, new_rate, old_rate)
                     

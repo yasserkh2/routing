@@ -27,15 +27,6 @@ class Profile:
             links=profile_links
         )
 
-    def update_link_price(self, link_name: str, new_price: float, old_price: Optional[float] = None) -> bool:
-        """Update price for a specific link in the profile"""
-        for i, link in enumerate(self.links):
-            if link.link == link_name:
-                # Use Link's with_updated_price method
-                self.links[i] = link.with_updated_price(new_price, old_price)
-                return True
-        return False
-
     def to_optimizer_format(self) -> Dict[str, Any]:
         """Convert profile data to format needed by optimizer"""
         links_data = {}

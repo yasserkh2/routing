@@ -2,7 +2,6 @@ from typing import List, Dict, Any, Optional, Set
 from datetime import datetime
 from ..models.link import Link
 from ..models.profile import Profile
-from ..models.sla_data import SLAData
 from .mock_services import MockAPIService
 from ..utils.logger import setup_logger
 
@@ -131,3 +130,21 @@ class DataPreparationService:
             return None
         logger.info(f"Successfully retrieved profile {profile_id}")
         return profiles[0]
+
+    @staticmethod
+    def update_link_price(profiles: List[Profile], link_name: str, new_price: float, old_price: Optional[float] = None) -> None:
+        """
+        Update the price of a link across multiple profiles.
+        
+        Args:
+            profiles: List of profiles to update
+            link_name: Name of the link to update
+            new_price: New price to set
+            old_price: Optional old price for validation
+        """
+        logger.info(f"Updating price for link {link_name} to {new_price} across {len(profiles)} profiles")
+        for profile in profiles:
+            for i, link in enumerate(profile.links):
+                if link.link == link_name:
+                    profile.links[i] = link.with_updated_price(new_price, old_price)
+                    logger.debug(f"Updated link price in profile {profile.profile_id}")

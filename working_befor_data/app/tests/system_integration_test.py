@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime
 from ..services.event_handler import EventHandler, EventType
 from ..services.mock_services import MockAPIService
+from ..services.data_preparation_service import DataPreparationService
 from ..models.profile import Profile
 from ..models.link import Link
 from ..core.optimizer import RoutingOptimizer
@@ -91,11 +92,13 @@ async def test_system_integration():
             old_revenue = stats_before['total_cost']
             total_old_revenue += old_revenue
             
-            # Update link price for the affected link
-            affected_link = profile.get_link_by_id(event_data['link'])
-            if affected_link:
-                profile.update_link_price(event_data['link'], event_data['Payload']['new_rate'])
-            
+            # Update link price for the affected link using DataPreparationService
+            DataPreparationService.update_link_price(
+                [profile], 
+                event_data['link'], 
+                event_data['Payload']['new_rate']
+            )
+
             # Calculate revenue after price change and optimization
             optimizer_after = RoutingOptimizer(profile)
             if optimizer_after.solve():
