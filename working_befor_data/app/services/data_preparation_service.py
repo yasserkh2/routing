@@ -1,5 +1,6 @@
 from typing import List, Dict, Any, Optional, Set
 from datetime import datetime
+from functools import lru_cache
 from ..models.link import Link
 from ..models.profile import Profile
 from .mock_services import MockAPIService
@@ -101,9 +102,10 @@ class DataPreparationService:
         
         return profiles
     
+    @lru_cache(maxsize=10)
     async def get_all_profiles(self) -> List[Profile]:
         """
-        Get all profiles ready for optimization
+        Get all profiles ready for optimization. Results are cached to prevent unnecessary API calls.
         
         Returns:
             List of Profile objects ready for optimization

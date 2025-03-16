@@ -142,8 +142,8 @@ async def analyze_event(request: EventRequest):
         if event_type not in ["price", "sla"]:
             raise HTTPException(status_code=400, detail=f"Unsupported event type: {event_type}")
         
-        # Get affected profiles
-        all_profiles = await data_service.get_all_profiles()
+        # Get affected profiles (uses cached data after first call)
+        all_profiles = await data_service.get_all_profiles()  # Uses cached data
         affected_profiles = data_service.get_profiles_affected_by_price_change(all_profiles, request.link)
         
         # Initialize results
