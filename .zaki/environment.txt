@@ -7,10 +7,10 @@ Platform: win32
 Architecture: x64
 Node Version: v20.18.2
 Total Memory: 16GB
-Free Memory: 2GB
+Free Memory: 4GB
 CPU Cores: 12
 
-Current Time: 3/16/2025, 4:21:34 PM (Africa/Cairo, UTC+2:00)
+Current Time: 3/16/2025, 4:45:25 PM (Africa/Cairo, UTC+2:00)
 
 # EDITOR STATE
 
@@ -20,9 +20,9 @@ Visible Files:
 Open Tabs:
   working_befor_data\app\tests\run_optimizer.py
   working_befor_data\app\core\optimizer.py
+  working_befor_data\app\services\data_preparation_service.py
   working_befor_data\web_interface\event_server.py
   working_befor_data\app\tests\system_integration_test.py
-  working_befor_data\app\services\data_preparation_service.py
   working_befor_data\app\models\profile.py
 
 # WORKSPACE SUMMARY
@@ -39,6 +39,8 @@ Files:
   src/
   SYSTEM_OVERVIEW.md
   working_befor_data/
+  src/app/
+  src/web/
   project_design/architecture/
   project_design/architecture.md
   project_design/data/
@@ -50,8 +52,6 @@ Files:
   project_design/README.md
   project_design/security/
   project_design/testing/
-  src/app/
-  src/web/
   working_befor_data/app/
   working_befor_data/mock_data/
   working_befor_data/README.md
@@ -59,25 +59,26 @@ Files:
   working_befor_data/requirements.txt
   working_befor_data/Routing_SLA_API.postman_collection.json
   working_befor_data/web_interface/
-  project_design/architecture/components.md
-  project_design/architecture/scalability.md
-  project_design/architecture/system_architecture.md
-  project_design/architecture/technology_stack.md
-  project_design/ml/ml_models.md
-  project_design/data/data_model.md
-  project_design/data/data_sources.md
-  project_design/decision_making/approval_workflow.md
-  project_design/decision_making/decision_logic.md
-  project_design/deployment/ci_cd.md
-  project_design/deployment/deployment_strategy.md
-  project_design/deployment/monitoring.md
-  project_design/optimization/objective_function.md
-  project_design/optimization/optimization_algorithm.md
   src/app/api/
   src/app/core/
   src/app/models/
   src/app/services/
   src/app/tests/
+  src/web/static/
+  project_design/architecture/components.md
+  project_design/architecture/scalability.md
+  project_design/architecture/system_architecture.md
+  project_design/architecture/technology_stack.md
+  project_design/decision_making/approval_workflow.md
+  project_design/decision_making/decision_logic.md
+  project_design/data/data_model.md
+  project_design/data/data_sources.md
+  project_design/deployment/ci_cd.md
+  project_design/deployment/deployment_strategy.md
+  project_design/deployment/monitoring.md
+  project_design/ml/ml_models.md
+  project_design/optimization/objective_function.md
+  project_design/optimization/optimization_algorithm.md
   project_design/security/data_privacy.md
   project_design/security/security_considerations.md
   project_design/testing/testing_strategy.md
@@ -91,7 +92,6 @@ Files:
   working_befor_data/app/tests/
   working_befor_data/app/utils/
   working_befor_data/app/__init__.py
-  src/web/static/
   working_befor_data/mock_data/links_data.json
   working_befor_data/mock_data/price_changes.json
   working_befor_data/mock_data/profiles.json
@@ -118,6 +118,10 @@ Files:
   working_befor_data/app/docs/event_flow_paths.txt
   working_befor_data/app/docs/event_system.md
   working_befor_data/app/docs/README.md
+  working_befor_data/app/models/link.py
+  working_befor_data/app/models/profile.py
+  working_befor_data/app/models/README.md
+  working_befor_data/app/models/__init__.py
   working_befor_data/app/services/data_preparation_service.py
   working_befor_data/app/services/event_handler.py
   working_befor_data/app/services/mock_services.py
@@ -130,10 +134,6 @@ Files:
   working_befor_data/app/tests/system_integration_test.py
   working_befor_data/app/tests/test_optimizer_sla.py
   working_befor_data/app/tests/__init__.py
-  working_befor_data/app/models/link.py
-  working_befor_data/app/models/profile.py
-  working_befor_data/app/models/README.md
-  working_befor_data/app/models/__init__.py
   working_befor_data/app/utils/logger.py
   working_befor_data/app/utils/README.md
   working_befor_data/app/utils/__init__.py

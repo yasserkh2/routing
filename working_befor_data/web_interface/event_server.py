@@ -59,6 +59,9 @@ class EventHandler:
         self.mock_api = mock_api
         self.data_service = data_service
         self.link_cache = {}  # Dictionary for fast link lookups
+        self.profile_cache = None  # Cache for all profiles
+        self._last_cache_update = None  # Timestamp of last cache update
+        self.cache_ttl = 300  # Cache TTL in seconds (5 minutes)
 
     def get_link_by_id(self, profile: Profile, link_name: str) -> Optional[Link]:
         """Fast O(1) lookup for links using cache."""
@@ -139,6 +142,28 @@ class EventHandler:
                 })
         return traffic_shifts
 
+    async def get_cached_profiles(self) -> list:
+        """Get profiles from cache or load if cache is expired/empty"""
+        current_time = datetime.now()
+        
+        # Check if cache needs refresh
+        if (self.profile_cache is None or 
+            self._last_cache_update is None or 
+            (current_time - self._last_cache_update).total_seconds() > self.cache_ttl):
+            
+            # Reload cache
+            self.profile_cache = await self.data_service.get_all_profiles()
+            self._last_cache_update = current_time
+            self.link_cache = {}  # Reset link cache when profiles are reloaded
+            
+        return self.profile_cache
+
+    def invalidate_cache(self):
+        """Force cache invalidation"""
+        self.profile_cache = None
+        self.link_cache = {}
+        self._last_cache_update = None
+
 @app.post("/analyze-event")
 async def analyze_event(request: EventRequest):
     try:
@@ -152,8 +177,8 @@ async def analyze_event(request: EventRequest):
         if event_type not in ["price", "sla"]:
             raise HTTPException(status_code=400, detail=f"Unsupported event type: {event_type}")
         
-        # Get affected profiles (uses cached data after first call)
-        all_profiles = await data_service.get_all_profiles()  # Uses cached data
+        # Get affected profiles using cache
+        all_profiles = await event_handler.get_cached_profiles()
         # Use set lookup for O(n) complexity instead of nested loops
         affected_profiles = [profile for profile in all_profiles if request.link in {link.link for link in profile.links}]
         
@@ -195,6 +220,10 @@ async def analyze_event(request: EventRequest):
                     "before": {},
                     "after": {}
                 }
+                
+                # Invalidate cache if we're making changes that affect profiles
+                if event_type in ["price", "sla"]:
+                    event_handler.invalidate_cache()
                 
                 # Initial optimization with original values
                 initial_profile = profile.clone()

@@ -618,6 +618,18 @@
       "totalCost": 0.02592384,
       "size": 121247,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742136325405",
+      "ts": 1742137131751,
+      "task": "run event_server",
+      "tokensIn": 192595,
+      "tokensOut": 2476,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.024597,
+      "size": 149422,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }
