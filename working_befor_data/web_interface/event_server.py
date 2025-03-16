@@ -58,6 +58,16 @@ class EventHandler:
     def __init__(self, mock_api: MockAPIService, data_service: DataPreparationService):
         self.mock_api = mock_api
         self.data_service = data_service
+        self.link_cache = {}  # Dictionary for fast link lookups
+
+    def get_link_by_id(self, profile: Profile, link_name: str) -> Optional[Link]:
+        """Fast O(1) lookup for links using cache."""
+        if link_name in self.link_cache:
+            return self.link_cache[link_name]
+        link = next((l for l in profile.links if l.link == link_name), None)
+        if link:
+            self.link_cache[link_name] = link
+        return link
 
     async def handle_price_change(self, profile: Profile, link_name: str, new_rate: float, old_rate: float) -> Profile:
         """Handle price change event for a profile"""
@@ -68,7 +78,7 @@ class EventHandler:
 
     async def handle_sla_change(self, profile: Profile, link_name: str, changed_sla: Dict[str, Dict[str, float]]) -> Profile:
         """Handle SLA change event for a profile"""
-        target_link = self.data_service.find_link_by_id(profile.links, link_name)
+        target_link = self.get_link_by_id(profile, link_name)
         if target_link:
             updated_link = target_link.update_sla(changed_sla)
             profile.links = [updated_link if l.link == link_name else l for l in profile.links]
@@ -86,7 +96,7 @@ class EventHandler:
         for route in plan['routes']:
             if route['percentage'] > 0:
                 active_links += 1
-                current_link = self.data_service.find_link_by_id(profile.links, route['link'])
+                current_link = self.get_link_by_id(profile, route['link'])
                 if current_link:
                     route_info = current_link.format_display_info(route['percentage'])
                     route_info['price'] = current_link.price
@@ -144,7 +154,8 @@ async def analyze_event(request: EventRequest):
         
         # Get affected profiles (uses cached data after first call)
         all_profiles = await data_service.get_all_profiles()  # Uses cached data
-        affected_profiles = data_service.get_profiles_affected_by_price_change(all_profiles, request.link)
+        # Use set lookup for O(n) complexity instead of nested loops
+        affected_profiles = [profile for profile in all_profiles if request.link in {link.link for link in profile.links}]
         
         # Initialize results
         results = {

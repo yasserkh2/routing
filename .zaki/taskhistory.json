@@ -609,14 +609,14 @@
     },
     {
       "id": "1742134894696",
-      "ts": 1742135159198,
+      "ts": 1742135365975,
       "task": "🚨 1️⃣ Repeated API Calls to Fetch Profiles\nIssue:\nget_all_profiles() is called for every request, even if profiles haven't changed.\nThis causes unnecessary database/API queries and increases response time.\n✅ Solution: Cache get_all_profiles() using lru_cache\n\npython\nCopy\nEdit\nfrom functools import lru_cache\n\nclass DataPreparationService:\n    @lru_cache(maxsize=10)\n    async def get_all_profiles(self) -> List[Profile]:\n        \"\"\"Fetch all profiles and cache results to prevent unnecessary API calls.\"\"\"\n        return await self._fetch_profiles_from_api()\n🔹 Now, replace:\n\npython\nCopy\nEdit\nall_profiles = await data_service.get_all_profiles()\n🔹 With:\n\npython\nCopy\nEdit\nall_profiles = await data_service.get_all_profiles()  # Uses cached data\n✅ Performance Boost:\n\nReduces redundant API/database calls.\nSpeeds up response time when profiles haven't changed.",
-      "tokensIn": 120816,
-      "tokensOut": 1763,
+      "tokensIn": 201537,
+      "tokensOut": 2899,
       "cacheWrites": 0,
       "cacheReads": 0,
-      "totalCost": 0.015555719999999999,
-      "size": 83754,
+      "totalCost": 0.02592384,
+      "size": 121247,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
