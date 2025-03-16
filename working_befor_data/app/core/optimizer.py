@@ -17,6 +17,7 @@ class RoutingOptimizer:
         self.model = None
         self.variables = {}
         self.results = {}
+        self.link_dict = {link.link: link for link in profile.links}  # Store links in a dictionary for O(1) lookups
         logger.info(f"Initialized RoutingOptimizer for profile {profile.profile_id}")
     
     def solve(self) -> bool:
@@ -134,7 +135,7 @@ class RoutingOptimizer:
 
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
-                link = self.profile.get_link_by_id(route['link'])
+                link = self.link_dict.get(route['link'])
                 if link:
                     optimizer_data = link.to_optimizer_format()
                     total_cost += (route['percentage'] / 100.0) * optimizer_data['Price']
@@ -167,7 +168,7 @@ class RoutingOptimizer:
         total_cost = 0.0
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
-                link = self.profile.get_link_by_id(route['link'])
+                link = self.link_dict.get(route['link'])
                 if link:
                     price = link.get_previous_price() if use_previous_price else link.get_current_price()
                     total_cost += link.calculate_cost_for_traffic(route['percentage'], price)
@@ -194,7 +195,7 @@ class RoutingOptimizer:
         achieved_sla = 0.0
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
-                link = self.profile.get_link_by_id(route['link'])
+                link = self.link_dict.get(route['link'])
                 if link:
                     optimizer_data = link.to_optimizer_format()
                     achieved_sla += (route['percentage'] / 100.0) * (optimizer_data['SLA'] * 100)  # Convert optimizer SLA back to percentage
@@ -205,7 +206,7 @@ class RoutingOptimizer:
         display_routes = []
         for route in routing_plan['routes']:
             if route['percentage'] > 0:
-                link = self.profile.get_link_by_id(route['link'])
+                link = self.link_dict.get(route['link'])
                 if link:
                     price = link.get_previous_price() if use_previous_price else link.get_current_price()
                     display_routes.append(link.format_display_info(route['percentage'], price))
