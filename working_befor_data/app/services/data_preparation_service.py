@@ -92,7 +92,7 @@ class DataPreparationService:
         profiles = []
         for profile_data in profiles_data:
             try:
-                profile = Profile.from_api_data(profile_data, links)
+                profile = self.from_api_data(profile_data, links)
                 profiles.append(profile)
                 logger.debug(f"Processed profile {profile.profile_id} with {len(profile.links)} links")
             except Exception as e:
@@ -130,6 +130,31 @@ class DataPreparationService:
             return None
         logger.info(f"Successfully retrieved profile {profile_id}")
         return profiles[0]
+
+    @staticmethod
+    def from_api_data(data: Dict[str, Any], available_links: List[Link]) -> Profile:
+        """
+        Create a Profile instance from API data.
+        
+        Args:
+            data: API data dictionary containing profile information
+            available_links: List of available Link objects
+            
+        Returns:
+            Profile object created from API data
+        """
+        logger.debug(f"Creating Profile from API data: {data['profile_id']}")
+        profile_links = [
+            link for link in available_links 
+            if link.link in data['links']
+        ]
+        
+        return Profile(
+            profile_id=data['profile_id'],
+            name=data['name'],
+            expected_sla=float(data['expected_sla']),
+            links=profile_links
+        )
 
     @staticmethod
     def update_link_price(profiles: List[Profile], link_name: str, new_price: float, old_price: Optional[float] = None) -> None:

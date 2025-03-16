@@ -72,7 +72,8 @@ async def test_system_integration():
     
     print("\nStep 6: Creating and Updating Profiles")
     # Create Profile objects
-    profiles = [Profile.from_api_data(profile_data, available_links) for profile_data in profiles_data]
+    data_service = DataPreparationService()
+    profiles = [DataPreparationService.from_api_data(profile_data, available_links) for profile_data in profiles_data]
     affected_profiles = Profile.get_profiles_affected_by_price_change(profiles, event_data['link'])
     print(f"Found {len(affected_profiles)} affected profiles")
     

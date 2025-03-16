@@ -11,22 +11,6 @@ class Profile:
     expected_sla: float
     links: List[Link]
     
-    @classmethod
-    def from_api_data(cls, data: Dict[str, Any], available_links: List[Link]) -> 'Profile':
-        """Create a Profile instance from API data"""
-        # Get links assigned to this profile
-        profile_links = [
-            link for link in available_links 
-            if link.link in data['links']
-        ]
-        
-        return cls(
-            profile_id=data['profile_id'],
-            name=data['name'],
-            expected_sla=float(data['expected_sla']),
-            links=profile_links
-        )
-
     def to_optimizer_format(self) -> Dict[str, Any]:
         """Convert profile data to format needed by optimizer"""
         links_data = {}
