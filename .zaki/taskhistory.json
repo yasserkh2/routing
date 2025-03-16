@@ -549,14 +549,26 @@
     },
     {
       "id": "1741876241026",
-      "ts": 1741879948282,
+      "ts": 1741880144309,
       "task": "we have proplem with server.py it work for one time in the old price but it should work in the old price and then work after the update",
-      "tokensIn": 1418153,
-      "tokensOut": 24971,
+      "tokensIn": 1711653,
+      "tokensOut": 25529,
       "cacheWrites": 0,
       "cacheReads": 0,
-      "totalCost": 0.18516096,
-      "size": 773943,
+      "totalCost": 0.22071576,
+      "size": 787496,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742115838458",
+      "ts": 1742116823222,
+      "task": "based on the event_server.py do we use models class?",
+      "tokensIn": 751002,
+      "tokensOut": 3279,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.09208763999999998,
+      "size": 552622,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
