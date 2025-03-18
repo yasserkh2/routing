@@ -630,6 +630,30 @@
       "totalCost": 0.024597,
       "size": 149422,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742305983781",
+      "ts": 1742306144546,
+      "task": "revoke to the last commit",
+      "tokensIn": 48017,
+      "tokensOut": 355,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.00597504,
+      "size": 101487,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742306178359",
+      "ts": 1742306296366,
+      "task": "do event_server use events in the models?",
+      "tokensIn": 133162,
+      "tokensOut": 1220,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.01671144,
+      "size": 96761,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }
