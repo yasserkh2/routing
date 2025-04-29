@@ -4,11 +4,12 @@ from datetime import datetime
 from typing import List, Dict, Optional
 from .event_handler import EventHandler, EventType, Event
 from ..utils.logger import setup_logger
+from ..api.api import API
 
 # Setup logger
 logger = setup_logger(__name__)
 
-class MockAPIService:
+class MockAPIService(API):
     """Main service to coordinate all mock APIs"""
     
     def __init__(self):

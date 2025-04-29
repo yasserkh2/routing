@@ -666,6 +666,66 @@
       "totalCost": 0.029922,
       "size": 149222,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742818967322",
+      "ts": 1742823401081,
+      "task": "read server_event",
+      "tokensIn": 419136,
+      "tokensOut": 4063,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.018466853999999998,
+      "size": 245935,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1742999172727",
+      "ts": 1742999338988,
+      "task": "is our project can support webhook?",
+      "tokensIn": 115064,
+      "tokensOut": 1307,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.0034635000000000004,
+      "size": 100613,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1744009893388",
+      "ts": 1744009949547,
+      "task": "i need to put this project in my cv make i file with the discribtion of the project",
+      "tokensIn": 34776,
+      "tokensOut": 890,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.0013098720000000001,
+      "size": 35541,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1744024231502",
+      "ts": 1744025677467,
+      "task": "in ur terminal, go to .aws folder\n \nthen open config",
+      "tokensIn": 233811,
+      "tokensOut": 1506,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.011729574,
+      "size": 55681,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1744276652614",
+      "ts": 1744276675634,
+      "task": "run the event_server",
+      "tokensIn": 53640,
+      "tokensOut": 326,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.0035177760000000002,
+      "size": 44250,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }

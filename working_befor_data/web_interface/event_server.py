@@ -12,6 +12,7 @@ from datetime import datetime
 # Add parent directory to path so we can import from app
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from app.api.api import API
 from app.services.mock_services import MockAPIService
 from app.services.data_preparation_service import DataPreparationService
 from app.core.optimizer import RoutingOptimizer
@@ -55,8 +56,8 @@ class EventRequest(BaseModel):
     timestamp: Optional[str] = None
 
 class EventHandler:
-    def __init__(self, mock_api: MockAPIService, data_service: DataPreparationService):
-        self.mock_api = mock_api
+    def __init__(self, api_service: API, data_service: DataPreparationService):
+        self.api_service = api_service
         self.data_service = data_service
         self.link_cache = {}  # Dictionary for fast link lookups
         self.profile_cache = None  # Cache for all profiles
@@ -76,7 +77,7 @@ class EventHandler:
         """Handle price change event for a profile"""
         # Use DataPreparationService to update link price
         DataPreparationService.update_link_price([profile], link_name, new_rate, old_rate)
-        self.mock_api.handle_price_change(link_name, new_rate, old_rate)
+        self.api_service.handle_price_change(link_name, new_rate, old_rate)
         return profile
 
     async def handle_sla_change(self, profile: Profile, link_name: str, changed_sla: Dict[str, Dict[str, float]]) -> Profile:
@@ -168,9 +169,9 @@ class EventHandler:
 async def analyze_event(request: EventRequest):
     try:
         # Initialize services
-        mock_api = MockAPIService()
+        api_service = MockAPIService()  # Can be replaced with any API implementation
         data_service = DataPreparationService()
-        event_handler = EventHandler(mock_api, data_service)
+        event_handler = EventHandler(api_service, data_service)
         
         # Get event type and validate
         event_type = request.Type.lower()
@@ -272,7 +273,7 @@ async def analyze_event(request: EventRequest):
                                     / profile_result["before"]["achieved_sla"]) * 100 if profile_result["before"]["achieved_sla"] > 0 else 0.0
                     }
                 
-                # Calculate traffic shifts
+                # Calrun seerculate traffic shifts
                 traffic_shifts = await event_handler.calculate_traffic_shifts(
                     profile_result["before"]["routes"],
                     profile_result["after"]["routes"]
