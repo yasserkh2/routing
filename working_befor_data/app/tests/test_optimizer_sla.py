@@ -8,9 +8,9 @@ import json
 import os
 
 async def run_optimizer_test():
-    """Test the optimizer with mock data"""
+    """Test the optimizer with mock data focusing on SLA and tier requirements"""
     print("\n" + "="*50)
-    print("          SLA CHANGE IMPACT ANALYSIS")
+    print("          SLA OPTIMIZATION TEST")
     print("="*50 + "\n")
     
     # Initialize services
@@ -18,101 +18,65 @@ async def run_optimizer_test():
     data_service = DataPreparationService()
     
     try:
-        # Load SLA change
-        sla_update_path = os.path.join(os.path.dirname(__file__), '../../mock_data/sla_update.json')
-        with open(sla_update_path, 'r') as f:
-            change = json.load(f)
-        
         # Get all profiles using DataPreparationService
         all_profiles = await data_service.get_all_profiles()
         
-        # Process the SLA change
-        link_name = change['link']
-        changed_sla = change['Payload']['changed_sla']
-        status = change['Payload']['status']
-
-        # Find affected profiles
-        affected_profiles = data_service.get_profiles_affected_by_price_change(all_profiles, link_name)
-        
-        print("\n" + "-"*50)
-        print(f"SLA CHANGE DETAILS FOR {link_name}")
-        print("-"*50)
-        for sla_type, values in changed_sla.items():
-            print(f"{sla_type}:")
-            print(f"  Old:     {values['old']:.1f}%")
-            print(f"  New:     {values['new']:.1f}%")
-            print(f"  Change:  {values['new'] - values['old']:.1f}%")
-        print(f"Status:    {status}")
-        print(f"\nNumber of Affected Profiles: {len(affected_profiles)}")
-        
-        # Process each affected profile
-        for profile in affected_profiles:
+        # Process each profile
+        for profile in all_profiles:
             print("\n" + "-"*50)
             print(f"PROFILE: {profile.name}")
             print("-"*50)
             print(f"Expected SLA:    {profile.expected_sla}%")
-            print(f"Available Links: {len(profile.links)}")
+            print(f"In-Use Links:    {len(profile.in_use_links)}")
+            print(f"Alternative Links: {len(profile.alternative_links)}")
             
-            # Run initial optimization with old SLA values
+            print("\nAVAILABLE LINKS:")
+            print("-" * 30)
+            for link in profile.get_all_links():
+                print(f"Link {link.link} ({link.provider}):")
+                print(f"  Tier:          {link.tier}")
+                print(f"  Actual SLA:    {link.sla_dd:.1f}%")
+                print(f"  Required SLA:   {link.TIER_SLA_MAP.get(link.tier, 90.0):.1f}%")
+                print(f"  Price:         ${link.price:.3f}")
+                print()
+            
+            # Run optimization
             optimizer = RoutingOptimizer(profile)
             success = optimizer.solve()
             
             if success:
-                # Get and store initial results
-                initial_plan = optimizer.get_routing_plan()
-                
-                print("\nBEFORE SLA CHANGE:")
-                print("-" * 30)
-                for route in initial_plan['routes']:
-                    current_link = data_service.find_link_by_id(profile.links, route['link'])
-                    if current_link:
-                        route_info = current_link.format_display_info(route['percentage'])
-                        print(f"Link {route_info['link']}:")
-                        print(f"  Traffic:    {route_info['traffic']:.1f}%")
-                        print(f"  SLA:        {route_info['sla']:.1f}%")
-                        print(f"  Price:      ${route_info['price']:.3f}")
-                
-                # Get optimization stats
+                # Get and display results
+                routing_plan = optimizer.get_routing_plan()
                 stats = optimizer.get_optimization_stats()
-                print(f"\nAchieved SLA:  {stats['achieved_sla']:.2f}%")
                 
-                # Simulate SLA change without modifying database
-                target_link = data_service.find_link_by_id(profile.links, link_name)
-                if target_link:
-                    # Update the link with new SLA values
-                    updated_link = target_link.update_sla(changed_sla)
-                    # Replace the old link with the updated one in this profile only
-                    profile.links = [updated_link if link.link == link_name else link for link in profile.links]
-                optimizer = RoutingOptimizer(profile)
-                success = optimizer.solve()
+                print("\nOPTIMIZED ROUTING:")
+                print("-" * 30)
+                for route in routing_plan['routes']:
+                    print(f"Link {route['link']} ({route['provider']}):")
+                    print(f"  Traffic:       {route['percentage']:.1f}%")
+                    print(f"  Tier:          {route['tier']}")
+                    print(f"  Actual SLA:    {route['sla_dd']:.1f}%")
+                    print(f"  Required SLA:   {route['tier_sla']:.1f}%")
+                    print(f"  Price:         ${route['price']:.3f}")
+                    print()
                 
-                if success:
-                    # Get and display new results
-                    after_plan = optimizer.get_routing_plan()
-                    
-                    print("\nAFTER SLA CHANGE:")
-                    print("-" * 30)
-                    for route in after_plan['routes']:
-                        current_link = data_service.find_link_by_id(profile.links, route['link'])
-                        if current_link:
-                            route_info = current_link.format_display_info(route['percentage'])
-                            print(f"Link {route_info['link']}:")
-                            print(f"  Traffic:    {route_info['traffic']:.1f}%")
-                            print(f"  SLA:        {route_info['sla']:.1f}%")
-                            print(f"  Price:      ${route_info['price']:.3f}")
-                    
-                    # Get optimization stats
-                    stats = optimizer.get_optimization_stats()
-                    print(f"\nAchieved SLA:  {stats['achieved_sla']:.2f}%")
-                    
-                    # Display warning if target SLA cannot be achieved and show max achievable
-                    if not stats['sla_achievable']:
-                        print(f"\nWARNING: {stats['warning']}")
-                        print(f"Max Achievable SLA: {stats['max_achievable_sla']:.2f}%")
-                else:
-                    print("\nFailed to find optimal solution after SLA change")
+                print("\nOPTIMIZATION STATS:")
+                print("-" * 30)
+                print(f"Achieved SLA:    {stats['achieved_sla']:.2f}%")
+                print(f"Total Cost:      ${stats['total_cost']:.2f}")
+                print(f"Links Used:      {stats['links_used']}")
+                
+                print("\nTIER STATISTICS:")
+                print("-" * 30)
+                for tier, tier_data in sorted(stats['tier_stats'].items()):
+                    print(f"Tier {tier}:")
+                    print(f"  Traffic:       {tier_data['traffic']:.1f}%")
+                    print(f"  Required SLA:   {tier_data['required_sla']:.1f}%")
+                
+                if not stats['sla_achievable']:
+                    print(f"\nWARNING: {stats['warning']}")
             else:
-                print("\nFailed to find initial optimal solution")
+                print("\nFailed to find optimal solution")
             
     except Exception as e:
         print(f"Error running optimizer: {str(e)}")

@@ -16,11 +16,16 @@ class API(ABC):
         pass
     
     @abstractmethod
+    async def get_combined_data(self) -> List[Dict]:
+        """Get combined profile and link data"""
+        pass
+    
+    @abstractmethod
     async def get_links_data(self, mnc: Optional[str] = None) -> List[Dict]:
-        """Get comprehensive data for links"""
+        """Get comprehensive data for links (legacy method)"""
         pass
     
     @abstractmethod
     async def get_profile_config(self, profile_id: Optional[str] = None) -> List[Dict]:
-        """Get profile configurations"""
+        """Get profile configurations (legacy method)"""
         pass
