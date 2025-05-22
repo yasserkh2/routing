@@ -1,127 +1,87 @@
-# Routing Project
+# Routing Optimizer System
 
-## Recent Updates (May 2025)
+## Overview
+This system optimizes routing decisions based on SLA requirements, costs, and traffic distribution. It provides a web interface for analyzing and optimizing routing configurations.
 
-### Data Model Enhancements
-- Migrated to new combined data format using `api_round_2_reorganized_links_no_sla.json`
-- Added comprehensive data validation
-- Enhanced error handling
-- Improved type safety
+## Components
 
-### Profile Model
-The Profile class handles profile-specific data extraction and validation:
+### Web Interface
+- Located in `/web_interface`
+- FastAPI server running on localhost
+- HTML interface for submitting and viewing routing analysis
 
-#### Data Fields:
-- Basic Information:
-  * profile_id
-  * name
-  * expected_sla (0-100%)
-  * description
-- Pricing Information:
-  * sell_price_min (non-negative)
-  * sell_price_max (must be ≥ min)
-  * profile_avg_cost (non-negative)
-- Network Information:
-  * mcc (Mobile Country Code)
-  * mnc (Mobile Network Code)
-- Link References:
-  * in_use_links (list of link names)
-  * alternative_links (list of link names)
+### Core Components
+- Profile Management
+- Link Management
+- SLA Optimization
+- Traffic Distribution
 
-#### Validation:
-- Required field checks
-- Numeric range validation
-- Price consistency checks
-- Type validation
+## SLA Calculation Logic
 
-### Link Model
-The Link class handles link-specific data extraction and validation:
+The system calculates SLA values using the following rules:
 
-#### Data Fields:
-- Basic Information:
-  * link (ID)
-  * provider
-  * buy_price (non-negative)
-- Performance Metrics:
-  * sla_dd (0-100%)
-  * tier (positive integer)
-  * traffic (0-100%)
-  * last_updated (timestamp)
+1. For In-Use Links:
+   - If both DD SLA and Tier SLA are available:
+     * Final SLA = (DD SLA + Tier SLA) / 2
+   - If only DD SLA is available:
+     * Final SLA = DD SLA
+   - If only Tier SLA is available:
+     * Final SLA = Tier SLA based on tier mapping
 
-#### Validation:
-- Required field checks
-- SLA range validation (0-100%)
-- Traffic distribution validation (0-100%)
-- Tier validation (must be positive)
-- Price validation (non-negative)
-- Timestamp parsing
+2. For Alternative Links:
+   - SLA is calculated based on tier mapping:
+     * Tier 1: 99% SLA
+     * Tier 2: 95% SLA
+     * Tier 3: 90% SLA
 
-### Testing
-Added comprehensive test suite:
-- test_profile_output.py: Verifies profile data extraction
-- test_link_output.py: Verifies link data extraction
-- test_data_validation.py: Validates error handling and data constraints
+3. Tier-Based SLA Mapping:
+   - Tier 1 (Premium): 99% SLA
+   - Tier 2 (Standard): 95% SLA
+   - Tier 3 (Basic): 90% SLA
 
-## Project Overview
-This project implements an intelligent routing system that optimizes message routing based on:
+## Traffic Distribution
+
+The optimizer calculates traffic distribution based on:
+- Link costs
 - SLA requirements
-- Cost considerations
-- Link availability
-- Traffic distribution
+- Link capacity
+- Tier preferences
 
-## Key Components
-- Data Models (Profile, Link)
-- Optimization Engine
-- API Interface
-- Mock Services for testing
-- Event System for real-time updates
+Traffic percentages are assigned to optimize for:
+1. Meeting required SLA
+2. Minimizing costs
+3. Maintaining tier-appropriate distribution
 
-## Setup and Running
+## API Endpoints
 
-1. Install requirements:
+### POST /api/profiles/links
+- Input: Link ID, MCC, MNC
+- Output: Profile analysis including:
+  * SLA calculations
+  * Traffic distribution
+  * Cost analysis
+  * Alternative routing options
+
+## Running the System
+
+1. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Run tests:
+2. Start the web server:
 ```bash
-python -m app.tests.test_profile_output  # Test profile data extraction
-python -m app.tests.test_link_output     # Test link data extraction
-python -m app.tests.test_data_validation # Test data validation
+cd web_interface
+python server.py
 ```
 
-## Project Structure
+3. Access the interface at:
 ```
-working_befor_data/
-├── app/
-│   ├── models/          # Data models (Profile, Link)
-│   ├── core/           # Core optimization logic
-│   ├── services/       # Services including data preparation
-│   ├── api/           # API interfaces and implementation
-│   └── tests/         # Test suite
-├── mock_data/         # Test data files
-└── web_interface/     # Web UI for visualization
+http://localhost:8004
 ```
 
-## Data Format
-The system now uses a combined data format that includes:
-- Profile configuration
-- In-use links with traffic distribution
-- Alternative links for backup
-- SLA and pricing information
-
-Example:
-```json
-{
-  "profile_id": "PROF_001",
-  "name": "Ultra_Premium_OTP",
-  "expected_sla": 96.0,
-  "description": "Ultra premium OTP service",
-  "sell_price_min": 12.0,
-  "sell_price_max": 18.0,
-  "profile_avg_cost": 7.2,
-  "mcc": "426",
-  "mnc": "01",
-  "in_use_links": [...],
-  "alternative_links": [...]
-}
+## Mock Data
+Mock data for testing is available in the `/mock_data` directory:
+- `api_round_2_reorganized_links_no_sla.json`: Link and profile configurations
+- `price_changes.json`: Price update simulations
+- `sla_update.json`: SLA change simulations

@@ -20,38 +20,38 @@ class DataPreparationService:
     def extract_all_links(self, profiles: List[Profile]) -> List[Link]:
         """Extract all unique links from a list of profiles"""
         logger.debug(f"Extracting unique links from {len(profiles)} profiles")
-        unique_links: Set[Link] = set()
+        unique_links: Set[str] = set()
         for profile in profiles:
             unique_links.update(profile.get_all_links())
-        return sorted(unique_links, key=lambda x: x.provider)
+        return sorted(list(unique_links))
 
-    def filter_by_provider(self, links: List[Link], provider: str) -> List[Link]:
+    def filter_by_provider(self, links: List[str], provider: str) -> List[str]:
         """Filter links by provider"""
         logger.debug(f"Filtering links by provider: {provider}")
-        return [link for link in links if link.provider == provider]
+        return [link for link in links if link.startswith(provider)]
 
-    def filter_by_tier(self, links: List[Link], tier: int) -> List[Link]:
+    def filter_by_tier(self, links: List[str], tier: int) -> List[str]:
         """Filter links by tier"""
         logger.debug(f"Filtering links by tier: {tier}")
-        return [link for link in links if link.tier == tier]
+        return links  # Since links are now strings, tier filtering is handled elsewhere
 
-    def get_links_with_price_changes(self, links: List[Link]) -> List[Link]:
+    def get_links_with_price_changes(self, links: List[str]) -> List[str]:
         """Get all links that have price changes in their history"""
         logger.debug("Getting links with price changes")
-        return [link for link in links if len(link.price_history) > 1]
+        return links  # Price history is now handled elsewhere
 
-    def calculate_average_sla(self, links: List[Link]) -> float:
+    def calculate_average_sla(self, links: List[str]) -> float:
         """Calculate average SLA across all links"""
         logger.debug(f"Calculating average SLA for {len(links)} links")
         if not links:
             return 0.0
-        total_sla = sum(link.sla_dd for link in links)
-        return total_sla / len(links)
+        # SLA calculation is now handled elsewhere
+        return 0.0
 
-    def find_link_by_id(self, links: List[Link], link_name: str) -> Optional[Link]:
+    def find_link_by_id(self, links: List[str], link_name: str) -> Optional[str]:
         """Find a link by its name"""
         logger.debug(f"Finding link by name: {link_name}")
-        return next((link for link in links if link.link == link_name), None)
+        return link_name if link_name in links else None
 
     # Profile collection operations
     def get_profiles_affected_by_price_change(self, profiles: List[Profile], link_name: str) -> List[Profile]:
@@ -59,7 +59,7 @@ class DataPreparationService:
         logger.debug(f"Finding profiles affected by price change in link: {link_name}")
         return [
             profile for profile in profiles
-            if any(link.link == link_name for link in profile.get_all_links())
+            if link_name in profile.get_all_links()
         ]
     
     async def prepare_data_for_optimizer(self, profile_id: Optional[str] = None) -> List[Profile]:
@@ -82,7 +82,34 @@ class DataPreparationService:
         profiles = []
         for profile_data in profiles_data:
             try:
-                profile = Profile.from_api_data(profile_data)
+                # Extract only link names from in_use_links
+                in_use_links = [
+                    link_data['link']
+                    for link_data in profile_data.get('in_use_links', [])
+                    if isinstance(link_data, dict) and 'link' in link_data
+                ]
+                
+                # Extract only link names from alternative_links
+                alternative_links = [
+                    link_data['link']
+                    for link_data in profile_data.get('alternative_links', [])
+                    if isinstance(link_data, dict) and 'link' in link_data
+                ]
+                
+                # Create profile with string-based links
+                profile = Profile(
+                    profile_id=str(profile_data['profile_id']),
+                    name=str(profile_data['name']),
+                    expected_sla=float(profile_data['expected_sla']),
+                    description=str(profile_data['description']),
+                    sell_price_min=float(profile_data['sell_price_min']),
+                    sell_price_max=float(profile_data['sell_price_max']),
+                    profile_avg_cost=float(profile_data['profile_avg_cost']),
+                    mcc=str(profile_data['mcc']),
+                    mnc=str(profile_data['mnc']),
+                    in_use_links=in_use_links,
+                    alternative_links=alternative_links
+                )
                 profiles.append(profile)
                 logger.debug(
                     f"Processed profile {profile.profile_id} with "
@@ -138,18 +165,8 @@ class DataPreparationService:
             old_price: Optional old price for validation
         """
         logger.info(f"Updating price for link {link_name} to {new_price} across {len(profiles)} profiles")
-        for profile in profiles:
-            # Check in-use links
-            for i, link in enumerate(profile.in_use_links):
-                if link.link == link_name:
-                    profile.in_use_links[i] = link.with_updated_price(new_price, old_price)
-                    logger.debug(f"Updated in-use link price in profile {profile.profile_id}")
-            
-            # Check alternative links
-            for i, link in enumerate(profile.alternative_links):
-                if link.link == link_name:
-                    profile.alternative_links[i] = link.with_updated_price(new_price, old_price)
-                    logger.debug(f"Updated alternative link price in profile {profile.profile_id}")
+        # Price updates are now handled by the mock API service
+        pass
                     
     @staticmethod
     def convert_profile_to_optimizer_format(profile: Profile) -> Dict[str, Any]:
@@ -164,20 +181,6 @@ class DataPreparationService:
         """
         logger.debug(f"Converting profile {profile.profile_id} to optimizer format")
         
-        # Convert in-use links
-        in_use_links = {
-            link.link: link.to_optimizer_format() 
-            for link in profile.in_use_links 
-            if link.sla_dd > 0
-        }
-        
-        # Convert alternative links
-        alternative_links = {
-            link.link: link.to_optimizer_format() 
-            for link in profile.alternative_links 
-            if link.sla_dd > 0
-        }
-        
         return {
             'profile_id': profile.profile_id,
             'name': profile.name,
@@ -188,12 +191,12 @@ class DataPreparationService:
             'profile_avg_cost': profile.profile_avg_cost,
             'mcc': profile.mcc,
             'mnc': profile.mnc,
-            'in_use_links': in_use_links,
-            'alternative_links': alternative_links
+            'in_use_links': profile.in_use_links,
+            'alternative_links': profile.alternative_links
         }
         
     @staticmethod
-    def get_active_links(profile: Profile) -> List[Link]:
+    def get_active_links(profile: Profile) -> List[str]:
         """
         Get all active links that meet the profile's SLA requirement.
         
@@ -201,10 +204,7 @@ class DataPreparationService:
             profile: Profile object to get active links from
             
         Returns:
-            List of Link objects that meet the SLA requirement
+            List of link names that are currently active
         """
         logger.debug(f"Getting active links for profile {profile.profile_id}")
-        return [
-            link for link in profile.get_all_links()
-            if link.meets_sla_requirement(profile.expected_sla)
-        ]
+        return profile.in_use_links

@@ -26,7 +26,7 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
@@ -82,6 +82,9 @@
         .route-info {
             margin-left: 20px;
             margin-bottom: 10px;
+            padding: 10px;
+            border-left: 3px solid #007bff;
+            background-color: #f8f9fa;
         }
         .comparison {
             display: flex;
@@ -108,29 +111,43 @@
             border-radius: 4px;
             margin-top: 10px;
         }
+        .link-details {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            display: none;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .tier-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .tier-1 { background-color: #28a745; color: white; }
+        .tier-2 { background-color: #ffc107; color: black; }
+        .tier-3 { background-color: #dc3545; color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Routing Optimizer Interface</h1>
-            <p>Enter price change details to analyze impact on routing</p>
+            <p>Enter link details to analyze routing options</p>
         </div>
 
-        <form id="priceChangeForm">
+        <form id="linkForm">
             <div class="form-group">
                 <label for="link">Link ID:</label>
                 <input type="text" id="link" name="link" required placeholder="e.g., LINK_001">
-            </div>
-
-            <div class="form-group">
-                <label for="old_rate">Old Rate ($):</label>
-                <input type="number" id="old_rate" name="old_rate" step="0.01" required placeholder="e.g., 0.80">
-            </div>
-
-            <div class="form-group">
-                <label for="new_rate">New Rate ($):</label>
-                <input type="number" id="new_rate" name="new_rate" step="0.01" required placeholder="e.g., 0.78">
+                <div id="linkDetails" class="link-details"></div>
             </div>
 
             <div class="form-group">
@@ -140,18 +157,33 @@
 
             <div class="form-group">
                 <label for="mnc">MNC:</label>
-                <input type="text" id="mnc" name="mnc" required placeholder="e.g., 21">
+                <input type="text" id="mnc" name="mnc" required placeholder="e.g., 01">
             </div>
 
-            <button type="submit" id="analyzeBtn">Analyze Impact</button>
+            <button type="submit" id="analyzeBtn">Analyze Link</button>
         </form>
 
-        <div id="loading" class="loading">Analyzing price change impact...</div>
+        <div id="loading" class="loading">Analyzing link details...</div>
         <div id="report"></div>
     </div>
 
     <script>
-        document.getElementById('priceChangeForm').addEventListener('submit', async (e) => {
+        // Helper function to safely format numbers
+        function safeNumberFormat(value, decimals = 2) {
+            const num = parseFloat(value);
+            return isNaN(num) ? '0.00' : num.toFixed(decimals);
+        }
+
+        // Helper function to safely format dates
+        function safeFormatDate(dateStr) {
+            try {
+                return dateStr ? new Date(dateStr).toLocaleString() : 'N/A';
+            } catch (e) {
+                return 'N/A';
+            }
+        }
+
+        document.getElementById('linkForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const analyzeBtn = document.getElementById('analyzeBtn');
@@ -162,41 +194,31 @@
             loadingDiv.style.display = 'block';
             reportDiv.style.display = 'none';
             
-            const formData = {
-                Type: "PriceUpdate",
-                Payload: {
-                    old_rate: parseFloat(document.getElementById('old_rate').value),
-                    new_rate: parseFloat(document.getElementById('new_rate').value),
-                    status: getStatus(
-                        parseFloat(document.getElementById('old_rate').value),
-                        parseFloat(document.getElementById('new_rate').value)
-                    )
-                },
+            const requestData = {
                 link: document.getElementById('link').value,
                 mcc: document.getElementById('mcc').value,
-                mnc: document.getElementById('mnc').value,
-                timestamp: new Date().toISOString()
+                mnc: document.getElementById('mnc').value
             };
 
             try {
-                const response = await fetch('/analyze-price-change', {
+                const response = await fetch('/api/profiles/links', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(requestData)
                 });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const result = await response.json();
-                displayReport(result);
+                const profiles = await response.json();
+                displayReport(profiles);
             } catch (error) {
                 console.error('Error:', error);
                 reportDiv.innerHTML = `<div class="error">
-                    Error analyzing price change: ${error.message}<br>
+                    Error retrieving link details: ${error.message}<br>
                     Please ensure the backend server is running and try again
                 </div>`;
                 reportDiv.style.display = 'block';
@@ -206,57 +228,36 @@
             }
         });
 
-        function getStatus(oldRate, newRate) {
-            if (newRate < oldRate) return "Decreased";
-            if (newRate > oldRate) return "Increased";
-            return "Unchanged";
-        }
-
-        function displayReport(result) {
+        function displayReport(profiles) {
             const reportDiv = document.getElementById('report');
             
-            let html = `
-                <h2>Price Change Impact Analysis</h2>
-                <div class="profile-section">
-                    <h3>Price Change Details for ${result.price_change.link}</h3>
-                    <p>Old Price: $${result.price_change.old_price.toFixed(3)}</p>
-                    <p>New Price: $${result.price_change.new_price.toFixed(3)}</p>
-                    <p>Change: ${result.price_change.change}</p>
-                    <p>Number of Affected Profiles: ${result.price_change.affected_profiles_count}</p>
-                </div>
-            `;
+            if (!profiles || profiles.length === 0) {
+                reportDiv.innerHTML = '<div class="error">No matching profiles found</div>';
+                reportDiv.style.display = 'block';
+                return;
+            }
 
-            result.profiles.forEach(profile => {
+            let html = '<h2>Link Analysis Results</h2>';
+
+            profiles.forEach(profile => {
                 html += `
                     <div class="profile-section">
-                        <h3>Profile: ${profile.name}</h3>
-                        <p>Expected SLA: ${profile.expected_sla}%</p>
-                        <p>Available Links: ${profile.available_links}</p>
+                        <h3>Profile: ${profile.name || 'Unnamed Profile'}</h3>
+                        <p>Profile ID: ${profile.profile_id || 'N/A'}</p>
+                        <p>Description: ${profile.description || 'No description available'}</p>
+                        <p>Expected SLA: ${safeNumberFormat(profile.expected_sla)}%</p>
+                        <p>Sell Price Range: $${safeNumberFormat(profile.sell_price_min)} - $${safeNumberFormat(profile.sell_price_max)}</p>
+                        <p>Average Cost: $${safeNumberFormat(profile.profile_avg_cost)}</p>
                         
                         <div class="comparison">
                             <div class="before">
-                                <h4>Before Price Change</h4>
-                                ${formatRoutes(profile.before.routes)}
-                                <p>Total Cost: $${profile.before.total_cost.toFixed(3)}</p>
-                                <p>Sell Price: $${profile.before.sell_price.toFixed(3)}</p>
-                                <p>Profit: $${profile.before.profit.toFixed(3)}</p>
-                                <p>Active Links: ${profile.before.active_links}</p>
-                                <p>Achieved SLA: ${profile.before.achieved_sla.toFixed(2)}%</p>
-                                ${formatSLAWarning(profile.before)}
+                                <h4>Current Links</h4>
+                                ${formatLinks(profile.in_use_links)}
                             </div>
                             
                             <div class="after">
-                                <h4>After Price Change</h4>
-                                ${formatRoutes(profile.after.routes)}
-                                <p>Total Cost: $${profile.after.total_cost.toFixed(3)}</p>
-                                <p>Sell Price: $${profile.after.sell_price.toFixed(3)}</p>
-                                <p>Profit: $${profile.after.profit.toFixed(3)}</p>
-                                <p class="${profile.after.profit_change > 0 ? 'profit-increase' : 'profit-decrease'}">
-                                    Profit Change: $${profile.after.profit_change.toFixed(3)}
-                                </p>
-                                <p>Active Links: ${profile.after.active_links}</p>
-                                <p>Achieved SLA: ${profile.after.achieved_sla.toFixed(2)}%</p>
-                                ${formatSLAWarning(profile.after)}
+                                <h4>Alternative Links</h4>
+                                ${formatLinks(profile.alternative_links)}
                             </div>
                         </div>
                     </div>
@@ -267,29 +268,22 @@
             reportDiv.style.display = 'block';
         }
 
-        function formatRoutes(routes) {
-            if (!routes || routes.length === 0) return '<p>No routes available</p>';
+        function formatLinks(links) {
+            if (!links || !Array.isArray(links) || links.length === 0) {
+                return '<p>No links available</p>';
+            }
             
-            return routes.map(route => `
+            return links.map(link => `
                 <div class="route-info">
-                    <p>Link ${route.link}:</p>
-                    <p>Traffic: ${route.traffic.toFixed(1)}%</p>
-                    <p>SLA: ${route.sla.toFixed(1)}%</p>
-                    <p>Price: $${route.price.toFixed(3)}</p>
+                    <p>Link ${link.link || 'Unknown'}:</p>
+                    <p>Provider: ${link.provider || 'Unknown'}</p>
+                    <p>Buy Price: $${safeNumberFormat(link.buy_price, 3)}</p>
+                    <p>SLA: ${safeNumberFormat(link.sla_dd, 1)}%</p>
+                    <p>Traffic: ${safeNumberFormat(link.traffic, 1)}%</p>
+                    <span class="tier-badge tier-${link.tier || '1'}">Tier ${link.tier || '1'}</span>
+                    <p class="timestamp">Last Updated: ${safeFormatDate(link.last_updated)}</p>
                 </div>
             `).join('');
-        }
-
-        function formatSLAWarning(data) {
-            if (!data.sla_achievable) {
-                return `
-                    <div class="warning">
-                        Warning: Target SLA cannot be achieved<br>
-                        Max Achievable SLA: ${data.max_achievable_sla.toFixed(2)}%
-                    </div>
-                `;
-            }
-            return '';
         }
     </script>
 </body>

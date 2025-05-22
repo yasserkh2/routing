@@ -6,7 +6,6 @@ from ..services.event_handler import EventHandler, EventType
 from ..services.mock_services import MockAPIService
 from ..services.data_preparation_service import DataPreparationService
 from ..models.profile import Profile
-from ..models.link import Link
 from ..core.optimizer import RoutingOptimizer
 
 async def test_system_integration():
@@ -23,10 +22,6 @@ async def test_system_integration():
     # Read initial data
     with open(os.path.join(mock_data_dir, 'price_changes.json'), 'r') as f:
         price_changes = json.load(f)
-    with open(os.path.join(mock_data_dir, 'mock_links_data.json'), 'r') as f:
-        links_data = json.load(f)
-    with open(os.path.join(mock_data_dir, 'mock_profiles.json'), 'r') as f:
-        profiles_data = json.load(f)
     
     print("\nStep 2: Creating Price Change Event")
     price_change = price_changes[0]
@@ -62,22 +57,14 @@ async def test_system_integration():
     if affected_link:
         print(f"Link {affected_link['link']} updated price: ${affected_link['price']:.3f}")
     
-    print("\nStep 5: Creating Link Objects")
-    # Create Link objects with updated data
-    available_links = [Link.from_api_data(link_data) for link_data in links_data]
-    for link in available_links:
-        if link.link == event_data['link']:
-            print(f"Link object created: {link}")
-            print(f"Price history: {link.price_history}")
-    
-    print("\nStep 6: Creating and Updating Profiles")
-    # Create Profile objects
+    print("\nStep 5: Creating and Updating Profiles")
+    # Create Profile objects using DataPreparationService
     data_service = DataPreparationService()
-    profiles = [DataPreparationService.from_api_data(profile_data, available_links) for profile_data in profiles_data]
-    affected_profiles = Profile.get_profiles_affected_by_price_change(profiles, event_data['link'])
+    profiles = await data_service.get_all_profiles()
+    affected_profiles = data_service.get_profiles_affected_by_price_change(profiles, event_data['link'])
     print(f"Found {len(affected_profiles)} affected profiles")
     
-    print("\nStep 7: Running Optimization for Affected Profiles")
+    print("\nStep 6: Running Optimization for Affected Profiles")
     print("\n=== Revenue Impact Dashboard ===")
     total_old_revenue = 0
     total_new_revenue = 0
@@ -88,8 +75,8 @@ async def test_system_integration():
         
         # Calculate revenue before price change
         optimizer_before = RoutingOptimizer(profile)
-        if optimizer_before.solve():
-            stats_before = optimizer_before.get_optimization_stats()
+        if await optimizer_before.solve():
+            stats_before = await optimizer_before.get_optimization_stats()
             old_revenue = stats_before['total_cost']
             total_old_revenue += old_revenue
             
@@ -102,8 +89,8 @@ async def test_system_integration():
 
             # Calculate revenue after price change and optimization
             optimizer_after = RoutingOptimizer(profile)
-            if optimizer_after.solve():
-                stats_after = optimizer_after.get_optimization_stats()
+            if await optimizer_after.solve():
+                stats_after = await optimizer_after.get_optimization_stats()
                 new_revenue = stats_after['total_cost']
                 total_new_revenue += new_revenue
                 
@@ -117,8 +104,8 @@ async def test_system_integration():
                 print(f"Revenue Change:     ${revenue_change:+.4f} ({revenue_change_pct:+.2f}%)")
                 
                 # Show routing changes
-                plan_before = optimizer_before.get_routing_plan()
-                plan_after = optimizer_after.get_routing_plan()
+                plan_before = await optimizer_before.get_routing_plan()
+                plan_after = await optimizer_after.get_routing_plan()
                 
                 print("\nRouting Changes:")
                 print("Before:")

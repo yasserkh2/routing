@@ -1,12 +1,14 @@
-{
-    "Type": "PriceUpdate",
-    "Payload": {
-        "old_rate": 10,
-        "new_rate": 11,
-        "status": "Decreased"
-    },
-    "link": "LINK_001",
-    "mcc": "426",
-    "mnc": "21",
-    "timestamp": "2025-03-03T12:40:00.000Z"
-}
+[
+    {
+        "Type": "PriceUpdate",
+        "Payload": {
+            "old_rate": 9,
+            "new_rate": 11,
+            "status": "Increased"
+        },
+        "link": "LINK_001",
+        "mcc": "426",
+        "mnc": "01",
+        "timestamp": "2025-03-03T12:40:00.000Z"
+    }
+]

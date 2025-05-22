@@ -1,12 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import os
 import sys
-import os
 import json
 from datetime import datetime
 
@@ -18,6 +17,10 @@ from app.services.data_preparation_service import DataPreparationService
 from app.core.optimizer import RoutingOptimizer
 from app.models.profile import Profile
 from app.models.link import Link
+from app.utils.logger import setup_logger
+
+# Setup logger
+logger = setup_logger(__name__)
 
 app = FastAPI()
 
@@ -30,159 +33,97 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-static_dir = os.path.dirname(os.path.abspath(__file__))
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
-
-@app.get("/")
-async def read_root():
-    return FileResponse(os.path.join(static_dir, "index.html"))
-
-class PriceChangeRequest(BaseModel):
-    Type: str
-    Payload: dict
+class LinkRequest(BaseModel):
     link: str
     mcc: str
     mnc: str
-    timestamp: Optional[str] = None
 
-@app.post("/analyze-price-change")
-async def analyze_price_change(request: PriceChangeRequest):
+@app.get("/")
+async def read_root():
+    static_dir = os.path.dirname(os.path.abspath(__file__))
+    return FileResponse(os.path.join(static_dir, "index.html"))
+
+@app.post("/api/profiles/links")
+async def get_profile_links(request: LinkRequest):
     try:
         # Initialize services
         mock_api = MockAPIService()
-        data_service = DataPreparationService()
         
-        # Process the price change
-        link_name = request.link
-        old_rate = request.Payload["old_rate"]
-        new_rate = request.Payload["new_rate"]
-        status = request.Payload["status"]
+        # Get data directly from mock API
+        data = await mock_api.get_combined_data()
         
-        # Get all profiles
-        all_profiles = await data_service.get_all_profiles()
+        # Filter profiles by MCC and MNC
+        matching_profiles = [
+            profile for profile in data 
+            if profile['mcc'] == request.mcc and profile['mnc'] == request.mnc
+        ]
         
-        # Find affected profiles
-        affected_profiles = Profile.get_profiles_affected_by_price_change(all_profiles, link_name)
+        if not matching_profiles:
+            return JSONResponse(content=[], status_code=200)
         
-        results = {
-            "price_change": {
-                "link": link_name,
-                "old_price": old_rate,
-                "new_price": new_rate,
-                "change": status,
-                "affected_profiles_count": len(affected_profiles)
-            },
-            "profiles": []
-        }
-        
-        # Process each affected profile
-        for profile in affected_profiles:
-            profile_result = {
-                "name": profile.name,
-                "expected_sla": profile.expected_sla,
-                "available_links": len(profile.links),  # Show total number of links
-                "before": {},
-                "after": {}
-            }
-            
-            # Run initial optimization with old price
-            optimizer = RoutingOptimizer(profile)
-            success = optimizer.solve()
-            
-            if success:
-                # Get initial results with old price
-                initial_plan = optimizer.get_routing_plan()
-                initial_stats = optimizer.get_optimization_stats()
+        # Create Profile object and optimize for each matching profile
+        optimized_profiles = []
+        for profile_data in matching_profiles:
+            try:
+                # Create Profile object using from_api_data
+                profile = Profile.from_api_data(profile_data)
+                logger.info(f"Created profile object for {profile_data['profile_id']}")
                 
-                # Calculate initial costs
-                total_cost = 0.0
-                active_links = 0
-                routes_info = []
-                
-                for route in initial_plan['routes']:
-                    if route['percentage'] > 0:
-                        active_links += 1
-                        current_link = Link.find_by_id(profile.links, route['link'])
-                        if current_link:
-                            override_price = old_rate if route['link'] == link_name else None
-                            route_info = current_link.format_display_info(route['percentage'], override_price)
-                            total_cost += current_link.calculate_cost_for_traffic(route['percentage'], override_price)
-                            routes_info.append(route_info)
-                
-                # Get profile's sell price
-                profiles_path = os.path.join(os.path.dirname(__file__), '../mock_data/profiles.json')
-                with open(profiles_path, 'r') as f:
-                    profiles_data = json.load(f)
-                    profile_data = next(p for p in profiles_data if p["profile_id"] == profile.profile_id)
-                    sell_price = profile_data["sell_price"]
-                
-                initial_profit = sell_price - total_cost
-                
-                profile_result["before"] = {
-                    "routes": routes_info,
-                    "total_cost": total_cost,
-                    "sell_price": sell_price,
-                    "profit": initial_profit,
-                    "active_links": active_links,
-                    "achieved_sla": initial_stats['achieved_sla'],
-                    "sla_achievable": initial_stats['sla_achievable'],
-                    "max_achievable_sla": initial_stats.get('max_achievable_sla')
+                # Initialize and run optimizer
+                optimizer = RoutingOptimizer(profile)
+                if await optimizer.solve():
+                    # Get optimization results
+                    routing_plan = await optimizer.get_routing_plan()
+                    stats = await optimizer.get_optimization_stats()
+                    
+                # Get tier-based SLA mapping
+                tier_sla_mapping = {
+                    1: 99.0,  # 99% SLA for tier 1
+                    2: 95.0,  # 95% SLA for tier 2
+                    3: 90.0   # 90% SLA for tier 3
                 }
+
+                # Update traffic percentages and SLAs in profile data
+                for link in profile_data['in_use_links']:
+                    # Calculate SLA based on tier
+                    tier = link.get('tier', 3)
+                    tier_sla = tier_sla_mapping.get(tier, 90.0)
+                    
+                    # Calculate final SLA (average of DD and tier if DD exists)
+                    dd_sla = link.get('sla_dd', 0)
+                    link['sla'] = (dd_sla + tier_sla) / 2 if dd_sla > 0 else tier_sla
+                    
+                    # Update traffic from optimization results
+                    link['traffic'] = 0  # Default to 0
+                    for route in routing_plan['routes']:
+                        if route['link'] == link['link']:
+                            link['traffic'] = route['percentage']
+                            break
+
+                # Update SLAs for alternative links
+                for link in profile_data['alternative_links']:
+                    # Calculate SLA based on tier
+                    tier = link.get('tier', 3)
+                    tier_sla = tier_sla_mapping.get(tier, 90.0)
+                    link['sla'] = tier_sla
+                    link['traffic'] = 0  # Alternative links have 0 traffic
                 
-                # Create a temporary copy of the profile for simulation
-                updated_profile = profile.clone()
+                optimized_profiles.append(profile_data)
                 
-                # Update the price in the temporary profile without persisting
-                target_link = Link.find_by_id(updated_profile.links, link_name)
-                if target_link:
-                    updated_link = target_link.with_updated_price(new_rate, old_rate)
-                    # Update the link in the temporary profile
-                    updated_profile.links = [updated_link if l.link == link_name else l for l in updated_profile.links]
-                optimizer = RoutingOptimizer(updated_profile)
-                success = optimizer.solve()
-                
-                if success:
-                    after_plan = optimizer.get_routing_plan()
-                    after_stats = optimizer.get_optimization_stats()
-                    
-                    # Calculate after costs
-                    total_cost = 0.0
-                    active_links = 0
-                    routes_info = []
-                    
-                    for route in after_plan['routes']:
-                        if route['percentage'] > 0:
-                            active_links += 1
-                            current_link = Link.find_by_id(updated_profile.links, route['link'])
-                            if current_link:
-                                override_price = new_rate if route['link'] == link_name else None
-                                route_info = current_link.format_display_info(route['percentage'], override_price)
-                                total_cost += current_link.calculate_cost_for_traffic(route['percentage'], override_price)
-                                routes_info.append(route_info)
-                    
-                    new_profit = sell_price - total_cost
-                    profit_change = new_profit - initial_profit
-                    
-                    profile_result["after"] = {
-                        "routes": routes_info,
-                        "total_cost": total_cost,
-                        "sell_price": sell_price,
-                        "profit": new_profit,
-                        "profit_change": profit_change,
-                        "active_links": active_links,
-                        "achieved_sla": after_stats['achieved_sla'],
-                        "sla_achievable": after_stats['sla_achievable'],
-                        "max_achievable_sla": after_stats.get('max_achievable_sla')
-                    }
+            except Exception as e:
+                logger.error(f"Error processing profile {profile_data.get('profile_id', 'unknown')}: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Error processing profile: {str(e)}")
             
-            results["profiles"].append(profile_result)
-        
-        return results
+        return JSONResponse(content=optimized_profiles, status_code=200)
         
     except Exception as e:
+        logger.error(f"Error in get_profile_links: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# Mount static files after routes
+static_dir = os.path.dirname(os.path.abspath(__file__))
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8004)

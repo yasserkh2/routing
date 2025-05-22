@@ -1,36 +1,46 @@
 # Tests Directory
 
-This directory contains all test-related files for ensuring system quality and reliability.
+## Test Files
 
-## Components
-
-- `event_handler_example.py`: Examples and tests for the event handling system
-- `run_optimizer.py`: Tests for the optimization engine
-- `system_integration_test.py`: End-to-end integration tests
-
-## Test Categories
-
-### Event Handler Tests
-- Validates event processing
-- Tests event flow paths
-- Ensures proper event handling and callbacks
-
-### Optimizer Tests
-- Tests optimization algorithms
-- Validates routing decisions
-- Checks SLA compliance
+### Data Model Tests
+- `test_profile_output.py`: Tests Profile data extraction and validation
+- `test_link_output.py`: Tests Link data extraction and validation
+- `test_data_validation.py`: Tests data validation and error handling
+- `test_data_models.py`: Combined model tests
 
 ### Integration Tests
-- End-to-end system testing
-- API endpoint validation
-- Data flow verification
-- Performance testing
+- `test_optimizer_sla.py`: Tests SLA-based optimization
+- `system_integration_test.py`: End-to-end system tests
+- `event_handler_example.py`: Tests event handling system
+- `sla_change_example.py`: Tests SLA update scenarios
+- `run_optimizer.py`: Tests optimizer functionality
 
-## Purpose
+## Required Files
+```
+tests/
+├── __init__.py                 # Makes tests a package
+├── README.md                  # This documentation
+├── test_profile_output.py     # Profile model tests
+├── test_link_output.py        # Link model tests
+├── test_data_validation.py    # Data validation tests
+├── test_data_models.py        # Combined model tests
+├── test_optimizer_sla.py      # Optimizer tests
+├── system_integration_test.py # System tests
+├── event_handler_example.py   # Event system tests
+├── sla_change_example.py      # SLA update tests
+└── run_optimizer.py          # Optimizer runner
+```
 
-The tests directory ensures the system's reliability and correctness through:
-- Comprehensive test coverage
-- Validation of critical paths
-- Performance benchmarking
-- Integration testing
-- Example implementations for reference
+## Running Tests
+```bash
+# Run individual tests
+python -m app.tests.test_profile_output
+python -m app.tests.test_link_output
+python -m app.tests.test_data_validation
+
+# Run optimizer tests
+python -m app.tests.test_optimizer_sla
+python -m app.tests.run_optimizer
+
+# Run integration tests
+python -m app.tests.system_integration_test
