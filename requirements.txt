@@ -1,0 +1,16 @@
+# Core dependencies
+pulp>=2.7.0  # Linear programming solver
+python-dateutil>=2.8.2  # Date handling utilities
+typing-extensions>=4.7.1  # Enhanced typing support
+fastapi>=0.104.1  # Web framework for APIs
+uvicorn>=0.24.0  # ASGI server for FastAPI
+
+# Development dependencies
+pytest>=7.4.0  # Testing framework
+black>=23.7.0  # Code formatter
+pylint>=2.17.5  # Code linter
+mypy>=1.4.1  # Static type checker
+
+# Optional dependencies
+numpy>=1.24.0  # Numerical computations (used by some optimization functions)
+pandas>=2.0.0  # Data manipulation (useful for analyzing results)
