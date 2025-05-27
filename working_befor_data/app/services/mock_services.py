@@ -38,9 +38,40 @@ class MockAPIService(API):
             # Get base data
             data = self._read_json_file('api_round_2_reorganized_links_no_sla.json')
             
+            # Transform data to the expected format
+            simulation_data = []
+            
+            # Process each profile
+            for profile in data.get('profiles', []):
+                # Create a profile entry with in_use_links from the profile
+                profile_entry = {
+                    'profile_id': profile['profile_id'],
+                    'name': profile['name'],
+                    'mcc': profile['mcc'],
+                    'mnc': profile['mnc'],
+                    'expected_sla': profile['expected_sla'],
+                    'description': profile['description'],
+                    'sell_price_min': profile['sell_price_min'],
+                    'sell_price_max': profile['sell_price_max'],
+                    'profile_avg_cost': profile.get('ProfileAvgCostUSD', 0.0),
+                    'in_use_links': profile.get('in_use_links', []),
+                    'alternative_links': []
+                }
+                
+                # Add alternative links to the profile
+                # We'll add all alternative links to each profile for testing purposes
+                for alt_link in data.get('alternative_links', []):
+                    # Convert base_buy_price to buy_price for consistency
+                    alt_link_copy = alt_link.copy()
+                    if 'base_buy_price' in alt_link_copy:
+                        alt_link_copy['buy_price'] = alt_link_copy.pop('base_buy_price')
+                    profile_entry['alternative_links'].append(alt_link_copy)
+                
+                simulation_data.append(profile_entry)
+            
             # Create a deep copy for simulation
             import copy
-            simulation_data = copy.deepcopy(data)
+            simulation_data = copy.deepcopy(simulation_data)
             
             # Apply any price and SLA updates
             for profile in simulation_data:

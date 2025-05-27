@@ -162,9 +162,10 @@ class DataPreparationService:
         
         # Define tier SLA mapping once to avoid duplication
         tier_sla_mapping = {
-            1: 0.99,  # 99% SLA for tier 1
-            2: 0.95,  # 95% SLA for tier 2
-            3: 0.90   # 90% SLA for tier 3
+            1: 0.95,  # Tier 1 – Prime
+            2: 0.90,  # Tier 2 – High
+            3: 0.80,  # Tier 3 – Med
+            4: 0.70   # Tier 4 – Low
         }
         
         for profile_data in combined_data:
@@ -175,8 +176,8 @@ class DataPreparationService:
                     dd_sla = link_data.get('sla_dd', 0) / 100.0 if 'sla_dd' in link_data else None
                     
                     # Get tier SLA
-                    tier = link_data.get('tier', 3)  # Default to tier 3 if not specified
-                    tier_sla = tier_sla_mapping.get(tier, 0.90)  # Default to 90% if tier not found
+                    tier = link_data.get('tier', 4)  # Default to tier 4 (Low) if not specified
+                    tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
                     
                     # Calculate final SLA
                     if dd_sla is not None:
@@ -196,8 +197,8 @@ class DataPreparationService:
             for link_data in profile_data['alternative_links']:
                 if link_data['link'] == link_id:
                     # Get tier SLA
-                    tier = link_data.get('tier', 3)  # Default to tier 3 if not specified
-                    tier_sla = tier_sla_mapping.get(tier, 0.90)  # Default to 90% if tier not found
+                    tier = link_data.get('tier', 4)  # Default to tier 4 (Low) if not specified
+                    tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
                     
                     return {
                         'link': link_id,
@@ -246,3 +247,214 @@ class DataPreparationService:
         """
         logger.debug(f"Getting active links for profile {profile.profile_id}")
         return profile.in_use_links
+        
+    def sort_links_by_sla(self, links_data: Dict[str, Dict[str, Any]]) -> List[tuple]:
+        """
+        Sort links by SLA (descending).
+        
+        Args:
+            links_data: Dictionary mapping link IDs to their data
+            
+        Returns:
+            List of (link_id, link_data) tuples sorted by SLA (descending)
+        """
+        logger.debug(f"Sorting {len(links_data)} links by SLA (descending)")
+        return sorted(
+            links_data.items(), 
+            key=lambda x: x[1]['sla'], 
+            reverse=True
+        )
+        
+    def get_highest_sla_link(self, links_data: Dict[str, Dict[str, Any]]) -> str:
+        """
+        Get the link with the highest SLA.
+        
+        Args:
+            links_data: Dictionary mapping link IDs to their data
+            
+        Returns:
+            ID of the link with the highest SLA
+        """
+        if not links_data:
+            logger.warning("No links data available to find highest SLA link")
+            return None
+            
+        sorted_links = self.sort_links_by_sla(links_data)
+        if sorted_links:
+            best_link_id, _ = sorted_links[0]
+            logger.debug(f"Highest SLA link: {best_link_id}")
+            return best_link_id
+        return None
+        
+    async def get_highest_sla_link_for_profile(self, profile: 'Profile') -> str:
+        """
+        Get the link with the highest SLA for a specific profile.
+        
+        Args:
+            profile: Profile object to get the highest SLA link for
+            
+        Returns:
+            ID of the link with the highest SLA
+        """
+        logger.info(f"Finding highest SLA link for profile {profile.profile_id}")
+        links_data = await self.prepare_links_data_for_optimizer(profile)
+        return self.get_highest_sla_link(links_data)
+        
+    def calculate_max_achievable_sla(self, links_data: Dict[str, Dict[str, Any]]) -> float:
+        """
+        Calculate the maximum achievable SLA from the available links.
+        
+        Args:
+            links_data: Dictionary mapping link IDs to their data
+            
+        Returns:
+            Maximum achievable SLA as a percentage
+        """
+        if not links_data:
+            logger.warning("No links data available to calculate max SLA")
+            return 0.0
+            
+        max_sla = max(link_data['sla'] for link_data in links_data.values())
+        logger.debug(f"Maximum achievable SLA: {max_sla * 100:.2f}%")
+        return max_sla * 100  # Convert to percentage
+        
+    async def prepare_routing_plan(self, profile: Profile, results: Dict[str, float]) -> Dict[str, Any]:
+        """
+        Prepare the routing plan based on optimization results.
+        
+        Args:
+            profile: Profile object
+            results: Dictionary mapping link IDs to traffic percentages (as fractions)
+            
+        Returns:
+            Dictionary containing the routing plan
+        """
+        logger.info(f"Preparing routing plan for profile {profile.profile_id}")
+        
+        # Get allocation for all links
+        routes = []
+        for link_id, percentage in results.items():
+            percentage = percentage * 100  # Convert fraction to percentage
+            if percentage > 0:  # Only include routes with traffic
+                link_data = await self.get_link_data(link_id)
+                if link_data:
+                    routes.append({
+                        'link': link_id,
+                        'provider': link_data['provider'],
+                        'percentage': percentage,
+                        'sla': link_data['sla'] * 100,  # Convert back to percentage
+                        'tier': link_data['tier'],
+                        'price': link_data['price']
+                    })
+
+        return {
+            'profile_id': profile.profile_id,
+            'name': profile.name,
+            'expected_sla': profile.expected_sla,
+            'routes': sorted(routes, key=lambda x: (-x['percentage'], -x['sla']))
+        }
+        
+    async def prepare_routing_plan_for_profile(self, profile: Profile, results: Dict[str, float]) -> Dict[str, Any]:
+        """
+        Prepare the routing plan for a specific profile based on optimization results.
+        This method is a wrapper around prepare_routing_plan that provides additional
+        profile-specific processing if needed.
+        
+        Args:
+            profile: Profile object
+            results: Dictionary mapping link IDs to traffic percentages (as fractions)
+            
+        Returns:
+            Dictionary containing the routing plan
+        """
+        logger.info(f"Preparing profile-specific routing plan for profile {profile.profile_id}")
+        
+        # For now, this just calls the base method, but can be extended with profile-specific logic
+        routing_plan = await self.prepare_routing_plan(profile, results)
+        
+        # Additional profile-specific processing could be added here
+        
+        return routing_plan
+        
+    async def calculate_optimization_stats(self, profile: Profile, routing_plan: Dict[str, Any], links_data: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Calculate optimization statistics.
+        
+        Args:
+            profile: Profile object
+            routing_plan: Routing plan dictionary
+            links_data: Dictionary mapping link IDs to their data
+            
+        Returns:
+            Dictionary containing optimization statistics
+        """
+        logger.info(f"Calculating optimization statistics for profile {profile.profile_id}")
+        
+        total_cost = 0
+        achieved_sla = 0
+        active_links = 0
+        tier_stats = {}  # Track stats per tier
+        
+        for route in routing_plan['routes']:
+            if route['percentage'] > 0:
+                total_cost += (route['percentage'] / 100.0) * route['price']
+                achieved_sla += (route['percentage'] / 100.0) * (route['sla'] / 100.0)
+                active_links += 1
+                
+                # Track tier statistics
+                tier = route['tier']
+                if tier not in tier_stats:
+                    tier_stats[tier] = {
+                        'traffic': 0,
+                        'required_sla': 90.0  # Default tier SLA requirement
+                    }
+                tier_stats[tier]['traffic'] += route['percentage']
+        
+        # Get max achievable SLA
+        max_sla = self.calculate_max_achievable_sla(links_data)
+        
+        stats = {
+            'total_cost': total_cost,
+            'links_used': active_links,
+            'achieved_sla': achieved_sla * 100,  # Convert back to percentage
+            'expected_sla': profile.expected_sla,
+            'tier_stats': tier_stats,
+            'sla_achievable': achieved_sla * 100 >= profile.expected_sla,
+            'max_achievable_sla': max_sla
+        }
+        
+        logger.info(
+            f"Optimization stats: Cost=${total_cost:.2f}, Links={active_links}, "
+            f"SLA={achieved_sla*100:.2f}%, Tier Stats={tier_stats}"
+        )
+        
+        # Add warning if target SLA cannot be achieved
+        if not stats['sla_achievable']:
+            warning_msg = (
+                f"Target SLA of {profile.expected_sla}% cannot be achieved. "
+                f"Maximum achievable SLA with available links is {stats['max_achievable_sla']:.2f}%"
+            )
+            stats['warning'] = warning_msg
+            logger.warning(warning_msg)
+            
+        return stats
+        
+    async def calculate_optimization_stats_for_profile(self, profile: Profile, routing_plan: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Calculate optimization statistics for a specific profile.
+        This method handles the data preparation needed for statistics calculation.
+        
+        Args:
+            profile: Profile object
+            routing_plan: Routing plan dictionary
+            
+        Returns:
+            Dictionary containing optimization statistics
+        """
+        logger.info(f"Calculating profile-specific optimization statistics for profile {profile.profile_id}")
+        
+        # Get links data for this profile
+        links_data = await self.prepare_links_data_for_optimizer(profile)
+        
+        # Calculate statistics using the base method
+        return await self.calculate_optimization_stats(profile, routing_plan, links_data)

@@ -7,7 +7,9 @@
   * Loads and processes raw data
   * Creates Profile and Link instances
   * Caches prepared data
-  * Converts data for optimizer format
+  * Handles SLA calculations and link data preparation
+  * Provides centralized data access for the optimizer
+  * Implements business logic for data transformation
 
 ### Mock Services
 - `mock_services.py`: Mock API implementation
@@ -46,8 +48,10 @@ services/
 1. MockAPIService reads raw JSON data
 2. DataPreparationService requests data via MockAPIService
 3. DataPreparationService creates Profile/Link instances
-4. EventHandler monitors for updates
-5. Services notify subscribers of changes
+4. DataPreparationService prepares link data for optimization
+5. Optimizer uses prepared data for optimization calculations
+6. EventHandler monitors for updates
+7. Services notify subscribers of changes
 
 ### Event Flow
 1. Event received (price/SLA change)
@@ -59,13 +63,29 @@ services/
 ## Usage Example
 ```python
 # Initialize services
-mock_service = MockAPIService()
-data_service = DataPreparationService(mock_service)
+data_service = DataPreparationService()
 event_handler = EventHandler()
 
 # Get prepared data
-profiles = data_service.get_all_profiles()
-links = data_service.extract_all_links()
+profiles = await data_service.get_all_profiles()
+
+# Prepare data for optimizer
+profile = profiles[0]
+links_data = await data_service.prepare_links_data_for_optimizer(profile)
+
+# Get specific link data
+link_data = await data_service.get_link_data("LINK_001")
+
+# Initialize optimizer with profile
+optimizer = RoutingOptimizer(profile)
+
+# Solve optimization problem
+success = await optimizer.solve()
+
+# Get optimization results
+if success:
+    routing_plan = await optimizer.get_routing_plan()
+    stats = await optimizer.get_optimization_stats()
 
 # Handle events
 event_handler.register_listener(mock_service)

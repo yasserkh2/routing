@@ -1,188 +1,170 @@
-[
-  {
-    "profile_id": "PROF_001",
-    "name": "Ultra_Premium_OTP",
-    "expected_sla": 96.0,
-    "description": "Ultra premium OTP service with highest SLA requirement",
-    "sell_price_min": 12.0,
-    "sell_price_max": 18.0,
-    "profile_avg_cost": 7.2,
-    "mcc": "426",
-    "mnc": "01",
-    "in_use_links": [
-      {
-        "link": "LINK_001",
-        "provider": "AMD Telecom",
-        "buy_price": 9,
-        "sla_dd": 99,
-        "tier": 1,
-        "last_updated": "2025-03-10T13:20:15.505294",
-        "traffic": 25
-      },
-      {
-        "link": "LINK_002",
-        "provider": "Twilio",
-        "buy_price": 8,
-        "sla_dd": 95,
-        "tier": 1,
-        "last_updated": "2025-03-04T18:50:40.330253",
-        "traffic": 25
-      },
-      {
-        "link": "LINK_003",
-        "provider": "Infobip",
-        "buy_price": 7,
-        "sla_dd": 90,
-        "tier": 1,
-        "last_updated": "2025-03-10T11:43:09.250209",
-        "traffic": 25
-      },
-      {
-        "link": "LINK_004",
-        "provider": "MessageBird",
-        "buy_price": 6,
-        "sla_dd": 85,
-        "tier": 1,
-        "last_updated": "2025-03-03T12:47:26.513237",
-        "traffic": 25
-      }
+{
+    "profiles": [
+        {
+            "profile_id": "1172",
+            "name": "Premium_GrameenPhone_Bangladesh",
+            "mcc": "470",
+            "mnc": "1",
+            "expected_sla": 0,
+            "description": "",
+            "sell_price_min": 0.10425586401464,
+            "sell_price_max": 0.217554,
+            "ProfileAvgCostUSD": 0.172,
+            "in_use_links": [
+                {
+                    "link": "ADA_Direct",
+                    "provider": "ADA SINGAPORE PTE. LTD",
+                    "buy_price": 0.172,
+                    "tier": "",
+                    "traffic": 100,
+                    "sla_dd": 0.058824,
+                    "last_updated": ""
+                }
+            ]
+        },
+        {
+            "profile_id": "3908",
+            "name": "Enterprise_INTL_GrameenPhone_Bangladesh",
+            "mcc": "470",
+            "mnc": "1",
+            "expected_sla": 0,
+            "description": "",
+            "sell_price_min": 0.242973610514912,
+            "sell_price_max": 0.255,
+            "ProfileAvgCostUSD": 0.172,
+            "in_use_links": [
+                {
+                    "link": "ADA_Direct",
+                    "provider": "ADA SINGAPORE PTE. LTD",
+                    "buy_price": 0.172,
+                    "tier": "",
+                    "traffic": 100,
+                    "sla_dd": 0.058824,
+                    "last_updated": ""
+                }
+            ]
+        }
     ],
     "alternative_links": [
-      {
-        "link": "LINK_005",
-        "provider": "Vonage",
-        "buy_price": 7.5,
-        "tier": 1,
-        "last_updated": "2025-03-05T14:15:20.112934"
-      },
-      {
-        "link": "LINK_006",
-        "provider": "Nexmo",
-        "buy_price": 8.2,
-        "tier": 1,
-        "last_updated": "2025-03-06T09:21:38.340982"
-      },
-      {
-        "link": "LINK_007",
-        "provider": "Kaleyra",
-        "buy_price": 7.8,
-        "tier": 2,
-        "last_updated": "2025-03-07T16:34:45.773912"
-      },
-      {
-        "link": "LINK_008",
-        "provider": "Sinch",
-        "buy_price": 6.5,
-        "tier": 2,
-        "last_updated": "2025-03-08T11:12:58.993001"
-      },
-      {
-        "link": "LINK_009",
-        "provider": "Plivo",
-        "buy_price": 8.7,
-        "tier": 1,
-        "last_updated": "2025-03-09T10:10:10.123456"
-      },
-      {
-        "link": "LINK_010",
-        "provider": "Twillio Edge",
-        "buy_price": 9.5,
-        "tier": 1,
-        "last_updated": "2025-03-10T13:30:00.505294"
-      }
+        {
+            "link": "STC_WL_Offnet70723",
+            "provider": "Saudi Telecom Company",
+            "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "STC_BL_Offnet70727",
+            "provider": "Saudi Telecom Company",
+            "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_BL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_WL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "MRM_WhatsApp",
+            "provider": "MrMessaging",
+            "base_buy_price": 0.0467,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Ameex",
+            "provider": "Ameex",
+            "base_buy_price": 0.1402,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "AmeexOTP",
+            "provider": "Ameex",
+            "base_buy_price": 0.1402,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Ameex_P2P",
+            "provider": "Ameex",
+            "base_buy_price": 0.0758,
+            "tier": "Tier 8 - P2P"
+        },
+        {
+            "link": "MTN_UK_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.1782,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_AMS_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.1782,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "STC_WL_Offnet70723",
+            "provider": "Saudi Telecom Company",
+            "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "STC_BL_Offnet70727",
+            "provider": "Saudi Telecom Company",
+            "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_BL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_WL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "MRM_WhatsApp",
+            "provider": "MrMessaging",
+            "base_buy_price": 0.0467,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Ameex",
+            "provider": "Ameex",
+            "base_buy_price": 0.1402,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "AmeexOTP",
+            "provider": "Ameex",
+            "base_buy_price": 0.1402,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Ameex_P2P",
+            "provider": "Ameex",
+            "base_buy_price": 0.0758,
+            "tier": "Tier 8 - P2P"
+        },
+        {
+            "link": "MTN_UK_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.1782,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_AMS_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.1782,
+            "tier": "Tier 1 - Prime"
+        }
     ]
-  },
-  {
-    "profile_id": "PROF_002",
-    "name": "Normal",
-    "expected_sla": 95,
-    "description": "Premium 2FA service with very high SLA requirement",
-    "sell_price_min": 9.0,
-    "sell_price_max": 14.0,
-    "profile_avg_cost": 7.1,
-    "mcc": "426",
-    "mnc": "01",
-    "in_use_links": [
-      {
-        "link": "LINK_001",
-        "provider": "AMD Telecom",
-        "buy_price": 9,
-        "sla_dd": 99,
-        "tier": 1,
-        "last_updated": "2025-03-10T13:20:15.505294",
-        "traffic": 25
-      },
-      {
-        "link": "LINK_002",
-        "provider": "Twilio",
-        "buy_price": 8,
-        "sla_dd": 95,
-        "tier": 1,
-        "last_updated": "2025-03-04T18:50:40.330253",
-        "traffic": 25
-      },
-      {
-        "link": "LINK_003",
-        "provider": "Infobip",
-        "buy_price": 7,
-        "sla_dd": 90,
-        "tier": 1,
-        "last_updated": "2025-03-10T11:43:09.250209",
-        "traffic": 25
-      },
-      {
-        "link": "LINK_004",
-        "provider": "MessageBird",
-        "buy_price": 6,
-        "sla_dd": 85,
-        "tier": 1,
-        "last_updated": "2025-03-03T12:47:26.513237",
-        "traffic": 25
-      }
-    ],
-    "alternative_links": [
-      {
-        "link": "LINK_005",
-        "provider": "Vonage",
-        "buy_price": 7.5,
-        "tier": 2,
-        "last_updated": "2025-03-05T14:15:20.112934"
-      },
-      {
-        "link": "LINK_006",
-        "provider": "Nexmo",
-        "buy_price": 8.2,
-        "tier": 2,
-        "last_updated": "2025-03-06T09:21:38.340982"
-      },
-      {
-        "link": "LINK_007",
-        "provider": "Kaleyra",
-        "buy_price": 7.9,
-        "tier": 2,
-        "last_updated": "2025-03-07T16:34:45.773912"
-      },
-      {
-        "link": "LINK_008",
-        "provider": "Sinch",
-        "buy_price": 6.4,
-        "tier": 3,
-        "last_updated": "2025-03-08T11:12:58.993001"
-      },
-      {
-        "link": "LINK_009",
-        "provider": "Plivo",
-        "buy_price": 8.6,
-        "tier": 2,
-        "last_updated": "2025-03-09T10:10:10.123456"
-      },
-      {
-        "link": "LINK_010",
-        "provider": "Twillio Edge",
-        "buy_price": 9.3,
-        "tier": 1,
-        "last_updated": "2025-03-10T13:30:00.505294"
-      }
-    ]
-  }
-]
+}

@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional, Set, Tuple
+from functools import lru_cache
 
 @dataclass
 class Profile:

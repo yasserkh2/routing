@@ -18,9 +18,15 @@ class Link:
     
     # Tier SLA mapping
     TIER_SLA_MAP = {
-        1: 95.0,  # Tier 1 requires 95% SLA
-        2: 85.0,  # Tier 2 requires 85% SLA
-        3: 75.0   # Tier 3 requires 75% SLA
+        "Tier 1 – Prime": 95.0,
+        "Tier 2 – High": 90.0,
+        "Tier 3 – Med": 80.0,
+        "Tier 4 – Low": 70.0,
+        "Tier 5 – Unverified": 80.0,
+        "Tier 6 – Local": 80.0,
+        "Tier 7 – WhatsApp": 80.0,
+        "Tier 8 – P2P": 80.0,
+        "Tier 9 – Custom Route": None  # no formal SLA; set case-by-case
     }
     
     @classmethod
@@ -129,15 +135,45 @@ class Link:
             'last_updated': self.last_updated.isoformat()
         }
     
+    def get_tier_name(self) -> str:
+        """Get the name of the tier based on tier number"""
+        tier_names = list(self.TIER_SLA_MAP.keys())
+        if 1 <= self.tier <= len(tier_names):
+            return tier_names[self.tier - 1]
+        return "Unknown Tier"
+    
+    def get_tier_sla(self) -> float:
+        """Get the SLA value for this link's tier"""
+        tier_name = self.get_tier_name()
+        tier_sla = self.TIER_SLA_MAP.get(tier_name)
+        # Return 0 for None or custom tiers without formal SLA
+        return tier_sla if tier_sla is not None else 0.0
+    
+    def calculate_effective_sla(self) -> float:
+        """
+        Calculate the effective SLA for this link.
+        If sla_dd is provided, use it; otherwise use the tier SLA.
+        """
+        if self.sla_dd > 0:
+            return self.sla_dd
+        return self.get_tier_sla()
+    
     def to_optimizer_format(self) -> Dict[str, Any]:
         """Convert link data to optimizer-friendly format"""
+        tier_name = self.get_tier_name()
+        tier_sla = self.get_tier_sla()
+        
+        # Calculate effective SLA (use sla_dd if available, otherwise use tier SLA)
+        effective_sla = self.calculate_effective_sla()
+        
         return {
             'link': self.link,
             'provider': self.provider,
-            'Price': self.buy_price,
-            'SLA': self.sla_dd / 100.0,  # Convert to decimal
-            'Tier': self.tier,
-            'TierSLA': self.TIER_SLA_MAP.get(self.tier, 75.0) / 100.0,  # Convert to decimal
+            'price': self.buy_price,
+            'sla': effective_sla / 100.0,  # Convert to decimal
+            'tier': self.tier,
+            'tier_name': tier_name,
+            'tier_sla': tier_sla / 100.0 if tier_sla is not None else 0.0,  # Convert to decimal
             'label': self.label,
             'status': self.status
         }

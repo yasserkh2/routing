@@ -1,8 +1,6 @@
 from typing import Dict, Any, List
-from functools import lru_cache
 from pulp import *
 from ..models.profile import Profile
-from ..models.link import Link
 from ..utils.logger import setup_logger
 from ..services.data_preparation_service import DataPreparationService
 
@@ -22,27 +20,19 @@ class RoutingOptimizer:
         self.data_service = DataPreparationService()
         logger.info(f"Initialized RoutingOptimizer for profile {profile.profile_id}")
 
-    async def solve(self) -> bool:
+    async def optimize(self, links_data: Dict[str, Dict[str, Any]]) -> Dict[str, float]:
         """
-        Solve the optimization problem to minimize cost while meeting SLA requirements.
+        Run the PuLP optimization algorithm to minimize cost while meeting SLA requirements.
         
+        Args:
+            links_data: Dictionary mapping link IDs to their data
+            
         Returns:
-            bool: True if optimization was successful, False otherwise
+            Dictionary mapping link IDs to traffic allocation (as fractions)
         """
-        # Get links data from data preparation service
-        links_data = await self.data_service.prepare_links_data_for_optimizer(self.profile)
-        logger.info(f"Found {len(links_data)} links")
-        
         if not links_data:
-            logger.error("No valid links found for optimization")
-            return False
-
-        # Sort links by SLA (descending)
-        sorted_links = sorted(
-            links_data.items(), 
-            key=lambda x: x[1]['sla'], 
-            reverse=True
-        )
+            logger.error("No valid links provided for optimization")
+            return {}
 
         # Create a minimization LP problem
         self.model = LpProblem("Minimize_Cost_While_Achieving_SLA", LpMinimize)
@@ -73,108 +63,68 @@ class RoutingOptimizer:
         logger.info("Starting optimization solver")
         status = self.model.solve(self.SOLVER)
         
-        # Store results if optimization was successful
+        # Return results if optimization was successful
         if status == 1:  # LpStatusOptimal
-            self.results = {
+            results = {
                 link_id: var.varValue
                 for link_id, var in self.variables.items()
             }
             logger.info("Optimization completed successfully")
+            return results
+        
+        # Return empty dictionary if optimization failed
+        logger.error("Optimization failed")
+        return {}
+    
+    async def solve(self) -> bool:
+        """
+        Solve the optimization problem, including data preparation and fallback logic.
+        
+        Returns:
+            bool: True if optimization was successful, False otherwise
+        """
+        # Get links data from data preparation service
+        links_data = await self.data_service.prepare_links_data_for_optimizer(self.profile)
+        logger.info(f"Found {len(links_data)} links")
+        
+        if not links_data:
+            logger.error("No valid links found for optimization")
+            return False
+            
+        # Run the optimization algorithm
+        optimization_results = await self.optimize(links_data)
+        
+        if optimization_results:
+            # Store the results
+            self.results = optimization_results
             return True
             
-        # If optimization fails, use the highest SLA link
-        if sorted_links:
-            best_link_id, _ = sorted_links[0]
+        # If optimization fails, use the highest SLA link as fallback
+        best_link_id = await self.data_service.get_highest_sla_link_for_profile(self.profile)
+        if best_link_id:
             self.results = {best_link_id: 1.0}  # Assign 100% traffic to best link
             logger.warning("Optimization failed, falling back to highest SLA link")
             return True
             
         logger.error("Optimization failed and no fallback links available")
         return False
-
+        
     async def get_routing_plan(self) -> Dict[str, Any]:
         """Get the optimized routing plan"""
         if not self.results:
             logger.error("Attempted to get routing plan without results")
             raise ValueError("No results available. Solve the model first.")
-
-        # Get allocation for all links
-        routes = []
-        for link_id, percentage in self.results.items():
-            percentage = percentage * 100  # Convert fraction to percentage
-            if percentage > 0:  # Only include routes with traffic
-                link_data = await self.data_service.get_link_data(link_id)
-                if link_data:
-                    routes.append({
-                        'link': link_id,
-                        'provider': link_data['provider'],
-                        'percentage': percentage,
-                        'sla': link_data['sla'] * 100,  # Convert back to percentage
-                        'tier': link_data['tier'],
-                        'price': link_data['price']
-                    })
-
-        return {
-            'profile_id': self.profile.profile_id,
-            'name': self.profile.name,
-            'expected_sla': self.profile.expected_sla,
-            'routes': sorted(routes, key=lambda x: (-x['percentage'], -x['sla']))
-        }
-
+            
+        # Use data preparation service to prepare the routing plan
+        return await self.data_service.prepare_routing_plan_for_profile(self.profile, self.results)
+        
     async def get_optimization_stats(self) -> Dict[str, Any]:
         """Get optimization statistics"""
         if not self.results:
             raise ValueError("No results available. Solve the model first.")
-
-        routing_plan = await self.get_routing_plan()
-        total_cost = 0
-        achieved_sla = 0
-        active_links = 0
-        tier_stats = {}  # Track stats per tier
-        logger.info("Calculating optimization statistics")
-
-        for route in routing_plan['routes']:
-            if route['percentage'] > 0:
-                total_cost += (route['percentage'] / 100.0) * route['price']
-                achieved_sla += (route['percentage'] / 100.0) * (route['sla'] / 100.0)
-                active_links += 1
-                
-                # Track tier statistics
-                tier = route['tier']
-                if tier not in tier_stats:
-                    tier_stats[tier] = {
-                        'traffic': 0,
-                        'required_sla': 90.0  # Default tier SLA requirement
-                    }
-                tier_stats[tier]['traffic'] += route['percentage']
-
-        # Get max achievable SLA
-        max_sla = 0
-        links_data = await self.data_service.prepare_links_data_for_optimizer(self.profile)
-        for link_id, link_data in links_data.items():
-            max_sla = max(max_sla, link_data['sla'] * 100)
-
-        stats = {
-            'total_cost': total_cost,
-            'links_used': active_links,
-            'achieved_sla': achieved_sla * 100,  # Convert back to percentage
-            'expected_sla': self.profile.expected_sla,
-            'tier_stats': tier_stats,
-            'sla_achievable': achieved_sla * 100 >= self.profile.expected_sla,
-            'max_achievable_sla': max_sla
-        }
-        logger.info(
-            f"Optimization stats: Cost=${total_cost:.2f}, Links={active_links}, "
-            f"SLA={achieved_sla*100:.2f}%, Tier Stats={tier_stats}"
-        )
-        
-        # Add warning if target SLA cannot be achieved
-        if not stats['sla_achievable']:
-            warning_msg = (
-                f"Target SLA of {self.profile.expected_sla}% cannot be achieved. "
-                f"Maximum achievable SLA with available links is {stats['max_achievable_sla']:.2f}%"
-            )
-            stats['warning'] = warning_msg
-            logger.warning(warning_msg)
             
-        return stats
+        # Get routing plan
+        routing_plan = await self.get_routing_plan()
+        
+        # Use data preparation service to calculate statistics
+        return await self.data_service.calculate_optimization_stats_for_profile(self.profile, routing_plan)

@@ -8,6 +8,8 @@
   * Cost optimization
   * Traffic distribution
   * Tier-based routing
+  * Focuses solely on optimization algorithms
+  * Uses prepared data from the data preparation service
 
 ## Required Files
 ```
@@ -45,37 +47,42 @@ core/
 
 ## Usage Example
 ```python
-from .optimizer import Optimizer
+from ..services.data_preparation_service import DataPreparationService
+from ..core.optimizer import RoutingOptimizer
 
-# Initialize optimizer
-optimizer = Optimizer()
+# Initialize services
+data_service = DataPreparationService()
 
-# Prepare data
-profiles = data_service.get_all_profiles()
-links = data_service.extract_all_links()
+# Get profile
+profiles = await data_service.get_all_profiles()
+profile = profiles[0]
 
-# Run optimization
-result = optimizer.optimize(
-    profiles=profiles,
-    links=links,
-    constraints={
-        'min_sla': 95.0,
-        'max_cost': 10.0,
-        'required_tier': 1
-    }
-)
+# Initialize optimizer with profile
+optimizer = RoutingOptimizer(profile)
 
-# Get routing plan
-routing_plan = result.get_routing_plan()
-stats = result.get_statistics()
+# Solve optimization problem
+success = await optimizer.solve()
+
+# Get optimization results
+if success:
+    routing_plan = await optimizer.get_routing_plan()
+    stats = await optimizer.get_optimization_stats()
+    
+    # Use the results
+    print(f"Achieved SLA: {stats['achieved_sla']}%")
+    print(f"Total Cost: ${stats['total_cost']}")
+    
+    # Display routing plan
+    for route in routing_plan['routes']:
+        print(f"Link {route['link']}: {route['percentage']}% traffic")
 ```
 
 ## Optimization Process
 
-1. Data Preparation
-   - Load profile and link data
-   - Validate constraints
-   - Prepare optimization model
+1. Data Acquisition
+   - Receive profile from caller
+   - Request prepared link data from data preparation service
+   - Validate received data
 
 2. Constraint Application
    - Apply SLA requirements
@@ -94,3 +101,16 @@ stats = result.get_statistics()
    - Calculate statistics
    - Format output
    - Validate final plan
+
+## Recent Changes
+
+### Separation of Concerns
+- Data preparation logic has been moved to the DataPreparationService
+- Optimizer now focuses solely on optimization algorithms
+- This improves maintainability and testability
+
+### Data Flow
+- Optimizer receives a Profile object during initialization
+- It requests prepared link data from the DataPreparationService
+- All SLA calculations are now handled by the DataPreparationService
+- Optimizer uses the prepared data to run the optimization algorithm

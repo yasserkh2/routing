@@ -19,8 +19,40 @@ This system optimizes routing decisions based on SLA requirements, costs, and tr
   * Supports custom labels for better identification
   * Tracks link status (in_use or alternative)
   * Provides utility methods for SLA and cost calculations
+- Data Preparation Service
+  * Centralizes data preparation logic
+  * Fetches and processes link data for optimization
+  * Handles SLA calculations and link data transformation
+- Optimizer
+  * Focuses solely on optimization algorithms
+  * Uses prepared data from the data preparation service
+  * Implements linear programming for cost minimization
 - SLA Optimization
 - Traffic Distribution
+
+## Architecture
+
+The system follows a clean architecture with separation of concerns:
+
+1. **Models** (Profile, Link)
+   - Represent core business entities
+   - Contain entity-specific business logic
+   - Provide data validation and transformation
+
+2. **Services** (DataPreparationService, MockAPIService)
+   - Handle data preparation and processing
+   - Provide centralized data access
+   - Implement business logic that spans multiple entities
+
+3. **Core** (RoutingOptimizer)
+   - Implements optimization algorithms
+   - Focuses solely on optimization logic
+   - Uses prepared data from services
+
+This architecture ensures:
+- Clear separation of responsibilities
+- Improved maintainability and testability
+- Reduced code duplication
 
 ## SLA Calculation Logic
 
@@ -44,6 +76,8 @@ The system calculates SLA values using the following rules:
    - Tier 1 (Premium): 99% SLA
    - Tier 2 (Standard): 95% SLA
    - Tier 3 (Basic): 90% SLA
+
+> **Note**: SLA calculation logic has been moved from the optimizer to the data preparation service to improve separation of concerns.
 
 ## Traffic Distribution
 
@@ -96,13 +130,19 @@ python -m app.tests.test_profile_comprehensive
 python -m app.tests.test_link_comprehensive
 ```
 
-2. Run optimizer tests:
+2. Run data preparation tests:
+```bash
+python -m app.tests.test_data_preparation
+```
+
+3. Run optimizer tests:
 ```bash
 python -m app.tests.test_optimizer_sla
+python -m app.tests.optimizer_test
 python -m app.tests.run_optimizer
 ```
 
-3. Run integration tests:
+4. Run integration tests:
 ```bash
 python -m app.tests.system_integration_test
 ```
@@ -112,3 +152,23 @@ Mock data for testing is available in the `/mock_data` directory:
 - `api_round_2_reorganized_links_no_sla.json`: Link and profile configurations
 - `price_changes.json`: Price update simulations
 - `sla_update.json`: SLA change simulations
+
+## Recent Updates
+
+### Data Preparation Refactoring
+The system has been refactored to improve separation of concerns:
+
+1. **Data Preparation Logic Moved**
+   - Data preparation logic has been moved from the optimizer to the data preparation service
+   - The optimizer now focuses solely on optimization algorithms
+   - This improves maintainability and testability
+
+2. **Centralized Data Access**
+   - All data access is now centralized in the data preparation service
+   - The service provides methods for fetching and processing link data
+   - This reduces code duplication and improves consistency
+
+3. **Improved Mock Data Handling**
+   - The mock API service has been updated to handle the new data structure
+   - It now transforms data from the API format to the format expected by the optimizer
+   - This makes it easier to adapt to changes in the API format
