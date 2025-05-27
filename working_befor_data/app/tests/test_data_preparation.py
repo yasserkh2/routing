@@ -30,70 +30,74 @@ async def test_data_preparation_service():
         print(f"In-Use Links: {len(profile.in_use_links)}")
         print(f"Alternative Links: {len(profile.alternative_links)}")
         
-        # Test prepare_sla_data_for_optimizer
-        print("\nTesting prepare_sla_data_for_optimizer()...")
-        links_data = await data_service.prepare_sla_data_for_optimizer(profile)
-        print(f"Prepared SLA data for {len(links_data)} links")
+        # Test prepare_links_data_for_optimizer
+        print("\nTesting prepare_links_data_for_optimizer()...")
+        links_data = await data_service.prepare_links_data_for_optimizer(profile)
+        print(f"Prepared data for {len(links_data)} links")
         
-        # Display SLA data for each link
-        print("\nSLA DATA FOR LINKS:")
+        # Display data for each link
+        print("\nLINK DATA:")
         print("-" * 30)
         for link_id, link_data in links_data.items():
             print(f"Link {link_id} ({link_data['provider']}):")
             print(f"  SLA:           {link_data['sla']*100:.1f}%")
-            if 'sla_dd' in link_data and link_data['sla_dd'] is not None:
-                print(f"  DD SLA:        {link_data['sla_dd']*100:.1f}%")
-            print(f"  Tier SLA:      {link_data.get('tier_sla', 0)*100:.1f}%")
             print(f"  Tier:          {link_data['tier']}")
             print(f"  Price:         ${link_data['price']:.3f}")
             print()
         
-        # Test calculate_profile_sla_metrics
-        print("\nTesting calculate_profile_sla_metrics()...")
-        sla_metrics = await data_service.calculate_profile_sla_metrics(profile)
-        print("\nSLA METRICS:")
-        print("-" * 30)
-        print(f"Average SLA:      {sla_metrics['average_sla']:.2f}%")
-        print(f"Min SLA:          {sla_metrics['min_sla']:.2f}%")
-        print(f"Max SLA:          {sla_metrics['max_sla']:.2f}%")
-        print(f"Achievable SLA:   {sla_metrics['achievable_sla']:.2f}%")
-        print(f"Target SLA:       {sla_metrics['target_sla']:.2f}%")
-        print(f"Can Meet Target:  {sla_metrics['can_meet_target']}")
+        # Calculate basic SLA metrics manually
+        print("\nCalculating basic SLA metrics...")
+        sla_values = [link_data['sla']*100 for link_data in links_data.values()]
         
-        # Test get_link_sla_data for a specific link
+        if sla_values:
+            avg_sla = sum(sla_values) / len(sla_values)
+            min_sla = min(sla_values)
+            max_sla = max(sla_values)
+            
+            print("\nSLA METRICS:")
+            print("-" * 30)
+            print(f"Average SLA:      {avg_sla:.2f}%")
+            print(f"Min SLA:          {min_sla:.2f}%")
+            print(f"Max SLA:          {max_sla:.2f}%")
+            print(f"Target SLA:       {profile.expected_sla:.2f}%")
+            print(f"Can Meet Target:  {max_sla >= profile.expected_sla}")
+        else:
+            print("No SLA data available to calculate metrics")
+        
+        # Test get_link_data for a specific link
         if profile.in_use_links:
             test_link_id = profile.in_use_links[0]
-            print(f"\nTesting get_link_sla_data() for link {test_link_id}...")
-            link_sla_data = await data_service.get_link_sla_data(test_link_id)
+            print(f"\nTesting get_link_data() for link {test_link_id}...")
+            link_data = await data_service.get_link_data(test_link_id)
             
-            if link_sla_data:
-                print("\nLINK SLA DATA:")
+            if link_data:
+                print("\nLINK DATA:")
                 print("-" * 30)
-                print(f"Link:            {link_sla_data['link']}")
-                print(f"Provider:        {link_sla_data['provider']}")
-                print(f"SLA:             {link_sla_data['sla']*100:.1f}%")
-                if 'sla_dd' in link_sla_data and link_sla_data['sla_dd'] is not None:
-                    print(f"DD SLA:          {link_sla_data['sla_dd']*100:.1f}%")
-                print(f"Tier SLA:        {link_sla_data.get('tier_sla', 0)*100:.1f}%")
-                print(f"Tier:            {link_sla_data['tier']}")
-                print(f"Price:           ${link_sla_data['price']:.3f}")
+                print(f"Link:            {link_data['link']}")
+                print(f"Provider:        {link_data['provider']}")
+                print(f"SLA:             {link_data['sla']*100:.1f}%")
+                print(f"Tier:            {link_data['tier']}")
+                print(f"Price:           ${link_data['price']:.3f}")
             else:
-                print(f"No SLA data found for link {test_link_id}")
+                print(f"No data found for link {test_link_id}")
         
-        # Test get_optimized_sla_links
-        print("\nTesting get_optimized_sla_links()...")
-        optimized_links = await data_service.get_optimized_sla_links(profile)
-        print(f"Retrieved {len(optimized_links)} optimized links")
+        # Sort links by SLA (descending) and display top links
+        print("\nSorting links by SLA...")
+        sorted_links = sorted(
+            links_data.items(), 
+            key=lambda x: x[1]['sla'], 
+            reverse=True
+        )
         
-        print("\nOPTIMIZED LINKS (sorted by SLA and price):")
+        print("\nTOP LINKS BY SLA:")
         print("-" * 30)
-        for i, link_data in enumerate(optimized_links[:5]):  # Show top 5 links
-            print(f"{i+1}. Link {link_data['link']} ({link_data['provider']}):")
+        for i, (link_id, link_data) in enumerate(sorted_links[:5]):  # Show top 5 links
+            print(f"{i+1}. Link {link_id} ({link_data['provider']}):")
             print(f"   SLA:           {link_data['sla']*100:.1f}%")
             print(f"   Price:         ${link_data['price']:.3f}")
         
-        if len(optimized_links) > 5:
-            print(f"... and {len(optimized_links) - 5} more links")
+        if len(sorted_links) > 5:
+            print(f"... and {len(sorted_links) - 5} more links")
         
         print("\nAll tests completed successfully!")
         

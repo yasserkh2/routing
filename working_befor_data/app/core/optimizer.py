@@ -4,7 +4,7 @@ from pulp import *
 from ..models.profile import Profile
 from ..models.link import Link
 from ..utils.logger import setup_logger
-from ..services.mock_services import MockAPIService
+from ..services.data_preparation_service import DataPreparationService
 
 # Setup logger
 logger = setup_logger(__name__)
@@ -19,61 +19,8 @@ class RoutingOptimizer:
         self.model = None
         self.variables = {}
         self.results = {}
-        self.mock_api = MockAPIService()
+        self.data_service = DataPreparationService()
         logger.info(f"Initialized RoutingOptimizer for profile {profile.profile_id}")
-    
-    async def get_link_data(self, link_id: str) -> Dict[str, Any]:
-        """Get link data from the mock API"""
-        combined_data = await self.mock_api.get_combined_data()
-        for profile_data in combined_data:
-            # Check in_use_links
-            for link_data in profile_data['in_use_links']:
-                if link_data['link'] == link_id:
-                    # Get DD SLA if available
-                    dd_sla = link_data.get('sla_dd', 0) / 100.0 if 'sla_dd' in link_data else None
-                    
-                    # Get tier SLA based on tier mapping
-                    tier = link_data.get('tier', 3)  # Default to tier 3 if not specified
-                    tier_sla_mapping = {
-                        1: 0.99,  # 99% SLA for tier 1
-                        2: 0.95,  # 95% SLA for tier 2
-                        3: 0.90   # 90% SLA for tier 3
-                    }
-                    tier_sla = tier_sla_mapping.get(tier, 0.90)  # Default to 90% if tier not found
-                    
-                    # Calculate final SLA
-                    if dd_sla is not None:
-                        sla = (dd_sla + tier_sla) / 2  # Average if both available
-                    else:
-                        sla = tier_sla  # Use tier SLA if DD SLA not available
-                    
-                    return {
-                        'link': link_id,
-                        'provider': link_data['provider'],
-                        'price': link_data['buy_price'],
-                        'sla': sla,
-                        'tier': tier
-                    }
-            # Check alternative_links
-            for link_data in profile_data['alternative_links']:
-                if link_data['link'] == link_id:
-                    # Get tier SLA based on tier mapping
-                    tier = link_data.get('tier', 3)  # Default to tier 3 if not specified
-                    tier_sla_mapping = {
-                        1: 0.99,  # 99% SLA for tier 1
-                        2: 0.95,  # 95% SLA for tier 2
-                        3: 0.90   # 90% SLA for tier 3
-                    }
-                    tier_sla = tier_sla_mapping.get(tier, 0.90)  # Default to 90% if tier not found
-                    
-                    return {
-                        'link': link_id,
-                        'provider': link_data['provider'],
-                        'price': link_data['buy_price'],
-                        'sla': tier_sla,  # Use tier SLA for alternative links
-                        'tier': tier
-                    }
-        return None
 
     async def solve(self) -> bool:
         """
@@ -82,13 +29,8 @@ class RoutingOptimizer:
         Returns:
             bool: True if optimization was successful, False otherwise
         """
-        # Get links data from mock API
-        links_data = {}
-        for link_id in self.profile.get_all_links():
-            link_data = await self.get_link_data(link_id)
-            if link_data:
-                links_data[link_id] = link_data
-        
+        # Get links data from data preparation service
+        links_data = await self.data_service.prepare_links_data_for_optimizer(self.profile)
         logger.info(f"Found {len(links_data)} links")
         
         if not links_data:
@@ -161,7 +103,7 @@ class RoutingOptimizer:
         for link_id, percentage in self.results.items():
             percentage = percentage * 100  # Convert fraction to percentage
             if percentage > 0:  # Only include routes with traffic
-                link_data = await self.get_link_data(link_id)
+                link_data = await self.data_service.get_link_data(link_id)
                 if link_data:
                     routes.append({
                         'link': link_id,
@@ -208,10 +150,9 @@ class RoutingOptimizer:
 
         # Get max achievable SLA
         max_sla = 0
-        for link_id in self.profile.get_all_links():
-            link_data = await self.get_link_data(link_id)
-            if link_data:
-                max_sla = max(max_sla, link_data['sla'] * 100)
+        links_data = await self.data_service.prepare_links_data_for_optimizer(self.profile)
+        for link_id, link_data in links_data.items():
+            max_sla = max(max_sla, link_data['sla'] * 100)
 
         stats = {
             'total_cost': total_cost,

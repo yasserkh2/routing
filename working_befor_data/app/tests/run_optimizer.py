@@ -196,4 +196,82 @@ async def run_optimizer_test():
         print(f"Error running optimizer: {str(e)}")
 
 if __name__ == "__main__":
+    asyncio.run(run_optimizer_test())                        [profile],
+                        link_name,
+                        new_rate,
+                        old_rate
+                    )
+
+                    # Then handle the price change in mock API with both old and new rates
+                    mock_api.handle_price_change(link_name, new_rate, old_rate)
+                    
+                    # Get fresh profile data with updated prices using DataPreparationService
+                    updated_profile = await data_service.get_profile_for_optimization(profile.profile_id)
+                    optimizer = RoutingOptimizer(updated_profile)
+                    success = optimizer.solve()
+                    
+                    if success:
+                        # Get and display new results
+                        after_plan = optimizer.get_routing_plan()
+                        
+                        print("\nAFTER PRICE CHANGE:")
+                        print("-" * 30)
+                        for route in after_plan['routes']:
+                            current_link = data_service.find_link_by_id(updated_profile.links, route['link'])
+                            if current_link:
+                                # Use new_rate for the changed link
+                                override_price = new_rate if route['link'] == link_name else None
+                                route_info = current_link.format_display_info(route['percentage'], override_price)
+                                print(f"Link {route_info['link']}:")
+                                print(f"  Traffic:    {route_info['traffic']:.1f}%")
+                                print(f"  SLA:        {route_info['sla']:.1f}%")
+                                print(f"  Price:      ${route_info['price']:.3f}")
+                        
+                        # Calculate after stats using Link's methods
+                        total_cost = 0.0
+                        active_links = 0
+                        for route in after_plan['routes']:
+                            if route['percentage'] > 0:
+                                active_links += 1
+                                current_link = data_service.find_link_by_id(updated_profile.links, route['link'])
+                                if current_link:
+                                    # Use new_rate for the changed link
+                                    override_price = new_rate if route['link'] == link_name else None
+                                    total_cost += current_link.calculate_cost_for_traffic(route['percentage'], override_price)
+                        
+                        # Calculate profit after price change
+                        profiles_path = os.path.join(os.path.dirname(__file__), '../../mock_data/profiles.json')
+                        with open(profiles_path, 'r') as f:
+                            profiles_data = json.load(f)
+                            profile_data = next(p for p in profiles_data if p["profile_id"] == profile.profile_id)
+                            sell_price = profile_data["sell_price"]
+                        
+                        # Calculate new profit and compare
+                        new_profit = sell_price - total_cost
+                        profit_change = new_profit - initial_profit
+                        profit_status = "Increased" if profit_change > 0 else "Decreased" if profit_change < 0 else "Unchanged"
+                        
+                        # Get optimization stats
+                        stats = optimizer.get_optimization_stats()
+                        
+                        print(f"\nTotal Cost:    ${total_cost:.3f}")
+                        print(f"Sell Price:    ${sell_price:.3f}")
+                        print(f"Profit:        ${new_profit:.3f}")
+                        print(f"Profit Change: ${profit_change:.3f} ({profit_status})")
+                        print(f"Active Links:  {active_links}")
+                        print(f"Achieved SLA:  {stats['achieved_sla']:.2f}%")
+                        
+                        # Display warning if target SLA cannot be achieved and show max achievable
+                        if not stats['sla_achievable']:
+                            print(f"\nWARNING: {stats['warning']}")
+                            print(f"Max Achievable SLA: {stats['max_achievable_sla']:.2f}%")
+                    else:
+                        print("\nFailed to find optimal solution after price change")
+                else:
+                    print("\nFailed to find initial optimal solution")
+            
+    except Exception as e:
+        print(f"Error running optimizer: {str(e)}")
+
+if __name__ == "__main__":
     asyncio.run(run_optimizer_test())

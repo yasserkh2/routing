@@ -25,28 +25,7 @@ class DataPreparationService:
             unique_links.update(profile.get_all_links())
         return sorted(list(unique_links))
 
-    def filter_by_provider(self, links: List[str], provider: str) -> List[str]:
-        """Filter links by provider"""
-        logger.debug(f"Filtering links by provider: {provider}")
-        return [link for link in links if link.startswith(provider)]
-
-    def filter_by_tier(self, links: List[str], tier: int) -> List[str]:
-        """Filter links by tier"""
-        logger.debug(f"Filtering links by tier: {tier}")
-        return links  # Since links are now strings, tier filtering is handled elsewhere
-
-    def get_links_with_price_changes(self, links: List[str]) -> List[str]:
-        """Get all links that have price changes in their history"""
-        logger.debug("Getting links with price changes")
-        return links  # Price history is now handled elsewhere
-
-    def calculate_average_sla(self, links: List[str]) -> float:
-        """Calculate average SLA across all links"""
-        logger.debug(f"Calculating average SLA for {len(links)} links")
-        if not links:
-            return 0.0
-        # SLA calculation is now handled elsewhere
-        return 0.0
+    # Removed redundant methods that were just stubs
 
     def find_link_by_id(self, links: List[str], link_name: str) -> Optional[str]:
         """Find a link by its name"""
@@ -168,32 +147,91 @@ class DataPreparationService:
         # Price updates are now handled by the mock API service
         pass
                     
-    @staticmethod
-    def convert_profile_to_optimizer_format(profile: Profile) -> Dict[str, Any]:
+    async def get_link_data(self, link_id: str) -> Dict[str, Any]:
         """
-        Convert profile and its links to optimizer-friendly format.
+        Get link data from the mock API with SLA calculation.
         
         Args:
-            profile: Profile object to convert
+            link_id: ID of the link to get data for
             
         Returns:
-            Dictionary containing profile data in optimizer format
+            Dictionary containing link data ready for optimization
         """
-        logger.debug(f"Converting profile {profile.profile_id} to optimizer format")
+        logger.debug(f"Getting link data for link: {link_id}")
+        combined_data = await self.mock_api.get_combined_data()
         
-        return {
-            'profile_id': profile.profile_id,
-            'name': profile.name,
-            'expected_sla': profile.expected_sla,
-            'description': profile.description,
-            'sell_price_min': profile.sell_price_min,
-            'sell_price_max': profile.sell_price_max,
-            'profile_avg_cost': profile.profile_avg_cost,
-            'mcc': profile.mcc,
-            'mnc': profile.mnc,
-            'in_use_links': profile.in_use_links,
-            'alternative_links': profile.alternative_links
+        # Define tier SLA mapping once to avoid duplication
+        tier_sla_mapping = {
+            1: 0.99,  # 99% SLA for tier 1
+            2: 0.95,  # 95% SLA for tier 2
+            3: 0.90   # 90% SLA for tier 3
         }
+        
+        for profile_data in combined_data:
+            # Check in_use_links
+            for link_data in profile_data['in_use_links']:
+                if link_data['link'] == link_id:
+                    # Get DD SLA if available
+                    dd_sla = link_data.get('sla_dd', 0) / 100.0 if 'sla_dd' in link_data else None
+                    
+                    # Get tier SLA
+                    tier = link_data.get('tier', 3)  # Default to tier 3 if not specified
+                    tier_sla = tier_sla_mapping.get(tier, 0.90)  # Default to 90% if tier not found
+                    
+                    # Calculate final SLA
+                    if dd_sla is not None:
+                        sla = (dd_sla + tier_sla) / 2  # Average if both available
+                    else:
+                        sla = tier_sla  # Use tier SLA if DD SLA not available
+                    
+                    return {
+                        'link': link_id,
+                        'provider': link_data['provider'],
+                        'price': link_data['buy_price'],
+                        'sla': sla,
+                        'tier': tier
+                    }
+            
+            # Check alternative_links
+            for link_data in profile_data['alternative_links']:
+                if link_data['link'] == link_id:
+                    # Get tier SLA
+                    tier = link_data.get('tier', 3)  # Default to tier 3 if not specified
+                    tier_sla = tier_sla_mapping.get(tier, 0.90)  # Default to 90% if tier not found
+                    
+                    return {
+                        'link': link_id,
+                        'provider': link_data['provider'],
+                        'price': link_data['buy_price'],
+                        'sla': tier_sla,  # Use tier SLA for alternative links
+                        'tier': tier
+                    }
+        
+        logger.warning(f"Link data not found for link: {link_id}")
+        return None
+    
+    async def prepare_links_data_for_optimizer(self, profile: Profile) -> Dict[str, Dict[str, Any]]:
+        """
+        Prepare links data for the optimizer.
+        
+        Args:
+            profile: Profile object to prepare links data for
+            
+        Returns:
+            Dictionary mapping link IDs to their data
+        """
+        logger.info(f"Preparing links data for optimizer for profile {profile.profile_id}")
+        links_data = {}
+        
+        for link_id in profile.get_all_links():
+            link_data = await self.get_link_data(link_id)
+            if link_data:
+                links_data[link_id] = link_data
+        
+        logger.info(f"Found {len(links_data)} links for profile {profile.profile_id}")
+        return links_data
+        
+    # Removed redundant convert_profile_to_optimizer_format method
         
     @staticmethod
     def get_active_links(profile: Profile) -> List[str]:
