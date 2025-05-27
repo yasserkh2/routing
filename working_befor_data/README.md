@@ -12,7 +12,13 @@ This system optimizes routing decisions based on SLA requirements, costs, and tr
 
 ### Core Components
 - Profile Management
+  * Tracks links with their labels and status
+  * Manages active and alternative links
+  * Provides methods for link status changes
 - Link Management
+  * Supports custom labels for better identification
+  * Tracks link status (in_use or alternative)
+  * Provides utility methods for SLA and cost calculations
 - SLA Optimization
 - Traffic Distribution
 
@@ -78,6 +84,27 @@ python server.py
 3. Access the interface at:
 ```
 http://localhost:8004
+```
+
+## Testing
+
+The system includes comprehensive test suites for all components:
+
+1. Run model tests:
+```bash
+python -m app.tests.test_profile_comprehensive
+python -m app.tests.test_link_comprehensive
+```
+
+2. Run optimizer tests:
+```bash
+python -m app.tests.test_optimizer_sla
+python -m app.tests.run_optimizer
+```
+
+3. Run integration tests:
+```bash
+python -m app.tests.system_integration_test
 ```
 
 ## Mock Data

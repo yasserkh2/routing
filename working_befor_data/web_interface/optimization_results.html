@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing Optimization Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .tab-container {
+            margin-top: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            background-color: white;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .profile-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .stats-box {
+            background-color: #e9f7fe;
+            border: 1px solid #b8daff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .before, .after {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .route-info {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 3px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        .savings-positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .savings-negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .warning {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .tier-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .tier-1 { background-color: #28a745; color: white; }
+        .tier-2 { background-color: #ffc107; color: black; }
+        .tier-3 { background-color: #dc3545; color: white; }
+        .summary-card {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .summary-card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Routing Optimization Results</h1>
+            <p>View optimization results for routing profiles</p>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <div class="tab-button active" data-tab="single-profile">Single Profile</div>
+                <div class="tab-button" data-tab="all-profiles">All Profiles</div>
+            </div>
+
+            <div class="tab-content active" id="single-profile">
+                <h2>Single Profile Optimization</h2>
+                <p>Select a profile to view its optimization results</p>
+                
+                <div class="form-group">
+                    <label for="profile-select">Select Profile:</label>
+                    <select id="profile-select">
+                        <option value="">-- Select a profile --</option>
+                    </select>
+                </div>
+                
+                <button id="optimizeProfileBtn">Optimize Selected Profile</button>
+                
+                <div id="loading-profile" class="loading">Optimizing profile...</div>
+                <div id="report-profile"></div>
+            </div>
+
+            <div class="tab-content" id="all-profiles">
+                <h2>All Profiles Optimization</h2>
+                <p>View optimization results for all profiles</p>
+                
+                <button id="optimizeAllBtn">Optimize All Profiles</button>
+                
+                <div id="loading-all" class="loading">Optimizing all profiles...</div>
+                <div id="report-all"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to safely format numbers
+        function formatNumber(value, decimals = 2) {
+            const num = parseFloat(value);
+            return isNaN(num) ? '0.00' : num.toFixed(decimals);
+        }
+
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and content
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Load profiles on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/profiles');
+                if (response.ok) {
+                    const data = await response.json();
+                    const profiles = data.profiles || [];
+                    const profileSelect = document.getElementById('profile-select');
+                    
+                    profiles.forEach(profile => {
+                        const option = document.createElement('option');
+                        option.value = profile.profile_id;
+                        option.textContent = `${profile.name} (${profile.profile_id}) - SLA: ${profile.expected_sla}%`;
+                        profileSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Failed to load profiles:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+            }
+        });
+
+        // Single Profile Optimization
+        document.getElementById('optimizeProfileBtn').addEventListener('click', async () => {
+            const profileId = document.getElementById('profile-select').value;
+            if (!profileId) {
+                alert('Please select a profile to optimize');
+                return;
+            }
+            
+            const optimizeBtn = document.getElementById('optimizeProfileBtn');
+            const loadingDiv = document.getElementById('loading-profile');
+            const reportDiv = document.getElementById('report-profile');
+            
+            optimizeBtn.disabled = true;
+            loadingDiv.style.display = 'block';
+            reportDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(`/api/optimizer/${profileId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Optimization failed');
+                }
+                
+                displayProfileResults(data.result);
+            } catch (error) {
+                console.error('Error:', error);
+                reportDiv.innerHTML = `<div class="error">
+                    Error optimizing profile: ${error.message}<br>
+                    Please ensure the backend server is running and try again
+                </div>`;
+            } finally {
+                optimizeBtn.disabled = false;
+                loadingDiv.style.display = 'none';
+            }
+        });
+
+        // All Profiles Optimization
+        document.getElementById('optimizeAllBtn').addEventListener('click', async () => {
+            const optimizeBtn = document.getElementById('optimizeAllBtn');
+            const loadingDiv = document.getElementById('loading-all');
+            const reportDiv = document.getElementById('report-all');
+            
+            optimizeBtn.disabled = true;
+            loadingDiv.style.display = 'block';
+            reportDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/optimizer');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Optimization failed');
+                }
+                
+                displayAllProfilesResults(data.results);
+            } catch (error) {
+                console.error('Error:', error);
+                reportDiv.innerHTML = `<div class="error">
+                    Error optimizing profiles: ${error.message}<br>
+                    Please ensure the backend server is running and try again
+                </div>`;
+            } finally {
+                optimizeBtn.disabled = false;
+                loadingDiv.style.display = 'none';
+            }
+        });
+
+        function displayProfileResults(result) {
+            const reportDiv = document.getElementById('report-profile');
+            
+            if (result.error) {
+                reportDiv.innerHTML = `<div class="error">${result.error}</div>`;
+                return;
+            }
+
+            let html = `
+                <div class="summary-card">
+                    <h3>${result.name} (${result.profile_id})</h3>
+                    <p>Expected SLA: ${formatNumber(result.expected_sla)}%</p>
+                </div>
+            `;
+
+            // Add warning if target SLA cannot be achieved
+            if (!result.sla_achievable) {
+                html += `
+                    <div class="warning">
+                        <strong>Warning:</strong> ${result.warning.message}
+                    </div>
+                `;
+            }
+
+            // Comparison section
+            html += `
+                <div class="stats-box">
+                    <h3>Optimization Results</h3>
+                    <div class="comparison">
+                        <div class="before">
+                            <h4>Before Optimization</h4>
+                            <p>SLA: ${formatNumber(result.original.sla)}%</p>
+                            <p>Cost: $${formatNumber(result.original.cost, 4)}</p>
+                        </div>
+                        
+                        <div class="after">
+                            <h4>After Optimization</h4>
+                            <p>SLA: ${formatNumber(result.optimized.sla)}%</p>
+                            <p>Cost: $${formatNumber(result.optimized.cost, 4)}</p>
+                            <p>Links Used: ${result.optimized.links_used}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-box">
+                        <h4>Savings</h4>
+                        <p>Cost Savings: <span class="savings-positive">$${formatNumber(result.savings.amount, 4)} (${formatNumber(result.savings.percent)}%)</span></p>
+                        <p>SLA Difference: ${result.optimized.sla > result.original.sla ? '+' : ''}${formatNumber(result.optimized.sla - result.original.sla)}%</p>
+                    </div>
+                </div>
+            `;
+
+            // Original traffic allocation
+            html += `
+                <h3>Original Traffic Allocation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Link</th>
+                            <th>Provider</th>
+                            <th>Traffic</th>
+                            <th>SLA</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            result.original.allocation.forEach(route => {
+                html += `
+                    <tr>
+                        <td>${route.link}</td>
+                        <td>${route.provider}</td>
+                        <td>${formatNumber(route.percentage, 1)}%</td>
+                        <td>${formatNumber(route.sla, 1)}%</td>
+                        <td>$${formatNumber(route.price, 3)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            // Optimized traffic allocation
+            html += `
+                <h3>Optimized Traffic Allocation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Link</th>
+                            <th>Provider</th>
+                            <th>Traffic</th>
+                            <th>SLA</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            result.optimized.allocation.forEach(route => {
+                html += `
+                    <tr>
+                        <td>${route.link}</td>
+                        <td>${route.provider}</td>
+                        <td>${formatNumber(route.percentage, 1)}%</td>
+                        <td>${formatNumber(route.sla, 1)}%</td>
+                        <td>$${formatNumber(route.price, 3)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            // Tier statistics
+            if (result.optimized.tier_stats) {
+                html += `
+                    <h3>Traffic by Tier</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tier</th>
+                                <th>Traffic</th>
+                                <th>Required SLA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                Object.entries(result.optimized.tier_stats).forEach(([tier, stats]) => {
+                    html += `
+                        <tr>
+                            <td>${tier}</td>
+                            <td>${formatNumber(stats.traffic, 1)}%</td>
+                            <td>${formatNumber(stats.required_sla, 1)}%</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            reportDiv.innerHTML = html;
+        }
+
+        function displayAllProfilesResults(results) {
+            const reportDiv = document.getElementById('report-all');
+            
+            if (!results || results.length === 0) {
+                reportDiv.innerHTML = '<div class="error">No results available</div>';
+                return;
+            }
+
+            // Calculate summary statistics
+            let totalOriginalCost = 0;
+            let totalOptimizedCost = 0;
+            let totalSavings = 0;
+            let successCount = 0;
+            let failCount = 0;
+
+            results.forEach(result => {
+                if (!result.error) {
+                    totalOriginalCost += result.original.cost;
+                    totalOptimizedCost += result.optimized.cost;
+                    totalSavings += result.savings.amount;
+                    successCount++;
+                } else {
+                    failCount++;
+                }
+            });
+
+            const savingsPercent = totalOriginalCost > 0 ? (totalSavings / totalOriginalCost) * 100 : 0;
+
+            let html = `
+                <div class="summary-card">
+                    <h3>Summary</h3>
+                    <p>Total Profiles: ${results.length}</p>
+                    <p>Successfully Optimized: ${successCount}</p>
+                    <p>Failed: ${failCount}</p>
+                    <p>Total Original Cost: $${formatNumber(totalOriginalCost, 4)}</p>
+                    <p>Total Optimized Cost: $${formatNumber(totalOptimizedCost, 4)}</p>
+                    <p>Total Savings: <span class="savings-positive">$${formatNumber(totalSavings, 4)} (${formatNumber(savingsPercent)}%)</span></p>
+                </div>
+            `;
+
+            // Results table
+            html += `
+                <h3>Results by Profile</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Original Cost</th>
+                            <th>Optimized Cost</th>
+                            <th>Savings</th>
+                            <th>Original SLA</th>
+                            <th>Optimized SLA</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            results.forEach(result => {
+                if (result.error) {
+                    html += `
+                        <tr>
+                            <td>${result.name} (${result.profile_id})</td>
+                            <td colspan="5">${result.error}</td>
+                            <td>❌</td>
+                        </tr>
+                    `;
+                } else {
+                    html += `
+                        <tr>
+                            <td>${result.name} (${result.profile_id})</td>
+                            <td>$${formatNumber(result.original.cost, 4)}</td>
+                            <td>$${formatNumber(result.optimized.cost, 4)}</td>
+                            <td class="savings-positive">$${formatNumber(result.savings.amount, 4)} (${formatNumber(result.savings.percent)}%)</td>
+                            <td>${formatNumber(result.original.sla)}%</td>
+                            <td>${formatNumber(result.optimized.sla)}%</td>
+                            <td>${result.sla_achievable ? '✅' : '⚠️'}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            reportDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

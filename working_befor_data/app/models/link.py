@@ -12,6 +12,8 @@ class Link:
     sla_dd: float = 0.0
     tier: int = 1
     traffic: float = 0.0
+    label: str = ""
+    status: str = "alternative"  # "in_use" or "alternative"
     last_updated: datetime = field(default_factory=datetime.now)
     
     # Tier SLA mapping
@@ -26,7 +28,7 @@ class Link:
         """Create a Link instance from API data"""
         try:
             # Validate required fields
-            required_fields = ['link', 'provider', 'buy_price']
+            required_fields = ['link', 'provider']
             missing_fields = [field for field in required_fields if field not in data]
             if missing_fields:
                 raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
@@ -35,7 +37,15 @@ class Link:
             try:
                 link_id = str(data['link'])
                 provider = str(data['provider'])
-                buy_price = float(data['buy_price'])
+                
+                # Check for either 'buy_price' or 'base_buy_price'
+                if 'buy_price' in data:
+                    buy_price = float(data['buy_price'])
+                elif 'base_buy_price' in data:
+                    buy_price = float(data['base_buy_price'])
+                else:
+                    buy_price = 0.0
+                    
                 if buy_price < 0:
                     raise ValueError("buy_price cannot be negative")
             except (ValueError, TypeError) as e:
@@ -47,13 +57,41 @@ class Link:
                 if not 0 <= sla_dd <= 100:
                     raise ValueError("sla_dd must be between 0 and 100")
                 
-                tier = int(data.get('tier', 1))
+                # Handle tier field which could be an integer or a string like "Tier 1 - Prime"
+                tier_value = data.get('tier', 1)
+                if isinstance(tier_value, int):
+                    tier = tier_value
+                elif isinstance(tier_value, str):
+                    # Extract tier number from string like "Tier 1 - Prime"
+                    if tier_value.startswith("Tier "):
+                        try:
+                            tier = int(tier_value.split(" ")[1])
+                        except (ValueError, IndexError):
+                            tier = 1
+                    else:
+                        tier = 1
+                else:
+                    tier = 1
+                
                 if tier < 1:
-                    raise ValueError("tier must be positive")
+                    tier = 1
                 
                 traffic = float(data.get('traffic', 0.0))
                 if not 0 <= traffic <= 100:
                     raise ValueError("traffic must be between 0 and 100")
+                
+                # Determine if link is in use based on traffic or explicit status
+                status = data.get('status', '')
+                if not status:
+                    status = "in_use" if traffic > 0 else "alternative"
+                
+                # Set a default label based on status if not provided
+                label = str(data.get('label', ''))
+                if not label:
+                    if status == "in_use":
+                        label = "Active Link"
+                    else:
+                        label = "Alternative Link"
             except (ValueError, TypeError) as e:
                 raise ValueError(f"Invalid value in optional fields: {str(e)}")
             
@@ -70,6 +108,8 @@ class Link:
                 sla_dd=sla_dd,
                 tier=tier,
                 traffic=traffic,
+                label=label,
+                status=status,
                 last_updated=last_updated
             )
         except Exception as e:
@@ -84,6 +124,8 @@ class Link:
             'sla_dd': self.sla_dd,
             'tier': self.tier,
             'traffic': self.traffic,
+            'label': self.label,
+            'status': self.status,
             'last_updated': self.last_updated.isoformat()
         }
     
@@ -95,7 +137,9 @@ class Link:
             'Price': self.buy_price,
             'SLA': self.sla_dd / 100.0,  # Convert to decimal
             'Tier': self.tier,
-            'TierSLA': self.TIER_SLA_MAP.get(self.tier, 75.0) / 100.0  # Convert to decimal
+            'TierSLA': self.TIER_SLA_MAP.get(self.tier, 75.0) / 100.0,  # Convert to decimal
+            'label': self.label,
+            'status': self.status
         }
     
     def meets_sla_requirement(self, required_sla: float) -> bool:
@@ -116,7 +160,9 @@ class Link:
             'traffic': traffic_percentage,
             'sla': self.sla_dd,
             'tier': self.tier,
-            'price': price
+            'price': price,
+            'label': self.label,
+            'status': self.status
         }
     
     def with_updated_price(self, new_price: float, old_price: Optional[float] = None) -> 'Link':
@@ -130,5 +176,7 @@ class Link:
             sla_dd=self.sla_dd,
             tier=self.tier,
             traffic=self.traffic,
+            label=self.label,
+            status=self.status,
             last_updated=datetime.now()
         )
