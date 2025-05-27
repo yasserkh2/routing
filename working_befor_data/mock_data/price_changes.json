@@ -2,13 +2,13 @@
     {
         "Type": "PriceUpdate",
         "Payload": {
-            "old_rate": 9,
-            "new_rate": 11,
+            "old_rate": 0.23,
+            "new_rate": 0.24,
             "status": "Increased"
         },
-        "link": "LINK_001",
-        "mcc": "426",
-        "mnc": "01",
+        "link": "EtisalatHUB",
+        "mcc": "621",
+        "mnc": "50",
         "timestamp": "2025-03-03T12:40:00.000Z"
     }
 ]

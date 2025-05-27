@@ -23,6 +23,7 @@ class RoutingOptimizer:
     async def optimize(self, links_data: Dict[str, Dict[str, Any]]) -> Dict[str, float]:
         """
         Run the PuLP optimization algorithm to minimize cost while meeting SLA requirements.
+        Preserves a portion of the current traffic distribution to maintain stability.
         
         Args:
             links_data: Dictionary mapping link IDs to their data
@@ -43,11 +44,29 @@ class RoutingOptimizer:
         for link_id, link_data in links_data.items():
             self.variables[link_id] = LpVariable(f"x_{link_id.replace('-', '_')}", lowBound=0, upBound=1, cat='Continuous')
 
-        # Objective: minimize sum(x_i * price_i)
-        objective = []
+        # Get current traffic distribution
+        current_traffic = {}
+        total_current_traffic = 0
         for link_id, link_data in links_data.items():
-            objective.append(self.variables[link_id] * link_data['price'])
-        self.model += lpSum(objective), "Total_Cost"
+            # Check if this is an in-use link with traffic data
+            if link_id in self.profile.in_use_links and 'traffic' in link_data:
+                traffic_value = link_data.get('traffic', 0) / 100.0  # Convert to fraction
+                current_traffic[link_id] = traffic_value
+                total_current_traffic += traffic_value
+            else:
+                current_traffic[link_id] = 0.0
+        
+        # Normalize current traffic if needed
+        if total_current_traffic > 0 and abs(total_current_traffic - 1.0) > 0.001:
+            for link_id in current_traffic:
+                current_traffic[link_id] /= total_current_traffic
+
+        # Objective: minimize cost
+        cost_objective = []
+        for link_id, link_data in links_data.items():
+            cost_objective.append(self.variables[link_id] * link_data['price'])
+        
+        self.model += lpSum(cost_objective), "Total_Cost"
 
         # Constraint 1: Fractions sum to 1 (all traffic allocated)
         self.model += lpSum(self.variables.values()) == 1, "TotalTraffic"
@@ -58,6 +77,20 @@ class RoutingOptimizer:
         for link_id, link_data in links_data.items():
             sla_constraint.append(self.variables[link_id] * link_data['sla'])
         self.model += lpSum(sla_constraint) >= target_sla, "SLA_Requirement"
+        
+        # Constraint 3: Maintain at least 50% of current traffic for in-use links
+        # This ensures we don't completely abandon the current allocation
+        for link_id, traffic in current_traffic.items():
+            if link_id in self.profile.in_use_links and traffic > 0:
+                # Ensure at least 50% of current traffic is maintained
+                min_traffic = 0.5 * traffic
+                self.model += self.variables[link_id] >= min_traffic, f"Min_Traffic_{link_id}"
+                
+                # Also set a maximum to prevent too much increase
+                max_traffic = min(1.0, traffic * 1.5)  # Allow up to 50% increase, but not more than 100%
+                self.model += self.variables[link_id] <= max_traffic, f"Max_Traffic_{link_id}"
+                
+                logger.info(f"Setting traffic constraints for {link_id}: min={min_traffic*100:.1f}%, max={max_traffic*100:.1f}%")
 
         # Solve the problem
         logger.info("Starting optimization solver")

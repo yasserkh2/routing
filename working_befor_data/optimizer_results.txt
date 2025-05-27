@@ -1,0 +1,180 @@
+
+==================================================
+          OPTIMIZER TEST
+==================================================
+
+Retrieved 1 profiles
+
+--------------------------------------------------
+PROFILE: Standard_Glo Mobile_Nigeria (ID: 252)
+--------------------------------------------------
+EXPECTED SLA:    0.0%
+In-Use Links:    4
+Alternative Links: 18
+
+PROFILE BEFORE OPTIMIZATION (ORIGINAL ALLOCATION):
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Bongo         | Bongo - Ongoza - Beem         |      10.0% | N/A      | $   0.114 | $  0.0114 |
+| EtisalatHUB   | EtisalatHUB                   |      10.0% | N/A      | $   0.234 | $  0.0234 |
+| GPG_STD       | Green Packet Global Pte Ltd GPG |      10.0% | N/A      | $   0.120 | $  0.0120 |
+| link88        | Twilio AB - Beepsend          |      70.0% | N/A      | $   0.241 | $  0.1687 |
+------------------------------------------------------------------------------------------
+Total Original Cost: $0.2155
+Original SLA:        0.00%
+
+Prepared data for 13 links
+
+SAMPLE LINK DATA:
+------------------------------
+Link Bongo (Bongo - Ongoza - Beem):
+  SLA:           70.0%
+  Tier:          4
+  Price:         $0.114
+
+Link EtisalatHUB (EtisalatHUB):
+  SLA:           70.0%
+  Tier:          4
+  Price:         $0.234
+
+Link GPG_STD (Green Packet Global Pte Ltd GPG):
+  SLA:           70.0%
+  Tier:          4
+  Price:         $0.120
+
+
+PROFILE AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Arpu-Etisalat | ARPUPLUS                      |     100.0% |    95.0% | $   0.001 | $  0.0007 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.0007
+Cost Difference:      $-0.2148 (-99.68%)
+
+TRAFFIC CHANGES (BEFORE -> AFTER):
+--------------------------------------------------
+| Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
+|---------------|-------------------------------|----------|----------|----------|----------------|
+| EtisalatHUB   | EtisalatHUB                   |    10.0% |     0.0% |   -10.0% | $       -0.0234 |
+| Bongo         | Bongo - Ongoza - Beem         |    10.0% |     0.0% |   -10.0% | $       -0.0114 |
+| Arpu-Etisalat | ARPUPLUS                      |     0.0% |   100.0% |  +100.0% | $       +0.0007 |
+| GPG_STD       | Green Packet Global Pte Ltd GPG |    10.0% |     0.0% |   -10.0% | $       -0.0120 |
+| link88        | Twilio AB - Beepsend          |    70.0% |     0.0% |   -70.0% | $       -0.1687 |
+
+OPTIMIZATION STATS:
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    0.00%
+SLA Difference:  +95.00%
+Total Cost:      $0.0007
+Links Used:      1
+
+TIER STATISTICS:
+------------------------------
+Tier 1:
+  Traffic:       100.0%
+  Required SLA:  90.0%
+
+DETAILED LINK INFORMATION:
+--------------------------------------------------
+Link: Arpu-Etisalat (ARPUPLUS)
+  Price:         $0.0007 -> $0.0007 (+0.00%)
+  Traffic:       0.0% -> 100.0% (+100.0%)
+  SLA:           0.00% -> 95.00% (+95.00%)
+
+
+==================================================
+          PRICE CHANGE IMPACT TEST
+==================================================
+
+Testing price change for link EtisalatHUB
+Old price: $0.230
+New price: $0.240
+Found 1 affected profiles
+
+Testing with profile: Standard_Glo Mobile_Nigeria
+
+BEFORE OPTIMIZATION (ORIGINAL ALLOCATION FROM DATABASE):
+------------------------------------------------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Bongo         | Bongo - Ongoza - Beem         |      10.0% | N/A      | $   0.114 | $  0.0114 |
+| EtisalatHUB   | EtisalatHUB                   |      10.0% | N/A      | $   0.234 | $  0.0234 |
+| GPG_STD       | Green Packet Global Pte Ltd GPG |      10.0% | N/A      | $   0.120 | $  0.0120 |
+| link88        | Twilio AB - Beepsend          |      70.0% | N/A      | $   0.241 | $  0.1687 |
+------------------------------------------------------------------------------------------
+Total Original Cost: $0.2155
+Original SLA:        0.00%
+
+AFTER OPTIMIZATION (BEFORE PRICE CHANGE):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    0.00%
+SLA Difference:  +95.00%
+Total Cost:      $0.0007
+Cost Savings:    $+0.2148 (+99.68%)
+Links Used:      1
+
+Applying price change...
+
+AFTER OPTIMIZATION WITH PRICE CHANGE:
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    0.00%
+SLA Difference:  +95.00%
+Total Cost:      $0.0007
+Links Used:      1
+
+IMPACT ANALYSIS:
+--------------------------------------------------
+Cost Change:     $+0.0000 (+0.00%)
+SLA Change:      +0.00%
+Before SLA:      95.00% (Expected: 0.00%)
+After SLA:       95.00% (Expected: 0.00%)
+Before Cost:     $0.0007
+After Cost:      $0.0007
+
+COMPREHENSIVE COMPARISON OF ALL ALLOCATIONS:
+------------------------------------------------------------------------------------------------------------------------
+| Link ID       | Provider                      | Original % | Original $ | Optimized % | Optimized $ | After Price % | After Price $ |
+|---------------|-------------------------------|------------|------------|-------------|-------------|---------------|---------------|
+| GPG_STD       | Green Packet Global Pte Ltd GPG |       10.0% | $    0.0120 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
+| link88        | Twilio AB - Beepsend          |       70.0% | $    0.1687 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
+| EtisalatHUB   | EtisalatHUB                   |       10.0% | $    0.0234 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
+| Bongo         | Bongo - Ongoza - Beem         |       10.0% | $    0.0114 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
+| Arpu-Etisalat | ARPUPLUS                      |        0.0% | $    0.0000 |       100.0% | $     0.0007 |         100.0% | $       0.0007 |
+------------------------------------------------------------------------------------------------------------------------
+| TOTALS        |                               |      100.0% | $    0.2155 |       100.0% | $     0.0007 |         100.0% | $       0.0007 |
+
+COST IMPACT SUMMARY:
+------------------------------------------------------------
+Original to Optimized:       $+0.2148 (+99.68%)
+Impact of Price Change:      $+0.0000 (+0.00%)
+Total Impact (Net Savings):  $-0.2148 (-99.68%)
+
+DETAILED SUMMARY OF CHANGES:
+------------------------------------------------------------
+1. Original Database Allocation:
+   - 4 links used
+   - Total cost: $0.2155
+   - SLA: 0.00%
+
+2. Optimized Allocation (Before Price Change):
+   - 1 links used
+   - Total cost: $0.0007
+   - Cost savings: $+0.2148 (+99.68%)
+   - SLA: 95.00%
+
+3. Optimized Allocation (After Price Change):
+   - 1 links used
+   - Total cost: $0.0007
+   - Price change impact: $+0.0000 (+0.00%)
+   - SLA: 95.00%
+
+SIGNIFICANT TRAFFIC SHIFTS DUE TO PRICE CHANGE:
+------------------------------------------------------------
+No significant traffic shifts detected (>= 5% change)
+
+All tests completed!
