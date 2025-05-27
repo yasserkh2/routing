@@ -1,43 +1,50 @@
 {
     "profiles": [
         {
-            "profile_id": "1172",
-            "name": "Premium_GrameenPhone_Bangladesh",
-            "mcc": "470",
-            "mnc": "1",
+            "profile_id": "252",
+            "name": "Standard_Glo Mobile_Nigeria",
+            "mcc": "621",
+            "mnc": "50",
             "expected_sla": 0,
             "description": "",
-            "sell_price_min": 0.10425586401464,
-            "sell_price_max": 0.217554,
+            "sell_price_min": 0.05,
+            "sell_price_max": 0.212293,
+            "ProfileAvgCostUSD": 0.22238985913420004,
             "in_use_links": [
                 {
-                    "link": "ADA_Direct",
-                    "provider": "ADA SINGAPORE PTE. LTD",
-                    "buy_price": 0.172,
+                    "link": "Bongo",
+                    "provider": "Bongo - Ongoza - Beem",
+                    "buy_price": 0.114,
                     "tier": "",
-                    "traffic": 100,
-                    "sla_dd": 0.058824,
+                    "traffic": 10,
+                    "sla_dd": null,
                     "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "3908",
-            "name": "Enterprise_INTL_GrameenPhone_Bangladesh",
-            "mcc": "470",
-            "mnc": "1",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.242973610514912,
-            "sell_price_max": 0.255,
-            "in_use_links": [
+                },
                 {
-                    "link": "ADA_Direct",
-                    "provider": "ADA SINGAPORE PTE. LTD",
-                    "buy_price": 0.172,
+                    "link": "EtisalatHUB",
+                    "provider": "EtisalatHUB",
+                    "buy_price": 0.234,
                     "tier": "",
-                    "traffic": 100,
-                    "sla_dd": 0.058824,
+                    "traffic": 10,
+                    "sla_dd": null,
+                    "last_updated": ""
+                },
+                {
+                    "link": "GPG_STD",
+                    "provider": "Green Packet Global Pte Ltd GPG",
+                    "buy_price": 0.12,
+                    "tier": "",
+                    "traffic": 10,
+                    "sla_dd": null,
+                    "last_updated": ""
+                },
+                {
+                    "link": "link88",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.241,
+                    "tier": "",
+                    "traffic": 70,
+                    "sla_dd": null,
                     "last_updated": ""
                 }
             ]
@@ -69,39 +76,33 @@
             "tier": "Tier 6 - Local"
         },
         {
+            "link": "Arpu-Etisalat",
+            "provider": "ARPUPLUS",
+            "base_buy_price": 0.0007,
+            "tier": "Tier 1 - Prime"
+        },
+        {
             "link": "MRM_WhatsApp",
             "provider": "MrMessaging",
-            "base_buy_price": 0.0467,
+            "base_buy_price": 0.0343,
             "tier": "Tier 7 - WhatsApp"
-        },
-        {
-            "link": "Ameex",
-            "provider": "Ameex",
-            "base_buy_price": 0.1402,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "AmeexOTP",
-            "provider": "Ameex",
-            "base_buy_price": 0.1402,
-            "tier": "Tier 1 - Prime"
         },
         {
             "link": "Ameex_P2P",
             "provider": "Ameex",
-            "base_buy_price": 0.0758,
+            "base_buy_price": 0.053,
             "tier": "Tier 8 - P2P"
         },
         {
             "link": "MTN_UK_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1782,
+            "base_buy_price": 0.3344,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "MTN_AMS_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1782,
+            "base_buy_price": 0.3344,
             "tier": "Tier 1 - Prime"
         },
         {
@@ -129,39 +130,33 @@
             "tier": "Tier 6 - Local"
         },
         {
+            "link": "Arpu-Etisalat",
+            "provider": "ARPUPLUS",
+            "base_buy_price": 0.0007,
+            "tier": "Tier 1 - Prime"
+        },
+        {
             "link": "MRM_WhatsApp",
             "provider": "MrMessaging",
-            "base_buy_price": 0.0467,
+            "base_buy_price": 0.0343,
             "tier": "Tier 7 - WhatsApp"
-        },
-        {
-            "link": "Ameex",
-            "provider": "Ameex",
-            "base_buy_price": 0.1402,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "AmeexOTP",
-            "provider": "Ameex",
-            "base_buy_price": 0.1402,
-            "tier": "Tier 1 - Prime"
         },
         {
             "link": "Ameex_P2P",
             "provider": "Ameex",
-            "base_buy_price": 0.0758,
+            "base_buy_price": 0.053,
             "tier": "Tier 8 - P2P"
         },
         {
             "link": "MTN_UK_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1782,
+            "base_buy_price": 0.3344,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "MTN_AMS_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1782,
+            "base_buy_price": 0.3344,
             "tier": "Tier 1 - Prime"
         }
     ]

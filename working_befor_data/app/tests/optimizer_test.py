@@ -91,6 +91,17 @@ async def test_optimizer():
                     print(f"  Traffic:       {tier_data['traffic']:.1f}%")
                     print(f"  Required SLA:  {tier_data['required_sla']:.1f}%")
                 
+                # Display detailed link information if available
+                if 'link_details' in stats:
+                    print("\nDETAILED LINK INFORMATION:")
+                    print("-" * 50)
+                    for link_detail in stats['link_details']:
+                        print(f"Link: {link_detail['link']} ({link_detail['provider']})")
+                        print(f"  Price:         ${link_detail['old_price']:.4f} → ${link_detail['new_price']:.4f} ({link_detail['price_change_pct']:+.2f}%)")
+                        print(f"  Traffic:       {link_detail['old_traffic']:.1f}% → {link_detail['new_traffic']:.1f}% ({link_detail['traffic_change']:+.1f}%)")
+                        print(f"  SLA:           {link_detail['old_sla']:.2f}% → {link_detail['new_sla']:.2f}% ({link_detail['sla_change']:+.2f}%)")
+                        print()
+                
                 # Display warning if target SLA cannot be achieved
                 if not stats['sla_achievable']:
                     print(f"\nWARNING: {stats['warning']}")
@@ -193,10 +204,16 @@ async def test_optimizer():
                             # Calculate impact
                             cost_change = stats_after['total_cost'] - stats_before['total_cost']
                             cost_change_pct = (cost_change / stats_before['total_cost']) * 100 if stats_before['total_cost'] > 0 else 0
+                            sla_change = stats_after['achieved_sla'] - stats_before['achieved_sla']
                             
                             print("\nIMPACT ANALYSIS:")
-                            print("-" * 30)
+                            print("-" * 50)
                             print(f"Cost Change:     ${cost_change:+.4f} ({cost_change_pct:+.2f}%)")
+                            print(f"SLA Change:      {sla_change:+.2f}%")
+                            print(f"Before SLA:      {stats_before['achieved_sla']:.2f}% (Expected: {stats_before['expected_sla']:.2f}%)")
+                            print(f"After SLA:       {stats_after['achieved_sla']:.2f}% (Expected: {stats_after['expected_sla']:.2f}%)")
+                            print(f"Before Cost:     ${stats_before['total_cost']:.4f}")
+                            print(f"After Cost:      ${stats_after['total_cost']:.4f}")
                             
                             # Compare routing plans
                             print("\nCOMPARISON OF OPTIMIZED ALLOCATIONS:")

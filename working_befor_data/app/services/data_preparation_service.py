@@ -180,7 +180,7 @@ class DataPreparationService:
                     tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
                     
                     # Calculate final SLA
-                    if dd_sla is not None:
+                    if dd_sla is not None and dd_sla > 0:
                         sla = (dd_sla + tier_sla) / 2  # Average if both available
                     else:
                         sla = tier_sla  # Use tier SLA if DD SLA not available
@@ -190,22 +190,33 @@ class DataPreparationService:
                         'provider': link_data['provider'],
                         'price': link_data['buy_price'],
                         'sla': sla,
-                        'tier': tier
+                        'tier': tier,
+                        'sla_dd': link_data.get('sla_dd', 0)  # Include original sla_dd value
                     }
             
             # Check alternative_links
             for link_data in profile_data['alternative_links']:
                 if link_data['link'] == link_id:
+                    # Get DD SLA if available (also check for alternative links)
+                    dd_sla = link_data.get('sla_dd', 0) / 100.0 if 'sla_dd' in link_data else None
+                    
                     # Get tier SLA
                     tier = link_data.get('tier', 4)  # Default to tier 4 (Low) if not specified
                     tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
+                    
+                    # Calculate final SLA
+                    if dd_sla is not None and dd_sla > 0:
+                        sla = (dd_sla + tier_sla) / 2  # Average if both available
+                    else:
+                        sla = tier_sla  # Use tier SLA if DD SLA not available
                     
                     return {
                         'link': link_id,
                         'provider': link_data['provider'],
                         'price': link_data['buy_price'],
-                        'sla': tier_sla,  # Use tier SLA for alternative links
-                        'tier': tier
+                        'sla': sla,
+                        'tier': tier,
+                        'sla_dd': link_data.get('sla_dd', 0)  # Include original sla_dd value
                     }
         
         logger.warning(f"Link data not found for link: {link_id}")
@@ -227,9 +238,20 @@ class DataPreparationService:
         for link_id in profile.get_all_links():
             link_data = await self.get_link_data(link_id)
             if link_data:
-                links_data[link_id] = link_data
+                # Check if the link has a valid tier (1-4) or has a dd_sla value
+                tier = link_data.get('tier')
+                has_valid_tier = isinstance(tier, int) and 1 <= tier <= 4
+                has_dd_sla = 'sla_dd' in link_data and link_data['sla_dd'] > 0
+                
+                # Only include links with valid tier or dd_sla
+                if has_valid_tier or has_dd_sla:
+                    links_data[link_id] = link_data
+                else:
+                    logger.warning(
+                        f"Excluding link {link_id} from optimizer: no valid tier (1-4) and no dd_sla"
+                    )
         
-        logger.info(f"Found {len(links_data)} links for profile {profile.profile_id}")
+        logger.info(f"Found {len(links_data)} valid links for profile {profile.profile_id}")
         return links_data
         
     # Removed redundant convert_profile_to_optimizer_format method
@@ -456,5 +478,69 @@ class DataPreparationService:
         # Get links data for this profile
         links_data = await self.prepare_links_data_for_optimizer(profile)
         
+        # Get original link data from the mock API
+        combined_data = await self.mock_api.get_combined_data()
+        original_links_data = {}
+        
+        # Find the profile in the combined data
+        for profile_data in combined_data:
+            if profile_data['profile_id'] == profile.profile_id:
+                # Extract original link data
+                for link_data in profile_data['in_use_links']:
+                    original_links_data[link_data['link']] = {
+                        'provider': link_data['provider'],
+                        'price': link_data['buy_price'],
+                        'traffic': link_data.get('traffic', 0),
+                        'sla': link_data.get('sla_dd', 0)
+                    }
+                break
+        
         # Calculate statistics using the base method
-        return await self.calculate_optimization_stats(profile, routing_plan, links_data)
+        stats = await self.calculate_optimization_stats(profile, routing_plan, links_data)
+        
+        # Add detailed price and SLA comparison for each link in the routing plan
+        link_details = []
+        for route in routing_plan['routes']:
+            link_id = route['link']
+            new_price = route['price']
+            new_traffic = route['percentage']
+            new_sla = route['sla']
+            
+            # Get original data if available
+            original_data = original_links_data.get(link_id, {})
+            old_price = original_data.get('price', new_price)
+            old_traffic = original_data.get('traffic', 0)
+            old_sla = original_data.get('sla', 0)
+            
+            # Calculate changes
+            price_change = new_price - old_price
+            price_change_pct = (price_change / old_price) * 100 if old_price > 0 else 0
+            traffic_change = new_traffic - old_traffic
+            sla_change = new_sla - old_sla
+            
+            link_details.append({
+                'link': link_id,
+                'provider': route['provider'],
+                'old_price': old_price,
+                'new_price': new_price,
+                'price_change': price_change,
+                'price_change_pct': price_change_pct,
+                'old_traffic': old_traffic,
+                'new_traffic': new_traffic,
+                'traffic_change': traffic_change,
+                'old_sla': old_sla,
+                'new_sla': new_sla,
+                'sla_change': sla_change
+            })
+        
+        # Add detailed information to the stats
+        stats['link_details'] = link_details
+        stats['summary'] = {
+            'achieved_sla': stats['achieved_sla'],
+            'expected_sla': stats['expected_sla'],
+            'sla_difference': stats['achieved_sla'] - stats['expected_sla'],
+            'total_cost': stats['total_cost'],
+            'links_used': stats['links_used']
+        }
+        
+        return stats
