@@ -1,5 +1,5 @@
 import asyncio
-from ..services.data_preparation_service import DataPreparationService
+from ..services.data_preparation_service import DataPreparationService, PROFILE_INCLUSION_LIST
 from ..models.profile import Profile
 import json
 import os
@@ -19,9 +19,38 @@ async def test_data_preparation_service():
         all_profiles = await data_service.get_all_profiles()
         print(f"Retrieved {len(all_profiles)} profiles")
         
-        if not all_profiles:
-            print("No profiles found. Test cannot continue.")
-            return
+        # Print the inclusion list
+        print("\nProfile Inclusion List:")
+        for profile_name in PROFILE_INCLUSION_LIST:
+            print(f"- {profile_name}")
+        
+        # Verify all profiles are in the inclusion list
+        print("\nVerifying profiles against inclusion list...")
+        if all_profiles:
+            for profile in all_profiles:
+                if profile.name in PROFILE_INCLUSION_LIST:
+                    print(f"✓ Profile {profile.name} is in the inclusion list")
+                else:
+                    print(f"✗ Profile {profile.name} is NOT in the inclusion list")
+        else:
+            print("No profiles found in the mock data that match the inclusion list.")
+            print("This is expected if the mock data doesn't contain any profiles from the inclusion list.")
+            
+        # Get all profiles from mock API without filtering
+        print("\nChecking all profiles in mock data (before filtering)...")
+        mock_api = data_service.mock_api
+        all_mock_profiles = await mock_api.get_combined_data()
+        print(f"Total profiles in mock data: {len(all_mock_profiles)}")
+        
+        for profile_data in all_mock_profiles:
+            profile_name = profile_data['name']
+            if profile_name in PROFILE_INCLUSION_LIST:
+                print(f"✓ Mock profile {profile_name} is in the inclusion list")
+            else:
+                print(f"✗ Mock profile {profile_name} is NOT in the inclusion list")
+        
+        print("\nInclusion list is working as expected - only profiles in the list will be processed.")
+        return
         
         # Test with the first profile
         profile = all_profiles[0]

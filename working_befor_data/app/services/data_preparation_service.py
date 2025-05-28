@@ -9,6 +9,68 @@ from ..utils.logger import setup_logger
 # Setup logger
 logger = setup_logger(__name__)
 
+# Inclusion list for profiles that should be included in calculations
+PROFILE_INCLUSION_LIST = [
+    "Standard_MTN_Adv_Nigeria",
+    "International_Airtel_Nigeria",
+    "International_Etisalat_Nigeria",
+    "International_GLO_Nigeria",
+    "Standard_Mobilis_Algeria",
+    "Standard_Djezzy_Algeria",
+    "Standard_Ooredoo_Algeria",
+    "Direct_Alfa_International_Lebanon",
+    "Direct_Touch_International_Lebanon",
+    "Standard_Vodacom_Tanzania",
+    "Standard_Tigo_Tanzania",
+    "Standard_Airtel_Tanzania",
+    "Standard_Halotel / Viettel Ltd_Tanzania",
+    "Standard_International_Meditel_Morocco",
+    "Standard_IAM_ETISALAT_Morocco",
+    "Standard_Inwi_Morocco",
+    "Direct_Yemen Mobile_Yemen",
+    "Direct_Spacetel(MTN)_Yemen",
+    "Direct_Sabafon_Yemen",
+    "Direct_Y(Hits-UNITEL)_Yemen",
+    "Standard_Orange_Jordan",
+    "Standard_Umniah_Jordan",
+    "Standard_Zain_Jordan",
+    "Standard_INTL_Vodafone_Qatar",
+    "Standard_INTL_Ooredoo_Qatar",
+    "Standard_Asiacell_Iraq",
+    "Standard_Zain_Iraq",
+    "Standard_Korek Telecom_Iraq",
+    "Premium_International_MTN_Nigeria",
+    "Premium_Airtel_Nigeria",
+    "Premium_International_Etisalat_Nigeria",
+    "Premium_International_GLO_Nigeria",
+    "Premium_Asiacell_Iraq",
+    "Premium_Zain_Iraq",
+    "Premium_Korek Telecom_Iraq",
+    "Premium_Yemen Mobile_Yemen",
+    "Premium_Spacetel_Yemen",
+    "Premium_Sabafon_Yemen",
+    "Premium_YHits_Yemen",
+    "Premium_Orange_Jordan",
+    "Premium_Umniah_Jordan",
+    "Premium_Zain_Jordan",
+    "Premium_Djezzy_Algeria",
+    "Premium_Mobilis_Algeria",
+    "Premium_Ooredoo_Algeria",
+    "Premium_ MIC 1 (Alfa)",
+    "Premium_MIC 2 (MTC-Touch)",
+    "Premium_Halotel / Viettel Ltd_Tanzania",
+    "Premium_Airtel_Tanzania",
+    "Premium_Tigo_Tanzania",
+    "Premium_Vodacom_Tanzania",
+    "Premium_International_Meditel_Morocco",
+    "Premium_IAM_ETISALAT_Morocco",
+    "Premium_Inwi_Morocco",
+    "Premium_INTL_Vodafone_Qatar",
+    "Premium_INTL_Ooredoo_Qatar",
+    "Premium_Etisalat_Togo",
+    "Premium_Togo Cell_Togo"
+]
+
 class DataPreparationService:
     """Service to prepare data for the optimizer and handle data processing operations"""
     
@@ -61,6 +123,11 @@ class DataPreparationService:
         profiles = []
         for profile_data in profiles_data:
             try:
+                # Skip profiles not in the inclusion list
+                if profile_data['name'] not in PROFILE_INCLUSION_LIST:
+                    logger.info(f"Skipping profile {profile_data['name']} as it's not in the inclusion list")
+                    continue
+                
                 # Extract only link names from in_use_links
                 in_use_links = [
                     link_data['link']
@@ -98,7 +165,7 @@ class DataPreparationService:
             except Exception as e:
                 logger.error(f"Failed to process profile data: {str(e)}", exc_info=True)
                 
-        logger.info(f"Processed {len(profiles)} profiles")
+        logger.info(f"Processed {len(profiles)} profiles from inclusion list")
         return profiles
     
     @lru_cache(maxsize=10)

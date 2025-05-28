@@ -57,11 +57,11 @@ TRAFFIC CHANGES (BEFORE -> AFTER):
 --------------------------------------------------
 | Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
 |---------------|-------------------------------|----------|----------|----------|----------------|
-| EtisalatHUB   | EtisalatHUB                   |    10.0% |     0.0% |   -10.0% | $       -0.0234 |
-| Bongo         | Bongo - Ongoza - Beem         |    10.0% |     0.0% |   -10.0% | $       -0.0114 |
 | Arpu-Etisalat | ARPUPLUS                      |     0.0% |   100.0% |  +100.0% | $       +0.0007 |
-| GPG_STD       | Green Packet Global Pte Ltd GPG |    10.0% |     0.0% |   -10.0% | $       -0.0120 |
 | link88        | Twilio AB - Beepsend          |    70.0% |     0.0% |   -70.0% | $       -0.1687 |
+| EtisalatHUB   | EtisalatHUB                   |    10.0% |     0.0% |   -10.0% | $       -0.0234 |
+| GPG_STD       | Green Packet Global Pte Ltd GPG |    10.0% |     0.0% |   -10.0% | $       -0.0120 |
+| Bongo         | Bongo - Ongoza - Beem         |    10.0% |     0.0% |   -10.0% | $       -0.0114 |
 
 OPTIMIZATION STATS:
 ------------------------------
@@ -96,85 +96,58 @@ Found 1 affected profiles
 
 Testing with profile: Standard_Glo Mobile_Nigeria
 
-BEFORE OPTIMIZATION (ORIGINAL ALLOCATION FROM DATABASE):
-------------------------------------------------------------------------------------------
-| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
-|---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Bongo         | Bongo - Ongoza - Beem         |      10.0% | N/A      | $   0.114 | $  0.0114 |
-| EtisalatHUB   | EtisalatHUB                   |      10.0% | N/A      | $   0.234 | $  0.0234 |
-| GPG_STD       | Green Packet Global Pte Ltd GPG |      10.0% | N/A      | $   0.120 | $  0.0120 |
-| link88        | Twilio AB - Beepsend          |      70.0% | N/A      | $   0.241 | $  0.1687 |
-------------------------------------------------------------------------------------------
-Total Original Cost: $0.2155
-Original SLA:        0.00%
-
-AFTER OPTIMIZATION (BEFORE PRICE CHANGE):
-------------------------------
-ACHIEVED SLA:    95.00%
-EXPECTED SLA:    0.00%
-SLA Difference:  +95.00%
-Total Cost:      $0.0007
-Cost Savings:    $+0.2148 (+99.68%)
-Links Used:      1
-
 Applying price change...
 
-AFTER OPTIMIZATION WITH PRICE CHANGE:
-------------------------------
-ACHIEVED SLA:    95.00%
-EXPECTED SLA:    0.00%
-SLA Difference:  +95.00%
-Total Cost:      $0.0007
-Links Used:      1
+=== SIMPLIFIED PRICE CHANGE IMPACT SUMMARY ===
 
-IMPACT ANALYSIS:
---------------------------------------------------
-Cost Change:     $+0.0000 (+0.00%)
-SLA Change:      +0.00%
-Before SLA:      95.00% (Expected: 0.00%)
-After SLA:       95.00% (Expected: 0.00%)
-Before Cost:     $0.0007
-After Cost:      $0.0007
+1. ORIGINAL ALLOCATION:
+   Links used:  4
+   Total cost:  $0.2155
+   SLA:         0.00%
 
-COMPREHENSIVE COMPARISON OF ALL ALLOCATIONS:
-------------------------------------------------------------------------------------------------------------------------
-| Link ID       | Provider                      | Original % | Original $ | Optimized % | Optimized $ | After Price % | After Price $ |
-|---------------|-------------------------------|------------|------------|-------------|-------------|---------------|---------------|
-| GPG_STD       | Green Packet Global Pte Ltd GPG |       10.0% | $    0.0120 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
-| link88        | Twilio AB - Beepsend          |       70.0% | $    0.1687 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
-| EtisalatHUB   | EtisalatHUB                   |       10.0% | $    0.0234 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
-| Bongo         | Bongo - Ongoza - Beem         |       10.0% | $    0.0114 |         0.0% | $     0.0000 |           0.0% | $       0.0000 |
-| Arpu-Etisalat | ARPUPLUS                      |        0.0% | $    0.0000 |       100.0% | $     0.0007 |         100.0% | $       0.0007 |
-------------------------------------------------------------------------------------------------------------------------
-| TOTALS        |                               |      100.0% | $    0.2155 |       100.0% | $     0.0007 |         100.0% | $       0.0007 |
+2. OPTIMIZED ALLOCATION:
+   Links used:  1
+   Total cost:  $0.0007
+   Cost savings: $+0.2148 (+99.68%)
+   SLA:         95.00%
 
-COST IMPACT SUMMARY:
-------------------------------------------------------------
-Original to Optimized:       $+0.2148 (+99.68%)
-Impact of Price Change:      $+0.0000 (+0.00%)
-Total Impact (Net Savings):  $-0.2148 (-99.68%)
+3. AFTER PRICE CHANGE:
+   Links used:  1
+   Total cost:  $0.0007
+   Price impact: $+0.0000 (+0.00%)
+   SLA:         95.00%
 
-DETAILED SUMMARY OF CHANGES:
-------------------------------------------------------------
-1. Original Database Allocation:
-   - 4 links used
-   - Total cost: $0.2155
-   - SLA: 0.00%
+=== KEY LINKS ===
 
-2. Optimized Allocation (Before Price Change):
-   - 1 links used
-   - Total cost: $0.0007
-   - Cost savings: $+0.2148 (+99.68%)
-   - SLA: 95.00%
+link88 (Twilio AB - Beepsend):
+   Original:   70.0%
+   Optimized:  0.0%
+   After price change: 0.0%
 
-3. Optimized Allocation (After Price Change):
-   - 1 links used
-   - Total cost: $0.0007
-   - Price change impact: $+0.0000 (+0.00%)
-   - SLA: 95.00%
+EtisalatHUB (EtisalatHUB):
+   Original:   10.0%
+   Optimized:  0.0%
+   After price change: 0.0%
 
-SIGNIFICANT TRAFFIC SHIFTS DUE TO PRICE CHANGE:
-------------------------------------------------------------
-No significant traffic shifts detected (>= 5% change)
+Arpu-Etisalat (ARPUPLUS):
+   Original:   0.0%
+   Optimized:  100.0%
+   After price change: 100.0%
+
+GPG_STD (Green Packet Global Pte Ltd GPG):
+   Original:   10.0%
+   Optimized:  0.0%
+   After price change: 0.0%
+
+Bongo (Bongo - Ongoza - Beem):
+   Original:   10.0%
+   Optimized:  0.0%
+   After price change: 0.0%
+
+=== BOTTOM LINE ===
+Original cost:      $0.2155
+Optimized cost:     $0.0007
+After price change: $0.0007
+Total savings:      $-0.2148 (-99.68%)
 
 All tests completed!
