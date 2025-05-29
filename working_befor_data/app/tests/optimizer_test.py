@@ -20,6 +20,7 @@ async def test_optimizer():
     
     # Initialize services
     data_service = DataPreparationService()
+    optimizer = RoutingOptimizer()
     
     try:
         # Get all profiles
@@ -76,7 +77,7 @@ async def test_optimizer():
             print(f"Total Original Cost: ${original_cost:.4f}")
             print(f"Original SLA:        {original_sla*100:.2f}%")
             
-            # Get link data for this profile
+            # Get link data for this profile using data preparation service
             links_data = await data_service.prepare_links_data_for_optimizer(profile)
             print(f"\nPrepared data for {len(links_data)} links")
             
@@ -91,14 +92,18 @@ async def test_optimizer():
                 print(f"  Price:         ${link_data['price']:.3f}")
                 print()
             
-            # Run optimization
-            optimizer = RoutingOptimizer(profile)
-            success = await optimizer.solve()
+            # Run optimization using the new pure optimizer
+            success = optimizer.solve(links_data, profile.expected_sla)
             
             if success:
                 # Get optimization results
-                routing_plan = await optimizer.get_routing_plan()
-                stats = await optimizer.get_optimization_stats()
+                profile_info = {
+                    'profile_id': profile.profile_id,
+                    'name': profile.name,
+                    'expected_sla': profile.expected_sla
+                }
+                routing_plan = optimizer.get_routing_plan(links_data, profile_info)
+                stats = optimizer.get_optimization_stats(links_data, profile.expected_sla)
                 
                 print("\nPROFILE AFTER OPTIMIZATION:")
                 print("-" * 50)
@@ -126,7 +131,9 @@ async def test_optimizer():
                     traffic_change = new_traffic - original_traffic
                     
                     if original_traffic > 0 or new_traffic > 0:
-                        provider = original_links_data.get(link_id, {}).get('provider') or next((route['provider'] for route in routing_plan['routes'] if route['link'] == link_id), "Unknown")
+                        provider = original_links_data.get(link_id, {}).get('provider')
+                        if not provider:
+                            provider = next((route['provider'] for route in routing_plan['routes'] if route['link'] == link_id), "Unknown")
                         
                         # Calculate cost impact
                         original_price = original_links_data.get(link_id, {}).get('price', 0)
@@ -142,33 +149,34 @@ async def test_optimizer():
                 print("-" * 30)
                 print(f"ACHIEVED SLA:    {stats['achieved_sla']:.2f}%")
                 print(f"EXPECTED SLA:    {stats['expected_sla']:.2f}%")
-                print(f"SLA Difference:  {stats['achieved_sla'] - stats['expected_sla']:+.2f}%")
+                print(f"SLA Difference:  {stats['sla_difference']:+.2f}%")
                 print(f"Total Cost:      ${stats['total_cost']:.4f}")
                 print(f"Links Used:      {stats['links_used']}")
+                print(f"Status:          {stats['optimization_status']}")
                 
-                # Display tier statistics
-                print("\nTIER STATISTICS:")
-                print("-" * 30)
-                for tier, tier_data in sorted(stats['tier_stats'].items()):
-                    print(f"Tier {tier}:")
-                    print(f"  Traffic:       {tier_data['traffic']:.1f}%")
-                    print(f"  Required SLA:  {tier_data['required_sla']:.1f}%")
-                
-                # Display detailed link information if available
-                if 'link_details' in stats:
-                    print("\nDETAILED LINK INFORMATION:")
-                    print("-" * 50)
-                    for link_detail in stats['link_details']:
-                        print(f"Link: {link_detail['link']} ({link_detail['provider']})")
-                        print(f"  Price:         ${link_detail['old_price']:.4f} -> ${link_detail['new_price']:.4f} ({link_detail['price_change_pct']:+.2f}%)")
-                        print(f"  Traffic:       {link_detail['old_traffic']:.1f}% -> {link_detail['new_traffic']:.1f}% ({link_detail['traffic_change']:+.1f}%)")
-                        print(f"  SLA:           {link_detail['old_sla']:.2f}% -> {link_detail['new_sla']:.2f}% ({link_detail['sla_change']:+.2f}%)")
-                        print()
+                # Display tier statistics with proper sorting (if available from data service)
+                try:
+                    tier_stats = await data_service.calculate_tier_statistics_for_profile(profile, routing_plan)
+                    if tier_stats:
+                        print("\nTIER STATISTICS:")
+                        print("-" * 30)
+                        # Sort tiers, handling None values by putting them at the end
+                        sorted_tiers = sorted(tier_stats.items(), key=lambda x: (x[0] is None, x[0]))
+                        for tier, tier_data in sorted_tiers:
+                            tier_display = tier if tier is not None else "None"
+                            print(f"Tier {tier_display}:")
+                            print(f"  Traffic:       {tier_data['traffic']:.1f}%")
+                            print(f"  Required SLA:  {tier_data['required_sla']:.1f}%")
+                except Exception as e:
+                    logger.warning(f"Could not calculate tier statistics: {e}")
                 
                 # Display warning if target SLA cannot be achieved
                 if not stats['sla_achievable']:
-                    print(f"\nWARNING: {stats['warning']}")
-                    print(f"Max Achievable SLA: {stats['max_achievable_sla']:.2f}%")
+                    print(f"\nWARNING: Target SLA of {stats['expected_sla']:.1f}% cannot be achieved.")
+                    print(f"Maximum achievable SLA: {stats['max_achievable_sla']:.2f}%")
+                
+                # Reset optimizer for next profile
+                optimizer.reset()
             else:
                 print("\nFailed to find optimal solution")
         
@@ -204,139 +212,66 @@ async def test_optimizer():
                     test_profile = affected_profiles[0]
                     print(f"\nTesting with profile: {test_profile.name}")
                     
+                    # Get links data before price change
+                    links_data_before = await data_service.prepare_links_data_for_optimizer(test_profile)
+                    
                     # Run optimization with original price
-                    optimizer_before = RoutingOptimizer(test_profile)
-                    if await optimizer_before.solve():
-                        stats_before = await optimizer_before.get_optimization_stats()
-                        plan_before = await optimizer_before.get_routing_plan()
+                    optimizer_before = RoutingOptimizer()
+                    if optimizer_before.solve(links_data_before, test_profile.expected_sla):
+                        profile_info = {
+                            'profile_id': test_profile.profile_id,
+                            'name': test_profile.name,
+                            'expected_sla': test_profile.expected_sla
+                        }
+                        plan_before = optimizer_before.get_routing_plan(links_data_before, profile_info)
+                        stats_before = optimizer_before.get_optimization_stats(links_data_before, test_profile.expected_sla)
                         
-                        # Get original traffic allocation from mock data
-                        original_links_data = {}
-                        combined_data = await data_service.mock_api.get_combined_data()
-                        for profile_data in combined_data:
-                            if profile_data['profile_id'] == test_profile.profile_id:
-                                for link_data in profile_data['in_use_links']:
-                                    original_links_data[link_data['link']] = {
-                                        'provider': link_data['provider'],
-                                        'traffic': link_data.get('traffic', 0),
-                                        'price': link_data['buy_price'],
-                                        'sla': link_data.get('sla_dd', 90)
-                                    }
-                                break
-                        
-                        # Calculate original cost and SLA
-                        original_cost = 0
-                        original_sla = 0
-                        for link_id, link_data in original_links_data.items():
-                            traffic_pct = link_data['traffic']
-                            sla_value = link_data['sla']
-                            link_cost = (traffic_pct / 100.0) * link_data['price']
-                            original_cost += link_cost
-                            if sla_value is not None:
-                                original_sla += (traffic_pct / 100.0) * (sla_value / 100.0)
+                        print("\nBEFORE PRICE CHANGE:")
+                        print("-" * 30)
+                        print(f"ACHIEVED SLA:    {stats_before['achieved_sla']:.2f}%")
+                        print(f"EXPECTED SLA:    {stats_before['expected_sla']:.2f}%")
+                        print(f"SLA Difference:  {stats_before['sla_difference']:+.2f}%")
+                        print(f"Total Cost:      ${stats_before['total_cost']:.4f}")
+                        print(f"Links Used:      {stats_before['links_used']}")
                         
                         # Apply price change
                         print("\nApplying price change...")
                         data_service.update_link_price([test_profile], link_name, new_rate, old_rate)
                         
+                        # Get links data after price change
+                        links_data_after = await data_service.prepare_links_data_for_optimizer(test_profile)
+                        
                         # Run optimization with new price
-                        optimizer_after = RoutingOptimizer(test_profile)
-                        if await optimizer_after.solve():
-                            stats_after = await optimizer_after.get_optimization_stats()
-                            plan_after = await optimizer_after.get_routing_plan()
+                        optimizer_after = RoutingOptimizer()
+                        if optimizer_after.solve(links_data_after, test_profile.expected_sla):
+                            plan_after = optimizer_after.get_routing_plan(links_data_after, profile_info)
+                            stats_after = optimizer_after.get_optimization_stats(links_data_after, test_profile.expected_sla)
                             
-                            # Compare routing plans
-                            # Calculate totals
-                            original_total = sum((original_links_data.get(link_id, {}).get('traffic', 0) / 100.0) * 
-                                               original_links_data.get(link_id, {}).get('price', 0) 
-                                               for link_id in original_links_data)
+                            print("\nAFTER PRICE CHANGE:")
+                            print("-" * 30)
+                            print(f"ACHIEVED SLA:    {stats_after['achieved_sla']:.2f}%")
+                            print(f"EXPECTED SLA:    {stats_after['expected_sla']:.2f}%")
+                            print(f"SLA Difference:  {stats_after['sla_difference']:+.2f}%")
+                            print(f"Total Cost:      ${stats_after['total_cost']:.4f}")
+                            print(f"Links Used:      {stats_after['links_used']}")
                             
-                            before_routes = {route['link']: route for route in plan_before['routes'] if route['percentage'] > 0}
-                            after_routes = {route['link']: route for route in plan_after['routes'] if route['percentage'] > 0}
+                            # Calculate impact using optimizer's built-in method
+                            impact = optimizer_after.calculate_cost_impact(plan_before, plan_after)
+                            sla_change = stats_after['achieved_sla'] - stats_before['achieved_sla']
                             
-                            before_total = sum((before_routes.get(link_id, {}).get('percentage', 0) / 100.0) * 
-                                             before_routes.get(link_id, {}).get('price', 0) 
-                                             for link_id in before_routes)
+                            print("\nIMPACT ANALYSIS:")
+                            print("-" * 50)
+                            print(f"Cost Change:     ${impact['cost_change']:+.4f} ({impact['cost_change_percentage']:+.2f}%)")
+                            print(f"SLA Change:      {sla_change:+.2f}%")
+                            print(f"Before SLA:      {stats_before['achieved_sla']:.2f}% (Expected: {stats_before['expected_sla']:.2f}%)")
+                            print(f"After SLA:       {stats_after['achieved_sla']:.2f}% (Expected: {stats_after['expected_sla']:.2f}%)")
+                            print(f"Before Cost:     ${stats_before['total_cost']:.4f}")
+                            print(f"After Cost:      ${stats_after['total_cost']:.4f}")
                             
-                            after_total = sum((after_routes.get(link_id, {}).get('percentage', 0) / 100.0) * 
-                                            after_routes.get(link_id, {}).get('price', 0) 
-                                            for link_id in after_routes)
+                            if impact['savings'] > 0:
+                                print(f"Savings:         ${impact['savings']:.4f} ({impact['savings_percentage']:.2f}%)")
                             
-                            # Calculate savings and impacts
-                            opt_savings = original_total - before_total
-                            opt_savings_pct = (opt_savings / original_total) * 100 if original_total > 0 else 0
-                            price_impact = after_total - before_total
-                            price_impact_pct = (price_impact / before_total) * 100 if before_total > 0 else 0
-                            total_impact = after_total - original_total
-                            total_impact_pct = (total_impact / original_total) * 100 if original_total > 0 else 0
-                            
-                            # Count links used in each allocation
-                            orig_links_used = sum(1 for link_id in original_links_data if original_links_data[link_id].get('traffic', 0) > 0)
-                            opt_links_used = len(before_routes)
-                            after_links_used = len(after_routes)
-                            
-                            # Print simplified summary
-                            print("\n=== SIMPLIFIED PRICE CHANGE IMPACT SUMMARY ===")
-                            print("\n1. ORIGINAL ALLOCATION:")
-                            print(f"   Links used:  {orig_links_used}")
-                            print(f"   Total cost:  ${original_total:.4f}")
-                            print(f"   SLA:         {original_sla*100:.2f}%")
-                            
-                            print("\n2. OPTIMIZED ALLOCATION:")
-                            print(f"   Links used:  {opt_links_used}")
-                            print(f"   Total cost:  ${before_total:.4f}")
-                            print(f"   Cost savings: ${opt_savings:+.4f} ({opt_savings_pct:+.2f}%)")
-                            print(f"   SLA:         {stats_before['achieved_sla']:.2f}%")
-                            
-                            print("\n3. AFTER PRICE CHANGE:")
-                            print(f"   Links used:  {after_links_used}")
-                            print(f"   Total cost:  ${after_total:.4f}")
-                            print(f"   Price impact: ${price_impact:+.4f} ({price_impact_pct:+.2f}%)")
-                            print(f"   SLA:         {stats_after['achieved_sla']:.2f}%")
-                            
-                            print("\n=== KEY LINKS ===")
-                            # Show only the most important links (those with traffic in any allocation)
-                            important_links = []
-                            
-                            # Collect all links from all three allocations that have traffic
-                            all_links = set()
-                            for link_id, link_data in original_links_data.items():
-                                if link_data.get('traffic', 0) > 0:
-                                    all_links.add(link_id)
-                            
-                            for route in plan_before['routes']:
-                                if route['percentage'] > 0:
-                                    all_links.add(route['link'])
-                                    
-                            for route in plan_after['routes']:
-                                if route['percentage'] > 0:
-                                    all_links.add(route['link'])
-                            
-                            # Show only links with significant traffic in any allocation
-                            for link_id in all_links:
-                                orig_traffic = original_links_data.get(link_id, {}).get('traffic', 0)
-                                opt_traffic = next((route['percentage'] for route in plan_before['routes'] if route['link'] == link_id), 0)
-                                after_traffic = next((route['percentage'] for route in plan_after['routes'] if route['link'] == link_id), 0)
-                                
-                                # Only show links with significant traffic (>= 10%)
-                                if orig_traffic >= 10 or opt_traffic >= 10 or after_traffic >= 10:
-                                    provider = (
-                                        original_links_data.get(link_id, {}).get('provider') or
-                                        next((route['provider'] for route in plan_before['routes'] if route['link'] == link_id), None) or
-                                        next((route['provider'] for route in plan_after['routes'] if route['link'] == link_id), "Unknown")
-                                    )
-                                    
-                                    print(f"\n{link_id} ({provider}):")
-                                    print(f"   Original:   {orig_traffic:.1f}%")
-                                    print(f"   Optimized:  {opt_traffic:.1f}%")
-                                    print(f"   After price change: {after_traffic:.1f}%")
-                            
-                            # Show bottom line
-                            print("\n=== BOTTOM LINE ===")
-                            print(f"Original cost:      ${original_total:.4f}")
-                            print(f"Optimized cost:     ${before_total:.4f}")
-                            print(f"After price change: ${after_total:.4f}")
-                            print(f"Total savings:      ${total_impact:+.4f} ({total_impact_pct:+.2f}%)")
+                            print("\nPrice change impact test completed successfully!")
                         else:
                             print("Failed to optimize after price change")
                     else:
@@ -363,7 +298,7 @@ if __name__ == "__main__":
     original_stdout = sys.stdout
     
     # Use an absolute path to ensure the file is created in the correct location
-    output_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'optimizer_results.txt')
+    output_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'optimizer_test_results.txt')
     
     with open(output_file, 'w', encoding='utf-8') as f:
         sys.stdout = f

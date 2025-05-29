@@ -135,7 +135,7 @@ class DataPreparationService:
                     if isinstance(link_data, dict) and 'link' in link_data
                 ]
                 
-                # Extract only link names from alternative_links
+                # Extract only link names from alternative_links (now includes all global alternatives)
                 alternative_links = [
                     link_data['link']
                     for link_data in profile_data.get('alternative_links', [])
@@ -160,7 +160,7 @@ class DataPreparationService:
                 logger.debug(
                     f"Processed profile {profile.profile_id} with "
                     f"{len(profile.in_use_links)} in-use links and "
-                    f"{len(profile.alternative_links)} alternative links"
+                    f"{len(profile.alternative_links)} alternative links (shared globally)"
                 )
             except Exception as e:
                 logger.error(f"Failed to process profile data: {str(e)}", exc_info=True)
@@ -243,8 +243,8 @@ class DataPreparationService:
                     sla_dd_value = link_data.get('sla_dd')
                     dd_sla = sla_dd_value / 100.0 if sla_dd_value is not None else None
                     
-                    # Get tier SLA
-                    tier_value = link_data.get('tier', 4)  # Default to tier 4 (Low) if not specified
+                    # Get tier SLA - DO NOT default to tier 4, keep original tier value
+                    tier_value = link_data.get('tier')
                     
                     # Handle string tier values like "Tier 1 - Prime"
                     if isinstance(tier_value, str) and tier_value.startswith("Tier "):
@@ -252,17 +252,30 @@ class DataPreparationService:
                             # Extract the numeric part
                             tier = int(tier_value.split(" ")[1])
                         except (ValueError, IndexError):
-                            tier = 4  # Default to tier 4 if parsing fails
+                            tier = None  # Invalid tier format
+                    elif isinstance(tier_value, int):
+                        tier = tier_value
                     else:
-                        tier = tier_value if isinstance(tier_value, int) else 4
+                        tier = None  # No valid tier
                     
-                    tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
-                    
-                    # Calculate final SLA
+                    # Calculate final SLA - Focus: when sla_dd exists and tier is null, use sla_dd
                     if dd_sla is not None and dd_sla > 0:
-                        sla = (dd_sla + tier_sla) / 2  # Average if both available
-                    else:
+                        if tier is not None:
+                            tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
+                            sla = (dd_sla + tier_sla) / 2  # Average if both available
+                        else:
+                            # Case: sla_dd exists but tier is null - use sla_dd
+                            sla = dd_sla
+                            logger.debug(f"Using sla_dd ({dd_sla*100:.1f}%) for link {link_id} as tier is null")
+                    elif dd_sla is not None and dd_sla == 0:
+                        # Case: sla_dd is explicitly 0 - use it for SLA mixing calculations
+                        sla = 0.0
+                        logger.debug(f"Using zero SLA for link {link_id} (sla_dd=0) for SLA mixing")
+                    elif tier is not None:
+                        tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
                         sla = tier_sla  # Use tier SLA if DD SLA not available
+                    else:
+                        sla = 0.0  # No valid SLA data
                     
                     return {
                         'link': link_id,
@@ -276,12 +289,8 @@ class DataPreparationService:
             # Check alternative_links
             for link_data in profile_data['alternative_links']:
                 if link_data['link'] == link_id:
-                    # Get DD SLA if available (also check for alternative links)
-                    sla_dd_value = link_data.get('sla_dd')
-                    dd_sla = sla_dd_value / 100.0 if sla_dd_value is not None else None
-                    
-                    # Get tier SLA
-                    tier_value = link_data.get('tier', 4)  # Default to tier 4 (Low) if not specified
+                    # Get tier SLA - for alternative links, tier is required and must be 1-4
+                    tier_value = link_data.get('tier')
                     
                     # Handle string tier values like "Tier 1 - Prime"
                     if isinstance(tier_value, str) and tier_value.startswith("Tier "):
@@ -289,13 +298,26 @@ class DataPreparationService:
                             # Extract the numeric part
                             tier = int(tier_value.split(" ")[1])
                         except (ValueError, IndexError):
-                            tier = 4  # Default to tier 4 if parsing fails
+                            tier = None  # Invalid tier format
+                    elif isinstance(tier_value, int):
+                        tier = tier_value
                     else:
-                        tier = tier_value if isinstance(tier_value, int) else 4
+                        tier = None  # No valid tier
                     
+                    # For alternative links: if no tier or tier > 4, exclude from calculations
+                    if tier is None:
+                        logger.debug(f"Excluding alternative link {link_id} from calculations - no tier available")
+                        return None
+                    elif tier > 4:
+                        logger.debug(f"Excluding alternative link {link_id} from calculations - tier {tier} is above maximum supported tier 4")
+                        return None
+                    
+                    # Get DD SLA if available
+                    sla_dd_value = link_data.get('sla_dd')
+                    dd_sla = sla_dd_value / 100.0 if sla_dd_value is not None else None
+                    
+                    # Calculate final SLA - tier is guaranteed to exist here and be 1-4
                     tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
-                    
-                    # Calculate final SLA
                     if dd_sla is not None and dd_sla > 0:
                         sla = (dd_sla + tier_sla) / 2  # Average if both available
                     else:
@@ -331,33 +353,30 @@ class DataPreparationService:
             if link_data:
                 # Check if the link has a valid tier or has a dd_sla value
                 tier = link_data.get('tier')
-                # Consider any non-empty tier as valid
-                has_valid_tier = tier is not None and tier != ""
-                has_dd_sla = 'sla_dd' in link_data and link_data['sla_dd'] is not None and link_data['sla_dd'] > 0
+                # Consider any non-empty tier as valid (not empty string, not None, and not just whitespace)
+                has_valid_tier = tier is not None and str(tier).strip() != ""
+                has_dd_sla = 'sla_dd' in link_data and link_data['sla_dd'] is not None
                 
-                # For in-use links, always include them even if they don't have valid tier or SLA
+                # For in-use links, include them if they have valid data OR if they can be used for SLA mixing
                 if link_id in profile.in_use_links:
-                    # If the link doesn't have a valid tier or SLA, assign default values
-                    if not has_valid_tier and not has_dd_sla:
-                        # Assign default tier and SLA values for in-use links
-                        if 'tier' not in link_data or not link_data['tier']:
-                            link_data['tier'] = 3  # Default to Tier 3 (Medium)
-                        
-                        # Assign a default SLA based on tier
-                        tier_sla_mapping = {
-                            1: 0.95,  # Tier 1 – Prime
-                            2: 0.90,  # Tier 2 – High
-                            3: 0.80,  # Tier 3 – Med
-                            4: 0.70   # Tier 4 – Low
-                        }
-                        link_data['sla'] = tier_sla_mapping.get(link_data['tier'], 0.80)
-                        
-                        logger.info(
-                            f"Including in-use link {link_id} with default tier {link_data['tier']} "
-                            f"and SLA {link_data['sla']*100:.1f}%"
-                        )
+                    # Include if has valid tier and dd_sla, OR if it has 0% SLA for mixing, OR if it's a special link
+                    include_link = (
+                        (has_valid_tier and has_dd_sla) or  # Normal case: has both tier and dd_sla
+                        (link_data.get('sla') == 0.0) or    # Special case: 0% SLA for mixing
+                        (link_data.get('provider') == 'ignore')  # Special provider case
+                    )
                     
-                    links_data[link_id] = link_data
+                    if include_link:
+                        links_data[link_id] = link_data
+                        logger.info(
+                            f"Including in-use link {link_id} with tier {link_data.get('tier', 'N/A')} "
+                            f"and SLA {link_data['sla']*100:.1f}% (provider: {link_data.get('provider', 'Unknown')})"
+                        )
+                    else:
+                        logger.warning(
+                            f"Excluding in-use link {link_id} from optimizer: "
+                            f"missing tier ({has_valid_tier}) or dd_sla ({has_dd_sla})"
+                        )
                 # For alternative links, only include if they have valid tier or SLA
                 elif has_valid_tier or has_dd_sla:
                     links_data[link_id] = link_data
@@ -631,7 +650,8 @@ class DataPreparationService:
             price_change = new_price - old_price
             price_change_pct = (price_change / old_price) * 100 if old_price > 0 else 0
             traffic_change = new_traffic - old_traffic
-            sla_change = new_sla - old_sla
+            # Handle None values for SLA calculation
+            sla_change = new_sla - old_sla if old_sla is not None else new_sla
             
             link_details.append({
                 'link': link_id,

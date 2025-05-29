@@ -58,14 +58,31 @@ class MockAPIService(API):
                     'alternative_links': []
                 }
                 
-                # Add alternative links to the profile
-                # We'll add all alternative links to each profile for testing purposes
-                for alt_link in data.get('alternative_links', []):
-                    # Convert base_buy_price to buy_price for consistency
-                    alt_link_copy = alt_link.copy()
-                    if 'base_buy_price' in alt_link_copy:
-                        alt_link_copy['buy_price'] = alt_link_copy.pop('base_buy_price')
-                    profile_entry['alternative_links'].append(alt_link_copy)
+                # Add ALL global alternative links to every profile
+                global_alternatives = data.get('alternative_links', [])
+                # Remove duplicates from global alternatives
+                unique_alternatives = []
+                seen_links = set()
+                for alt_link in global_alternatives:
+                    if alt_link['link'] not in seen_links:
+                        seen_links.add(alt_link['link'])
+                        alt_link_copy = alt_link.copy()
+                        if 'base_buy_price' in alt_link_copy:
+                            alt_link_copy['buy_price'] = alt_link_copy.pop('base_buy_price')
+                        unique_alternatives.append(alt_link_copy)
+                
+                # Add all unique global alternatives to this profile
+                profile_entry['alternative_links'].extend(unique_alternatives)
+                
+                # Also add any profile-specific alternative links if they exist
+                if 'alternative_links' in profile:
+                    for alt_link in profile['alternative_links']:
+                        # Check if this link is not already in the global alternatives
+                        if alt_link['link'] not in seen_links:
+                            alt_link_copy = alt_link.copy()
+                            if 'base_buy_price' in alt_link_copy:
+                                alt_link_copy['buy_price'] = alt_link_copy.pop('base_buy_price')
+                            profile_entry['alternative_links'].append(alt_link_copy)
                 
                 simulation_data.append(profile_entry)
             
