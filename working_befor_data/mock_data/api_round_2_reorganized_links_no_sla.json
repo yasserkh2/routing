@@ -1,23 +1,50 @@
 {
     "profiles": [
         {
-            "profile_id": "680",
-            "name": "International_Airtel_Nigeria",
+            "profile_id": "873",
+            "name": "International_MTN_Nigeria",
             "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 85,
+            "mnc": "30",
+            "expected_sla": 0,
             "description": "",
             "sell_price_min": 0.01766748381324,
             "sell_price_max": 0.23840279680000004,
-            "ProfileAvgCostUSD": 0.17941059221760003,
+            "ProfileAvgCostUSD": 0.1252655552723,
             "in_use_links": [
                 {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.1962,
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
                     "tier": "",
-                    "traffic": 96,
-                    "sla_dd": 0.817524,
+                    "traffic": 95,
+                    "sla_dd": 0.854406,
+                    "last_updated": ""
+                },
+                {
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
+                    "tier": "",
+                    "traffic": 95,
+                    "sla_dd": 0.854406,
+                    "last_updated": ""
+                },
+                {
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
+                    "tier": "",
+                    "traffic": 95,
+                    "sla_dd": 0.854406,
+                    "last_updated": ""
+                },
+                {
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
+                    "tier": "",
+                    "traffic": 95,
+                    "sla_dd": 0.854406,
                     "last_updated": ""
                 },
                 {
@@ -25,215 +52,57 @@
                     "provider": "ignore",
                     "buy_price": 0,
                     "tier": "",
-                    "traffic": 4,
+                    "traffic": 5,
                     "sla_dd": null,
                     "last_updated": ""
                 }
             ]
         },
         {
-            "profile_id": "1217",
-            "name": "Premium_Airtel_Nigeria",
+            "profile_id": "1480",
+            "name": "Premium_International_MTN_Nigeria",
             "mcc": "621",
-            "mnc": "20",
+            "mnc": "30",
             "expected_sla": 95,
-            "description": "Numeric and Generic senders are not allowed",
-            "sell_price_min": 0.10364619050146001,
-            "sell_price_max": 0.186,
-            "ProfileAvgCostUSD": 0.18688603356000003,
+            "description": "Google Sender ID is not allowed",
+            "sell_price_min": 0.05609087956549601,
+            "sell_price_max": 0.16309521568256002,
+            "ProfileAvgCostUSD": 0.131858479234,
             "in_use_links": [
                 {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
                     "tier": "",
                     "traffic": 100,
-                    "sla_dd": 0.817524,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "1732",
-            "name": "GlobalENT_Airtel_Nigeria_0hop",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.127943216830918,
-            "sell_price_max": 0.136,
-            "ProfileAvgCostUSD": 0.134317421814,
-            "in_use_links": [
-                {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
-                    "tier": "",
-                    "traffic": 65,
-                    "sla_dd": 0.817524,
+                    "sla_dd": 0.854406,
                     "last_updated": ""
                 },
                 {
-                    "link": "Byteplus_HQ_OTP",
-                    "provider": "BytePlus Lte",
-                    "buy_price": 0.03669,
-                    "tier": "",
-                    "traffic": 35,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "1986",
-            "name": "Alibaba_Airtel_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.14199808481037202,
-            "sell_price_max": 0.22,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
-                {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
                     "tier": "",
                     "traffic": 100,
-                    "sla_dd": 0.817524,
+                    "sla_dd": 0.854406,
                     "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "2030",
-            "name": "Telegram_Airtel_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.17650347614000003,
-            "sell_price_max": 0.185341,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
+                },
                 {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
                     "tier": "",
                     "traffic": 100,
-                    "sla_dd": 0.817524,
+                    "sla_dd": 0.854406,
                     "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "2953",
-            "name": "Verify_Airtel_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.134099168337104,
-            "sell_price_max": 6.640446561111186,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
+                },
                 {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
+                    "link": "BeepsendDR",
+                    "provider": "Twilio AB - Beepsend",
+                    "buy_price": 0.127,
                     "tier": "",
                     "traffic": 100,
-                    "sla_dd": 0.817524,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "4042",
-            "name": "Enterprise_INTL_Airtel_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.2266512284786,
-            "sell_price_max": 0.238,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
-                {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
-                    "tier": "",
-                    "traffic": 100,
-                    "sla_dd": 0.817524,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "5433",
-            "name": "Bein_Airtel_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
-                {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
-                    "tier": "",
-                    "traffic": 100,
-                    "sla_dd": 0.817524,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "5525",
-            "name": "Tencent_OTP_Airtel_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
-                {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
-                    "tier": "",
-                    "traffic": 100,
-                    "sla_dd": 0.817524,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "5547",
-            "name": "Tencent_Airtel_ADV_Nigeria",
-            "mcc": "621",
-            "mnc": "20",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0,
-            "ProfileAvgCostUSD": 0.18688603356000003,
-            "in_use_links": [
-                {
-                    "link": "AirtelHQ2",
-                    "provider": "Airtel HQ",
-                    "buy_price": 0.18,
-                    "tier": "",
-                    "traffic": 100,
-                    "sla_dd": 0.817524,
+                    "sla_dd": 0.854406,
                     "last_updated": ""
                 }
             ]
@@ -265,12 +134,6 @@
             "tier": "Tier 6 - Local"
         },
         {
-            "link": "Arpu-Etisalat",
-            "provider": "ARPUPLUS",
-            "base_buy_price": 0.0007,
-            "tier": "Tier 1 - Prime"
-        },
-        {
             "link": "MRM_WhatsApp",
             "provider": "MrMessaging",
             "base_buy_price": 0.0343,
@@ -285,13 +148,13 @@
         {
             "link": "MTN_UK_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1814,
+            "base_buy_price": 0.141,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "MTN_AMS_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1814,
+            "base_buy_price": 0.142,
             "tier": "Tier 1 - Prime"
         },
         {
@@ -319,12 +182,6 @@
             "tier": "Tier 6 - Local"
         },
         {
-            "link": "Arpu-Etisalat",
-            "provider": "ARPUPLUS",
-            "base_buy_price": 0.0007,
-            "tier": "Tier 1 - Prime"
-        },
-        {
             "link": "MRM_WhatsApp",
             "provider": "MrMessaging",
             "base_buy_price": 0.0343,
@@ -339,13 +196,13 @@
         {
             "link": "MTN_UK_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1814,
+            "base_buy_price": 0.141,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "MTN_AMS_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1814,
+            "base_buy_price": 0.142,
             "tier": "Tier 1 - Prime"
         }
     ]

@@ -1,0 +1,48 @@
+
+==================================================
+          OPTIMIZER TEST
+==================================================
+
+Retrieved 1 profiles
+
+--------------------------------------------------
+PROFILE: Standard_Glo Mobile_Nigeria (ID: 252)
+--------------------------------------------------
+EXPECTED SLA:    0.0%
+In-Use Links:    4
+Alternative Links: 18
+
+PROFILE BEFORE OPTIMIZATION (ORIGINAL ALLOCATION):
+--------------------------------------------------
+- Link Bongo (Bongo - Ongoza - Beem): 10.0% (SLA: N/A, Price: $0.114)
+- Link EtisalatHUB (EtisalatHUB): 10.0% (SLA: N/A, Price: $0.234)
+- Link GPG_STD (Green Packet Global Pte Ltd GPG): 10.0% (SLA: N/A, Price: $0.120)
+- Link link88 (Twilio AB - Beepsend): 70.0% (SLA: N/A, Price: $0.241)
+
+Original Cost:   $0.2155
+Original SLA:    0.00%
+
+Prepared data for 9 links
+
+SAMPLE LINK DATA:
+------------------------------
+Link STC_WL_Offnet70723 (Saudi Telecom Company):
+  SLA:           70.0%
+  Tier:          Tier 6 - Local
+  Price:         $0.021
+
+Link STC_BL_Offnet70727 (Saudi Telecom Company):
+  SLA:           70.0%
+  Tier:          Tier 6 - Local
+  Price:         $0.021
+
+Link Mobily_BL_TN (Mobily):
+  SLA:           70.0%
+  Tier:          Tier 6 - Local
+  Price:         $0.067
+
+
+PROFILE AFTER OPTIMIZATION:
+--------------------------------------------------
+- Link Arpu-Etisalat (ARPUPLUS): 100.0% (SLA: 70.0%, Price: $0.001)
+Error running optimizer test: 'charmap' codec can't encode character '\u2192' in position 26: character maps to <undefined>
