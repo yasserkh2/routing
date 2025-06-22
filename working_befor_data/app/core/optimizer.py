@@ -73,16 +73,21 @@ class RoutingOptimizer:
         # (A) Fractions sum to 1 (all traffic allocated)
         model += pulp.lpSum([x[link_id] for link_id in normalized_links]) == 1, "TotalTraffic"
         
-        # (B) Achieve target SLA exactly (with tight tolerance to prevent exceeding)
+        # (B) Achieve target SLA (with minimum requirement but allow exceeding if necessary)
         tolerance = 0.001  # 0.1% tolerance
         sla_expression = pulp.lpSum([
             x[link_id] * normalized_links[link_id]['SLA']
             for link_id in normalized_links
         ])
         
-        # Set tight SLA constraints to achieve exactly the target
+        # Set SLA constraint to achieve at least the target SLA
         model += sla_expression >= target_sla - tolerance, "SLA_Minimum"
-        model += sla_expression <= target_sla + tolerance, "SLA_Maximum"
+        
+        # Define the objective function (minimize cost)
+        model += pulp.lpSum([
+            x[link_id] * normalized_links[link_id]['Price']
+            for link_id in normalized_links
+        ]), "Total_Cost"
         
         logger.info(f"SLA constraints: {(target_sla-tolerance)*100:.1f}% <= SLA <= {(target_sla+tolerance)*100:.1f}%")
         

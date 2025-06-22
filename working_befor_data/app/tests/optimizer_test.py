@@ -51,7 +51,7 @@ async def test_optimizer():
                             'provider': link_data['provider'],
                             'traffic': link_data.get('traffic', 0),
                             'price': link_data['buy_price'],
-                            'sla': link_data.get('sla_dd', 90)
+                            'sla': link_data.get('sla_dd', 0.85)
                         }
                     break
             
@@ -92,7 +92,7 @@ async def test_optimizer():
                 print(f"  Price:         ${link_data['price']:.3f}")
                 print()
             
-            # Run optimization using the new pure optimizer
+            # Run optimization using the new pure optimizer with original expected SLA
             success = optimizer.solve(links_data, profile.expected_sla)
             
             if success:
@@ -174,6 +174,90 @@ async def test_optimizer():
                 if not stats['sla_achievable']:
                     print(f"\nWARNING: Target SLA of {stats['expected_sla']:.1f}% cannot be achieved.")
                     print(f"Maximum achievable SLA: {stats['max_achievable_sla']:.2f}%")
+                
+                # Run optimization with reduced SLA (5% lower)
+                reduced_sla = max(profile.expected_sla - 5, 0)  # Ensure SLA doesn't go below 0
+                print("\n" + "-"*50)
+                print(f"OPTIMIZATION WITH REDUCED SLA: {reduced_sla}%")
+                print("-"*50)
+                
+                
+                # Reset optimizer for the reduced SLA test
+                optimizer.reset()
+                
+                # Run optimization with reduced SLA
+                reduced_success = optimizer.solve(links_data, reduced_sla)
+                
+                if reduced_success:
+                    # Get optimization results for reduced SLA
+                    reduced_profile_info = {
+                        'profile_id': profile.profile_id,
+                        'name': profile.name,
+                        'expected_sla': reduced_sla
+                    }
+                    reduced_routing_plan = optimizer.get_routing_plan(links_data, reduced_profile_info)
+                    reduced_stats = optimizer.get_optimization_stats(links_data, reduced_sla)
+                    
+                    print("\nPROFILE WITH REDUCED SLA AFTER OPTIMIZATION:")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                    print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                    reduced_optimized_cost = 0
+                    for route in reduced_routing_plan['routes']:
+                        if route['percentage'] > 0:  # Only show routes with traffic
+                            link_cost = (route['percentage'] / 100.0) * route['price']
+                            reduced_optimized_cost += link_cost
+                            print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                    
+                    print("-" * 90)
+                    print(f"Total Optimized Cost: ${reduced_optimized_cost:.4f}")
+                    print(f"Cost Difference from Original: ${reduced_optimized_cost - original_cost:+.4f} ({((reduced_optimized_cost - original_cost)/original_cost)*100:+.2f}%)")
+                    print(f"Cost Difference from Standard SLA: ${reduced_optimized_cost - optimized_cost:+.4f} ({((reduced_optimized_cost - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    print("\nOPTIMIZATION STATS (REDUCED SLA):")
+                    print("-" * 30)
+                    print(f"ACHIEVED SLA:    {reduced_stats['achieved_sla']:.2f}%")
+                    print(f"EXPECTED SLA:    {reduced_stats['expected_sla']:.2f}%")
+                    print(f"SLA Difference:  {reduced_stats['sla_difference']:+.2f}%")
+                    print(f"Total Cost:      ${reduced_stats['total_cost']:.4f}")
+                    print(f"Links Used:      {reduced_stats['links_used']}")
+                    print(f"Status:          {reduced_stats['optimization_status']}")
+                    
+                    # Compare with original SLA optimization
+                    print("\nCOMPARISON BETWEEN STANDARD AND REDUCED SLA:")
+                    print("-" * 50)
+                    print(f"Standard SLA Target: {profile.expected_sla:.2f}% | Reduced SLA Target: {reduced_sla:.2f}%")
+                    print(f"Standard SLA Cost:   ${optimized_cost:.4f} | Reduced SLA Cost:   ${reduced_optimized_cost:.4f}")
+                    print(f"Cost Savings with Reduced SLA: ${optimized_cost - reduced_optimized_cost:+.4f} ({((optimized_cost - reduced_optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    # Display traffic differences between standard and reduced SLA
+                    print("\nTRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Standard | Reduced  | Change   |")
+                    print("|---------------|-------------------------------|----------|----------|----------|")
+                    
+                    # Collect all links used in either optimization
+                    all_links = set()
+                    for route in routing_plan['routes']:
+                        if route['percentage'] > 0:
+                            all_links.add(route['link'])
+                    for route in reduced_routing_plan['routes']:
+                        if route['percentage'] > 0:
+                            all_links.add(route['link'])
+                    
+                    # Display traffic differences
+                    for link_id in all_links:
+                        standard_traffic = next((route['percentage'] for route in routing_plan['routes'] if route['link'] == link_id), 0)
+                        reduced_traffic = next((route['percentage'] for route in reduced_routing_plan['routes'] if route['link'] == link_id), 0)
+                        traffic_change = reduced_traffic - standard_traffic
+                        
+                        if standard_traffic > 0 or reduced_traffic > 0:
+                            provider = next((route['provider'] for route in routing_plan['routes'] if route['link'] == link_id), 
+                                          next((route['provider'] for route in reduced_routing_plan['routes'] if route['link'] == link_id), "Unknown"))
+                            
+                            print(f"| {link_id:<13} | {provider:<29} | {standard_traffic:7.1f}% | {reduced_traffic:7.1f}% | {traffic_change:+7.1f}% |")
+                else:
+                    print("\nFailed to find optimal solution with reduced SLA")
                 
                 # Reset optimizer for next profile
                 optimizer.reset()

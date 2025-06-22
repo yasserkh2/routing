@@ -241,7 +241,8 @@ class DataPreparationService:
                 if link_data['link'] == link_id:
                     # Get DD SLA if available
                     sla_dd_value = link_data.get('sla_dd')
-                    dd_sla = sla_dd_value / 100.0 if sla_dd_value is not None else None
+                    # The sla_dd value is already in decimal format (e.g., 0.854406 for 85.44%)
+                    dd_sla = sla_dd_value if sla_dd_value is not None else None
                     
                     # Get tier SLA - DO NOT default to tier 4, keep original tier value
                     tier_value = link_data.get('tier')
@@ -314,7 +315,8 @@ class DataPreparationService:
                     
                     # Get DD SLA if available
                     sla_dd_value = link_data.get('sla_dd')
-                    dd_sla = sla_dd_value / 100.0 if sla_dd_value is not None else None
+                    # The sla_dd value is already in decimal format (e.g., 0.854406 for 85.44%)
+                    dd_sla = sla_dd_value if sla_dd_value is not None else None
                     
                     # Calculate final SLA - tier is guaranteed to exist here and be 1-4
                     tier_sla = tier_sla_mapping.get(tier, 0.70)  # Default to 70% if tier not found
@@ -359,9 +361,9 @@ class DataPreparationService:
                 
                 # For in-use links, include them if they have valid data OR if they can be used for SLA mixing
                 if link_id in profile.in_use_links:
-                    # Include if has valid tier and dd_sla, OR if it has 0% SLA for mixing, OR if it's a special link
+                    # Include if has valid tier OR dd_sla, OR if it has 0% SLA for mixing, OR if it's a special link
                     include_link = (
-                        (has_valid_tier and has_dd_sla) or  # Normal case: has both tier and dd_sla
+                        has_valid_tier or has_dd_sla or  # Include if either tier or dd_sla is valid
                         (link_data.get('sla') == 0.0) or    # Special case: 0% SLA for mixing
                         (link_data.get('provider') == 'ignore')  # Special provider case
                     )

@@ -3,63 +3,206 @@
           OPTIMIZER TEST
 ==================================================
 
-Retrieved 1 profiles
+Retrieved 2 profiles
 
 --------------------------------------------------
-PROFILE: Premium_International_MTN_Nigeria (ID: 1480)
+PROFILE: Standard_Zain_Iraq (ID: 197)
 --------------------------------------------------
-EXPECTED SLA:    95.0%
-In-Use Links:    4
-Alternative Links: 8
+EXPECTED SLA:    85.0%
+In-Use Links:    3
+Alternative Links: 33
 
 PROFILE BEFORE OPTIMIZATION (ORIGINAL ALLOCATION):
 --------------------------------------------------
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| BeepsendDR    | Twilio AB - Beepsend          |     100.0% | 0.9%     | $   0.127 | $  0.1270 |
+| EtisalatHUB   | EtisalatHUB                   |      55.0% | N/A      | $   0.176 | $  0.0968 |
+| Mir_Solutions_DIR | Mir Solutions Overseas L.L.C  |      40.0% | N/A      | $   0.170 | $  0.0678 |
+| Undel         | ignore                        |       5.0% | N/A      | $   0.000 | $  0.0000 |
 ------------------------------------------------------------------------------------------
-Total Original Cost: $0.1270
-Original SLA:        0.85%
+Total Original Cost: $0.1646
+Original SLA:        0.00%
 
-Prepared data for 2 links
+Prepared data for 29 links
 
 SAMPLE LINK DATA:
 ------------------------------
-Link MTN_UK_USD (MTN HUB USD):
+Link EtisalatHUB (EtisalatHUB):
   SLA:           95.0%
   Tier:          1
-  Price:         $0.141
+  Price:         $0.176
 
-Link MTN_AMS_USD (MTN HUB USD):
-  SLA:           95.0%
-  Tier:          1
-  Price:         $0.142
+Link Mir_Solutions_DIR (Mir Solutions Overseas L.L.C):
+  SLA:           0.0%
+  Tier:          None
+  Price:         $0.170
+
+Link Undel (ignore):
+  SLA:           0.0%
+  Tier:          None
+  Price:         $0.000
 
 
 PROFILE AFTER OPTIMIZATION:
 --------------------------------------------------
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| MTN_UK_USD    | MTN HUB USD                   |     100.0% |    95.0% | $   0.141 | $  0.1410 |
+| Ameex         | Ameex                         |      89.4% |    95.0% | $   0.050 | $  0.0445 |
+| Undel         | ignore                        |      10.6% |     0.0% | $   0.000 | $  0.0000 |
 ------------------------------------------------------------------------------------------
-Total Optimized Cost: $0.1410
-Cost Difference:      $+0.0140 (+11.02%)
+Total Optimized Cost: $0.0445
+Cost Difference:      $-0.1201 (-72.96%)
 
 TRAFFIC CHANGES (BEFORE -> AFTER):
 --------------------------------------------------
 | Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
 |---------------|-------------------------------|----------|----------|----------|----------------|
-| BeepsendDR    | Twilio AB - Beepsend          |   100.0% |     0.0% |  -100.0% | $       -0.1270 |
-| MTN_UK_USD    | MTN HUB USD                   |     0.0% |   100.0% |  +100.0% | $       +0.1410 |
+| Mir_Solutions_DIR | Mir Solutions Overseas L.L.C  |    40.0% |     0.0% |   -40.0% | $       -0.0678 |
+| Undel         | ignore                        |     5.0% |    10.6% |    +5.6% | $       +0.0000 |
+| Ameex         | Ameex                         |     0.0% |    89.4% |   +89.4% | $       +0.0445 |
+| EtisalatHUB   | EtisalatHUB                   |    55.0% |     0.0% |   -55.0% | $       -0.0968 |
+
+OPTIMIZATION STATS:
+------------------------------
+ACHIEVED SLA:    84.90%
+EXPECTED SLA:    85.00%
+SLA Difference:  -0.10%
+Total Cost:      $0.0445
+Links Used:      2
+Status:          Optimal
+
+--------------------------------------------------
+OPTIMIZATION WITH REDUCED SLA: 80.0%
+--------------------------------------------------
+
+PROFILE WITH REDUCED SLA AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Ameex         | Ameex                         |      84.1% |    95.0% | $   0.050 | $  0.0419 |
+| Undel         | ignore                        |      15.9% |     0.0% | $   0.000 | $  0.0000 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.0419
+Cost Difference from Original: $-0.1227 (-74.55%)
+Cost Difference from Standard SLA: $-0.0026 (-5.89%)
+
+OPTIMIZATION STATS (REDUCED SLA):
+------------------------------
+ACHIEVED SLA:    79.90%
+EXPECTED SLA:    80.00%
+SLA Difference:  -0.10%
+Total Cost:      $0.0419
+Links Used:      2
+Status:          Optimal
+
+COMPARISON BETWEEN STANDARD AND REDUCED SLA:
+--------------------------------------------------
+Standard SLA Target: 85.00% | Reduced SLA Target: 80.00%
+Standard SLA Cost:   $0.0445 | Reduced SLA Cost:   $0.0419
+Cost Savings with Reduced SLA: $+0.0026 (+5.89%)
+
+TRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):
+--------------------------------------------------
+| Link ID       | Provider                      | Standard | Reduced  | Change   |
+|---------------|-------------------------------|----------|----------|----------|
+| Undel         | ignore                        |    10.6% |    15.9% |    +5.3% |
+| Ameex         | Ameex                         |    89.4% |    84.1% |    -5.3% |
+
+--------------------------------------------------
+PROFILE: Premium_Zain_Iraq (ID: 778)
+--------------------------------------------------
+EXPECTED SLA:    95.0%
+In-Use Links:    1
+Alternative Links: 33
+
+PROFILE BEFORE OPTIMIZATION (ORIGINAL ALLOCATION):
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| EtisalatHUB   | EtisalatHUB                   |     100.0% | N/A      | $   0.176 | $  0.1760 |
+------------------------------------------------------------------------------------------
+Total Original Cost: $0.1760
+Original SLA:        0.00%
+
+Prepared data for 27 links
+
+SAMPLE LINK DATA:
+------------------------------
+Link EtisalatHUB (EtisalatHUB):
+  SLA:           95.0%
+  Tier:          1
+  Price:         $0.176
+
+Link link90 (Javna Software Solutions):
+  SLA:           95.0%
+  Tier:          1
+  Price:         $0.184
+
+Link BeepsendDR (Twilio AB - Beepsend):
+  SLA:           95.0%
+  Tier:          1
+  Price:         $0.079
+
+
+PROFILE AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Ameex         | Ameex                         |     100.0% |    95.0% | $   0.050 | $  0.0498 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.0498
+Cost Difference:      $-0.1262 (-71.70%)
+
+TRAFFIC CHANGES (BEFORE -> AFTER):
+--------------------------------------------------
+| Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
+|---------------|-------------------------------|----------|----------|----------|----------------|
+| Ameex         | Ameex                         |     0.0% |   100.0% |  +100.0% | $       +0.0498 |
+| EtisalatHUB   | EtisalatHUB                   |   100.0% |     0.0% |  -100.0% | $       -0.1760 |
 
 OPTIMIZATION STATS:
 ------------------------------
 ACHIEVED SLA:    95.00%
 EXPECTED SLA:    95.00%
 SLA Difference:  +0.00%
-Total Cost:      $0.1410
+Total Cost:      $0.0498
 Links Used:      1
 Status:          Optimal
+
+--------------------------------------------------
+OPTIMIZATION WITH REDUCED SLA: 90.0%
+--------------------------------------------------
+
+PROFILE WITH REDUCED SLA AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Ameex         | Ameex                         |     100.0% |    95.0% | $   0.050 | $  0.0498 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.0498
+Cost Difference from Original: $-0.1262 (-71.70%)
+Cost Difference from Standard SLA: $+0.0000 (+0.00%)
+
+OPTIMIZATION STATS (REDUCED SLA):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    90.00%
+SLA Difference:  +5.00%
+Total Cost:      $0.0498
+Links Used:      1
+Status:          Optimal
+
+COMPARISON BETWEEN STANDARD AND REDUCED SLA:
+--------------------------------------------------
+Standard SLA Target: 95.00% | Reduced SLA Target: 90.00%
+Standard SLA Cost:   $0.0498 | Reduced SLA Cost:   $0.0498
+Cost Savings with Reduced SLA: $+0.0000 (+0.00%)
+
+TRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):
+--------------------------------------------------
+| Link ID       | Provider                      | Standard | Reduced  | Change   |
+|---------------|-------------------------------|----------|----------|----------|
+| Ameex         | Ameex                         |   100.0% |   100.0% |    +0.0% |
 
 ==================================================
           PRICE CHANGE IMPACT TEST
@@ -68,7 +211,37 @@ Status:          Optimal
 Testing price change for link EtisalatHUB
 Old price: $0.230
 New price: $0.240
-Found 0 affected profiles
-No profiles affected by this price change
+Found 2 affected profiles
+
+Testing with profile: Standard_Zain_Iraq
+
+BEFORE PRICE CHANGE:
+------------------------------
+ACHIEVED SLA:    84.90%
+EXPECTED SLA:    85.00%
+SLA Difference:  -0.10%
+Total Cost:      $0.0445
+Links Used:      2
+
+Applying price change...
+
+AFTER PRICE CHANGE:
+------------------------------
+ACHIEVED SLA:    84.90%
+EXPECTED SLA:    85.00%
+SLA Difference:  -0.10%
+Total Cost:      $0.0445
+Links Used:      2
+
+IMPACT ANALYSIS:
+--------------------------------------------------
+Cost Change:     $+0.0000 (+0.00%)
+SLA Change:      +0.00%
+Before SLA:      84.90% (Expected: 85.00%)
+After SLA:       84.90% (Expected: 85.00%)
+Before Cost:     $0.0445
+After Cost:      $0.0445
+
+Price change impact test completed successfully!
 
 All tests completed!
