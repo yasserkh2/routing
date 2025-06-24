@@ -23,6 +23,35 @@ PROFILE BEFORE OPTIMIZATION (ORIGINAL ALLOCATION):
 Total Original Cost: $0.1646
 Original SLA:        0.00%
 
+--------------------------------------------------
+OPTIMIZATION STEP 1: USING ONLY IN-USE LINKS
+--------------------------------------------------
+
+Optimizing with 3 in-use links
+
+PROFILE AFTER IN-USE LINKS OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| EtisalatHUB   | EtisalatHUB                   |      89.4% |    95.0% | $   0.176 | $  0.1573 |
+| Undel         | ignore                        |      10.6% |     0.0% | $   0.000 | $  0.0000 |
+------------------------------------------------------------------------------------------
+Total In-Use Optimized Cost: $0.1573
+Cost Difference from Original: $-0.0073 (-4.44%)
+
+IN-USE OPTIMIZATION STATS:
+------------------------------
+ACHIEVED SLA:    84.90%
+EXPECTED SLA:    85.00%
+SLA Difference:  -0.10%
+Total Cost:      $0.1573
+Links Used:      2
+Status:          Optimal
+
+--------------------------------------------------
+OPTIMIZATION STEP 2: USING ALL AVAILABLE LINKS
+--------------------------------------------------
+
 Prepared data for 29 links
 
 SAMPLE LINK DATA:
@@ -123,6 +152,34 @@ PROFILE BEFORE OPTIMIZATION (ORIGINAL ALLOCATION):
 ------------------------------------------------------------------------------------------
 Total Original Cost: $0.1760
 Original SLA:        0.00%
+
+--------------------------------------------------
+OPTIMIZATION STEP 1: USING ONLY IN-USE LINKS
+--------------------------------------------------
+
+Optimizing with 1 in-use links
+
+PROFILE AFTER IN-USE LINKS OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| EtisalatHUB   | EtisalatHUB                   |     100.0% |    95.0% | $   0.176 | $  0.1760 |
+------------------------------------------------------------------------------------------
+Total In-Use Optimized Cost: $0.1760
+Cost Difference from Original: $+0.0000 (+0.00%)
+
+IN-USE OPTIMIZATION STATS:
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    95.00%
+SLA Difference:  +0.00%
+Total Cost:      $0.1760
+Links Used:      1
+Status:          Optimal
+
+--------------------------------------------------
+OPTIMIZATION STEP 2: USING ALL AVAILABLE LINKS
+--------------------------------------------------
 
 Prepared data for 27 links
 

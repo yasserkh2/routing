@@ -1107,14 +1107,59 @@
     },
     {
       "id": "1750322796324",
-      "ts": 1750332178221,
+      "ts": 1750336758663,
       "task": "run test iptimizer",
-      "tokensIn": 221791,
-      "tokensOut": 4354,
+      "tokensIn": 1506349,
+      "tokensOut": 14319,
       "cacheWrites": 0,
-      "cacheReads": 142795,
-      "totalCost": 0.39705267,
-      "size": 223049,
+      "cacheReads": 1286883,
+      "totalCost": 1.37642808,
+      "size": 613027,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1750336998931",
+      "ts": 1750337556378,
+      "task": "in optimiser solution \nOPTIMIZATION STATS (REDUCED SLA):\n------------------------------\nACHIEVED SLA:    95.00%\nEXPECTED SLA:    90.00%\nSLA Difference:  +5.00%\nTotal Cost:      $0.1415\nLinks Used:      1\nStatus:          Optimal   this is wrong because sla shou be the sma expected == achieved",
+      "tokensIn": 708032,
+      "tokensOut": 9357,
+      "cacheWrites": 0,
+      "cacheReads": 655710,
+      "totalCost": 0.51058899,
+      "size": 548683,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1750585403157",
+      "ts": 1750585724041,
+      "task": "run the optimizer",
+      "tokensIn": 360771,
+      "tokensOut": 3722,
+      "cacheWrites": 0,
+      "cacheReads": 316540,
+      "totalCost": 0.30525282,
+      "size": 287220,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1750762869346",
+      "ts": 1750762869377,
+      "task": "i need to aplly a cleaning function in data prepration i need to check the prices of alternative links \nyou will take the ProfileAvgCostUSD of profile you find in inclusion list",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "totalCost": 0,
+      "size": 6209
+    },
+    {
+      "id": "1750763030409",
+      "ts": 1750763095222,
+      "task": "i need to aplly a cleaning function in data prepration i need to check the prices of alternative links \nyou will take the ProfileAvgCostUSD of profile you find in inclusion list and apply this formulas\nIf Teir 1 and link_cost is < (profile_avg_cost * 0.6), then ignore\nIf Teir 2 and link_cost is < (profile_avg_cost * 0.4), then ignore   in case it is true donot move these links to optimizer and save it in memory to show in results that these are errors",
+      "tokensIn": 36933,
+      "tokensOut": 2066,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0.016082451,
+      "size": 96180,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]

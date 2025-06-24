@@ -77,6 +77,75 @@ async def test_optimizer():
             print(f"Total Original Cost: ${original_cost:.4f}")
             print(f"Original SLA:        {original_sla*100:.2f}%")
             
+            # First, optimize using only the in-use links
+            print("\n" + "-"*50)
+            print("OPTIMIZATION STEP 1: USING ONLY IN-USE LINKS")
+            print("-"*50)
+            
+            # Create a filtered version of links_data with only in-use links
+            in_use_links_data = {}
+            for link_id in original_links_data.keys():
+                # Get the link data from the full dataset
+                for link_id_full, link_data in (await data_service.prepare_links_data_for_optimizer(profile)).items():
+                    if link_id_full == link_id:
+                        in_use_links_data[link_id] = link_data
+                        break
+            
+            print(f"\nOptimizing with {len(in_use_links_data)} in-use links")
+            
+            # Run optimization using only in-use links
+            in_use_optimizer = RoutingOptimizer()
+            in_use_success = in_use_optimizer.solve(in_use_links_data, profile.expected_sla)
+            
+            if in_use_success:
+                # Get optimization results for in-use links
+                profile_info = {
+                    'profile_id': profile.profile_id,
+                    'name': profile.name,
+                    'expected_sla': profile.expected_sla
+                }
+                in_use_routing_plan = in_use_optimizer.get_routing_plan(in_use_links_data, profile_info)
+                in_use_stats = in_use_optimizer.get_optimization_stats(in_use_links_data, profile.expected_sla)
+                
+                print("\nPROFILE AFTER IN-USE LINKS OPTIMIZATION:")
+                print("-" * 50)
+                print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                in_use_optimized_cost = 0
+                for route in in_use_routing_plan['routes']:
+                    if route['percentage'] > 0:  # Only show routes with traffic
+                        link_cost = (route['percentage'] / 100.0) * route['price']
+                        in_use_optimized_cost += link_cost
+                        print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                
+                print("-" * 90)
+                print(f"Total In-Use Optimized Cost: ${in_use_optimized_cost:.4f}")
+                print(f"Cost Difference from Original: ${in_use_optimized_cost - original_cost:+.4f} ({((in_use_optimized_cost - original_cost)/original_cost)*100:+.2f}%)")
+                
+                print("\nIN-USE OPTIMIZATION STATS:")
+                print("-" * 30)
+                print(f"ACHIEVED SLA:    {in_use_stats['achieved_sla']:.2f}%")
+                print(f"EXPECTED SLA:    {in_use_stats['expected_sla']:.2f}%")
+                print(f"SLA Difference:  {in_use_stats['sla_difference']:+.2f}%")
+                print(f"Total Cost:      ${in_use_stats['total_cost']:.4f}")
+                print(f"Links Used:      {in_use_stats['links_used']}")
+                print(f"Status:          {in_use_stats['optimization_status']}")
+                
+                # Display warning if target SLA cannot be achieved with in-use links
+                if not in_use_stats['sla_achievable']:
+                    print(f"\nWARNING: Target SLA of {in_use_stats['expected_sla']:.1f}% cannot be achieved with in-use links only.")
+                    print(f"Maximum achievable SLA with in-use links: {in_use_stats['max_achievable_sla']:.2f}%")
+            else:
+                print("\nFailed to find optimal solution with in-use links only")
+            
+            # Reset optimizer for the full optimization
+            in_use_optimizer.reset()
+            
+            # Now proceed with full optimization including alternative links
+            print("\n" + "-"*50)
+            print("OPTIMIZATION STEP 2: USING ALL AVAILABLE LINKS")
+            print("-"*50)
+            
             # Get link data for this profile using data preparation service
             links_data = await data_service.prepare_links_data_for_optimizer(profile)
             print(f"\nPrepared data for {len(links_data)} links")
