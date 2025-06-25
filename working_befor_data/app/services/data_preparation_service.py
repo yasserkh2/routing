@@ -76,6 +76,7 @@ class DataPreparationService:
     
     def __init__(self):
         self.mock_api = MockAPIService()
+        self.ignored_links: List[Dict[str, Any]] = [] # To store links ignored due to price checks
         logger.info("DataPreparationService initialized")
 
     # Link collection operations
@@ -379,10 +380,40 @@ class DataPreparationService:
                             f"Excluding in-use link {link_id} from optimizer: "
                             f"missing tier ({has_valid_tier}) or dd_sla ({has_dd_sla})"
                         )
-                # For alternative links, only include if they have valid tier or SLA
-                elif has_valid_tier or has_dd_sla:
-                    links_data[link_id] = link_data
-                else:
+                # For alternative links, apply price cleaning rules
+                elif link_id in profile.alternative_links:
+                    link_cost = link_data.get('price')
+                    link_tier = link_data.get('tier')
+                    profile_avg_cost = profile.profile_avg_cost
+
+                    ignore_reason = None
+
+                    if link_tier == 1 and link_cost is not None and link_cost < (profile_avg_cost * 0.6):
+                        ignore_reason = f"Tier 1 link cost ({link_cost}) is less than 60% of profile average cost ({profile_avg_cost * 0.6:.2f})"
+                    elif link_tier == 2 and link_cost is not None and link_cost < (profile_avg_cost * 0.4):
+                        ignore_reason = f"Tier 2 link cost ({link_cost}) is less than 40% of profile average cost ({profile_avg_cost * 0.4:.2f})"
+                    
+                    if ignore_reason:
+                        self.ignored_links.append({
+                            'profile_id': profile.profile_id,
+                            'profile_name': profile.name,
+                            'link_id': link_id,
+                            'link_cost': link_cost,
+                            'link_tier': link_tier,
+                            'profile_avg_cost': profile_avg_cost,
+                            'reason': ignore_reason
+                        })
+                        logger.warning(f"Ignoring alternative link {link_id} for profile {profile.profile_id}: {ignore_reason}")
+                        continue # Skip adding this link to links_data
+                    
+                    # If not ignored by price rules, then include if they have valid tier or SLA
+                    if has_valid_tier or has_dd_sla:
+                        links_data[link_id] = link_data
+                    else:
+                        logger.warning(
+                            f"Excluding alternative link {link_id} from optimizer: no valid tier (1-4) and no dd_sla"
+                        )
+                else: # This handles links that are neither in-use nor alternative (shouldn't happen if logic is correct)
                     logger.warning(
                         f"Excluding link {link_id} from optimizer: no valid tier (1-4) and no dd_sla"
                     )
@@ -680,4 +711,32 @@ class DataPreparationService:
             'links_used': stats['links_used']
         }
         
+        # Add ignored links to the stats
+        profile_ignored_links = [link for link in self.ignored_links if link['profile_id'] == profile.profile_id]
+        if profile_ignored_links:
+            stats['ignored_links'] = profile_ignored_links
+            logger.info(f"Added {len(profile_ignored_links)} ignored links to optimization stats for profile {profile.profile_id}")
+        
         return stats
+        
+    def get_ignored_links(self, profile_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get links that were ignored due to price check rules.
+        
+        Args:
+            profile_id: Optional profile ID to filter ignored links
+            
+        Returns:
+            List of dictionaries containing information about ignored links
+        """
+        if profile_id:
+            return [link for link in self.ignored_links if link['profile_id'] == profile_id]
+        return self.ignored_links
+        
+    def clear_ignored_links(self) -> None:
+        """
+        Clear the list of ignored links.
+        This is useful when processing multiple profiles or when rerunning the optimization.
+        """
+        logger.debug(f"Clearing {len(self.ignored_links)} ignored links")
+        self.ignored_links = []

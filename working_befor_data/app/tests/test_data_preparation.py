@@ -229,10 +229,10 @@ async def test_sla_dd_tier_logic():
             result = await data_service.get_link_data('test_link_1')
             
             if result:
-                print(f"   ✓ SLA calculated: {result['sla']*100:.1f}% (expected: 85.0%)")
+                print(f"   ✓ SLA calculated: {result['sla']:.1f}% (expected: 85.0%)")
                 print(f"   ✓ Tier: {result['tier']} (expected: None)")
                 print(f"   ✓ Original sla_dd: {result['sla_dd']} (expected: 85)")
-                assert result['sla'] == 0.85, f"Expected SLA 0.85, got {result['sla']}"
+                assert result['sla'] == 85, f"Expected SLA 85, got {result['sla']}"
                 assert result['tier'] is None, f"Expected tier None, got {result['tier']}"
             else:
                 print("   ✗ No result returned")
@@ -256,10 +256,10 @@ async def test_sla_dd_tier_logic():
             result = await data_service.get_link_data('test_link_2')
             
             if result:
-                expected_sla = (0.80 + 0.95) / 2  # Average of sla_dd and tier SLA
-                print(f"   ✓ SLA calculated: {result['sla']*100:.1f}% (expected: {expected_sla*100:.1f}%)")
+                expected_sla = (80 + 95) / 2  # Average of sla_dd and tier SLA
+                print(f"   ✓ SLA calculated: {result['sla']:.1f}% (expected: {expected_sla:.1f}%)")
                 print(f"   ✓ Tier: {result['tier']} (expected: 1)")
-                assert abs(result['sla'] - expected_sla) < 0.01, f"Expected SLA {expected_sla}, got {result['sla']}"
+                assert abs(result['sla'] - expected_sla) < 1, f"Expected SLA {expected_sla}, got {result['sla']}"
                 assert result['tier'] == 1, f"Expected tier 1, got {result['tier']}"
             else:
                 print("   ✗ No result returned")
@@ -283,9 +283,9 @@ async def test_sla_dd_tier_logic():
             result = await data_service.get_link_data('test_link_3')
             
             if result:
-                print(f"   ✓ SLA calculated: {result['sla']*100:.1f}% (expected: 90.0%)")
+                print(f"   ✓ SLA calculated: {result['sla']:.1f}% (expected: 90.0%)")
                 print(f"   ✓ Tier: {result['tier']} (expected: 2)")
-                assert result['sla'] == 0.90, f"Expected SLA 0.90, got {result['sla']}"
+                assert result['sla'] == 90, f"Expected SLA 90, got {result['sla']}"
                 assert result['tier'] == 2, f"Expected tier 2, got {result['tier']}"
             else:
                 print("   ✗ No result returned")
@@ -332,9 +332,9 @@ async def test_sla_dd_tier_logic():
             result = await data_service.get_link_data('test_link_5')
             
             if result:
-                print(f"   ✓ SLA calculated: {result['sla']*100:.1f}% (expected: 95.0%)")
+                print(f"   ✓ SLA calculated: {result['sla']:.1f}% (expected: 95.0%)")
                 print(f"   ✓ Tier parsed: {result['tier']} (expected: 1)")
-                assert result['sla'] == 0.95, f"Expected SLA 0.95, got {result['sla']}"
+                assert result['sla'] == 95, f"Expected SLA 95, got {result['sla']}"
                 assert result['tier'] == 1, f"Expected tier 1, got {result['tier']}"
             else:
                 print("   ✗ No result returned")
@@ -369,7 +369,134 @@ async def test_sla_dd_tier_logic():
         import traceback
         traceback.print_exc()
 
+async def test_price_cleaning_filter():
+    """Test the price cleaning filter for alternative links before optimization"""
+    print("\n" + "="*50)
+    print("         PRICE CLEANING FILTER TEST")
+    print("="*50 + "\n")
+    
+    # Initialize service
+    data_service = DataPreparationService()
+    
+    try:
+        # Clear any previous ignored links
+        data_service.clear_ignored_links()
+        
+        # Get all profiles
+        print("Getting all profiles...")
+        all_profiles = await data_service.get_all_profiles()
+        
+        if not all_profiles:
+            print("No profiles found!")
+            return
+        
+        print(f"Found {len(all_profiles)} profiles")
+        
+        # Process each profile and collect statistics
+        total_alternative_links = 0
+        total_ignored_links = 0
+        profiles_with_ignored_links = 0
+        
+        print("\nProcessing profiles to check for price cleaning...")
+        for profile in all_profiles:
+            print(f"\n{'='*80}")
+            print(f"PROFILE: {profile.name} (ID: {profile.profile_id})")
+            print(f"{'='*80}")
+            print(f"Profile Avg Cost: ${profile.profile_avg_cost:.4f}")
+            
+            # Get all alternative links with their details
+            alt_links_details = []
+            for link_id in profile.alternative_links:
+                link_data = await data_service.get_link_data(link_id)
+                if link_data:
+                    alt_links_details.append({
+                        'link_id': link_id,
+                        'tier': link_data.get('tier'),
+                        'cost': link_data.get('price'),
+                        'provider': link_data.get('provider')
+                    })
+            
+            # Sort alternative links by tier and then by cost
+            alt_links_details.sort(key=lambda x: (x['tier'] if x['tier'] is not None else 999, x['cost'] if x['cost'] is not None else 0))
+            
+            # Prepare links data for optimizer (this will apply the price cleaning rules)
+            links_data = await data_service.prepare_links_data_for_optimizer(profile)
+            
+            # Get ignored links for this profile
+            profile_ignored_links = data_service.get_ignored_links(profile.profile_id)
+            ignored_link_ids = [link['link_id'] for link in profile_ignored_links]
+            
+            # Count alternative links
+            alt_links_count = len(profile.alternative_links)
+            total_alternative_links += alt_links_count
+            
+            # Count ignored links
+            ignored_links_count = len(profile_ignored_links)
+            total_ignored_links += ignored_links_count
+            
+            if ignored_links_count > 0:
+                profiles_with_ignored_links += 1
+            
+            # Print alternative links table
+            print(f"\nALTERNATIVE LINKS ({alt_links_count} total, {ignored_links_count} ignored):")
+            print(f"{'-'*100}")
+            print(f"{'LINK ID':<30} {'TIER':<10} {'COST':<15} {'STATUS':<15} {'REASON'}")
+            print(f"{'-'*100}")
+            
+            for link in alt_links_details:
+                link_id = link['link_id']
+                tier = link['tier']
+                cost = link['cost']
+                
+                cost_str = f"${cost:.4f}" if cost is not None else "$0.0000"
+                
+                if link_id in ignored_link_ids:
+                    # Find the reason for ignoring
+                    reason = next((l['reason'] for l in profile_ignored_links if l['link_id'] == link_id), "Unknown")
+                    status = "IGNORED"
+                    print(f"{link_id:<30} {str(tier):<10} {cost_str:<15} {'IGNORED':<15} {reason}")
+                else:
+                    # Check if it's in the links_data (might be excluded for other reasons)
+                    if link_id in links_data:
+                        status = "INCLUDED"
+                        print(f"{link_id:<30} {str(tier):<10} {cost_str:<15} {'INCLUDED':<15}")
+                    else:
+                        status = "EXCLUDED"
+                        print(f"{link_id:<30} {str(tier):<10} {cost_str:<15} {'EXCLUDED':<15} (Other reason)")
+            
+            # Show price thresholds
+            print(f"\nPRICE THRESHOLDS:")
+            print(f"Tier 1 threshold: ${profile.profile_avg_cost * 0.6:.4f} (60% of profile avg cost)")
+            print(f"Tier 2 threshold: ${profile.profile_avg_cost * 0.4:.4f} (40% of profile avg cost)")
+            
+            # Show detailed summary for this profile
+            print(f"\nPROFILE SUMMARY:")
+            print(f"Total alternative links: {alt_links_count}")
+            print(f"Links ignored due to price: {ignored_links_count}")
+            print(f"Percentage ignored: {(ignored_links_count / alt_links_count) * 100:.2f}%")
+        
+        # Print overall summary
+        print(f"\n{'='*80}")
+        print("OVERALL SUMMARY:")
+        print(f"{'='*80}")
+        print(f"Total Profiles: {len(all_profiles)}")
+        print(f"Total Alternative Links: {total_alternative_links}")
+        print(f"Total Ignored Links: {total_ignored_links}")
+        print(f"Profiles with Ignored Links: {profiles_with_ignored_links}")
+        
+        if total_ignored_links > 0:
+            print(f"\nPercentage of Alternative Links Ignored: {(total_ignored_links / total_alternative_links) * 100:.2f}%")
+            print(f"Percentage of Profiles with Ignored Links: {(profiles_with_ignored_links / len(all_profiles)) * 100:.2f}%")
+        
+        print("\nPrice cleaning filter test completed!")
+        
+    except Exception as e:
+        print(f"Error testing price cleaning filter: {str(e)}")
+        import traceback
+        traceback.print_exc()
+
 if __name__ == "__main__":
     asyncio.run(test_data_preparation_service())
     asyncio.run(test_alternative_links_sharing())
     asyncio.run(test_sla_dd_tier_logic())
+    asyncio.run(test_price_cleaning_filter())

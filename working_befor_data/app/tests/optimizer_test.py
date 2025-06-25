@@ -146,9 +146,69 @@ async def test_optimizer():
             print("OPTIMIZATION STEP 2: USING ALL AVAILABLE LINKS")
             print("-"*50)
             
-            # Get link data for this profile using data preparation service
+            # Clear any previous ignored links
+            data_service.clear_ignored_links()
+            
+            # Get all alternative links with their details before price cleaning
+            print("\nALTERNATIVE LINKS BEFORE PRICE CLEANING:")
+            alt_links_details = []
+            for link_id in profile.alternative_links:
+                link_data = await data_service.get_link_data(link_id)
+                if link_data:
+                    alt_links_details.append({
+                        'link_id': link_id,
+                        'tier': link_data.get('tier'),
+                        'cost': link_data.get('price'),
+                        'provider': link_data.get('provider')
+                    })
+            
+            # Sort alternative links by tier and then by cost
+            alt_links_details.sort(key=lambda x: (x['tier'] if x['tier'] is not None else 999, x['cost'] if x['cost'] is not None else 0))
+            
+            # Print alternative links table
+            print(f"\nALTERNATIVE LINKS ({len(profile.alternative_links)} total):")
+            print(f"{'-'*100}")
+            print(f"{'LINK ID':<30} {'TIER':<10} {'COST':<15} {'PROVIDER':<30}")
+            print(f"{'-'*100}")
+            
+            for link in alt_links_details:
+                link_id = link['link_id']
+                tier = link['tier']
+                cost = link['cost']
+                provider = link['provider']
+                cost_str = f"${cost:.4f}" if cost is not None else "$0.0000"
+                print(f"{link_id:<30} {str(tier):<10} {cost_str:<15} {provider:<30}")
+            
+            # Show price thresholds
+            print(f"\nPRICE CLEANING THRESHOLDS:")
+            print(f"Tier 1 threshold: ${profile.profile_avg_cost * 0.6:.4f} (60% of profile avg cost)")
+            print(f"Tier 2 threshold: ${profile.profile_avg_cost * 0.4:.4f} (40% of profile avg cost)")
+            
+            # Get link data for this profile using data preparation service (this will apply price cleaning)
             links_data = await data_service.prepare_links_data_for_optimizer(profile)
-            print(f"\nPrepared data for {len(links_data)} links")
+            
+            # Get ignored links for this profile
+            profile_ignored_links = data_service.get_ignored_links(profile.profile_id)
+            ignored_link_ids = [link['link_id'] for link in profile_ignored_links]
+            
+            # Print results of price cleaning
+            print(f"\nRESULTS AFTER PRICE CLEANING:")
+            print(f"Links prepared for optimizer: {len(links_data)}")
+            print(f"Links ignored due to price cleaning: {len(profile_ignored_links)}")
+            
+            if profile_ignored_links:
+                print(f"\nIGNORED LINKS DUE TO PRICE CLEANING:")
+                print(f"{'-'*100}")
+                print(f"{'LINK ID':<30} {'TIER':<10} {'COST':<15} {'REASON'}")
+                print(f"{'-'*100}")
+                
+                for link_data in profile_ignored_links:
+                    link_id = link_data['link_id']
+                    tier = link_data['link_tier']
+                    cost = link_data['link_cost']
+                    reason = link_data['reason']
+                    cost_str = f"${cost:.4f}" if cost is not None else "$0.0000"
+                    print(f"{link_id:<30} {str(tier):<10} {cost_str:<15} {reason}")
             
             # Display sample of link data
             print("\nSAMPLE LINK DATA:")

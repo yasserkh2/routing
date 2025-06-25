@@ -1152,14 +1152,26 @@
     },
     {
       "id": "1750763030409",
-      "ts": 1750763095222,
+      "ts": 1750769537581,
       "task": "i need to aplly a cleaning function in data prepration i need to check the prices of alternative links \nyou will take the ProfileAvgCostUSD of profile you find in inclusion list and apply this formulas\nIf Teir 1 and link_cost is < (profile_avg_cost * 0.6), then ignore\nIf Teir 2 and link_cost is < (profile_avg_cost * 0.4), then ignore   in case it is true donot move these links to optimizer and save it in memory to show in results that these are errors",
-      "tokensIn": 36933,
-      "tokensOut": 2066,
+      "tokensIn": 1642287,
+      "tokensOut": 17907,
       "cacheWrites": 0,
-      "cacheReads": 0,
-      "totalCost": 0.016082451,
-      "size": 96180,
+      "cacheReads": 1259637,
+      "totalCost": 1.8774155309999998,
+      "size": 600089,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1750848986992",
+      "ts": 1750849007067,
+      "task": "in the optimization in optimizer can i put minimum number for outputs like minmum results using for example 4 links",
+      "tokensIn": 35951,
+      "tokensOut": 1917,
+      "cacheWrites": 0,
+      "cacheReads": 15784,
+      "totalCost": 0.10774437,
+      "size": 57868,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]

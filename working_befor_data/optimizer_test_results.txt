@@ -34,25 +34,75 @@ PROFILE AFTER IN-USE LINKS OPTIMIZATION:
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
 | EtisalatHUB   | EtisalatHUB                   |      89.4% |    95.0% | $   0.176 | $  0.1573 |
-| Undel         | ignore                        |      10.6% |     0.0% | $   0.000 | $  0.0000 |
+| Mir_Solutions_DIR | Mir Solutions Overseas L.L.C  |       5.6% |     0.0% | $   0.170 | $  0.0095 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
 ------------------------------------------------------------------------------------------
-Total In-Use Optimized Cost: $0.1573
-Cost Difference from Original: $-0.0073 (-4.44%)
+Total In-Use Optimized Cost: $0.1668
+Cost Difference from Original: $+0.0022 (+1.36%)
 
 IN-USE OPTIMIZATION STATS:
 ------------------------------
 ACHIEVED SLA:    84.90%
 EXPECTED SLA:    85.00%
 SLA Difference:  -0.10%
-Total Cost:      $0.1573
-Links Used:      2
+Total Cost:      $0.1668
+Links Used:      3
 Status:          Optimal
 
 --------------------------------------------------
 OPTIMIZATION STEP 2: USING ALL AVAILABLE LINKS
 --------------------------------------------------
 
-Prepared data for 29 links
+ALTERNATIVE LINKS BEFORE PRICE CLEANING:
+
+ALTERNATIVE LINKS (33 total):
+----------------------------------------------------------------------------------------------------
+LINK ID                        TIER       COST            PROVIDER                      
+----------------------------------------------------------------------------------------------------
+Ameex                          1          $0.0498         Ameex                         
+AmeexOTP                       1          $0.0498         Ameex                         
+BeepsendDR                     1          $0.0789         Twilio AB - Beepsend          
+orange                         1          $0.0857         OrangeHUB                     
+Mada                           1          $0.1246         Mada - Not in use             
+Wavys                          1          $0.1370         WAYVZ                         
+Broadnetme                     1          $0.1412         Broadnetme                    
+bics                           1          $0.1412         BICS                          
+Kalaam_Dr                      1          $0.1433         Kalaam Telecom Bahrain B.S.C  
+GTS                            1          $0.1724         Globe Teleservices (GTS)      
+GMS                            1          $0.1747         Global Message Services AG - GMS
+EtisalatHUB                    1          $0.1760         EtisalatHUB                   
+link90                         1          $0.1838         Javna Software Solutions      
+Infobip_Dir                    1          $0.1848         Infobip_Euro                  
+AirtelHQ2                      1          $0.1926         Airtel HQ                     
+montyDC                        1          $0.1974         Monty Mobile                  
+Mitto                          1          $0.1993         Mitto                         
+Tata_Inter_USD                 1          $0.2066         Tata_International_USD        
+MTN_UK_USD                     1          $0.2160         MTN HUB USD                   
+MTN_AMS_USD                    1          $0.2160         MTN HUB USD                   
+clx                            1          $0.2180         Sinch - CLX                   
+Byteplus_OTP                   2          $0.1368         BytePlus Lte                  
+nxgw                           2          $0.1440         Nexmo_Vonage                  
+DEXATEL                        2          $0.1738         DEXATEL OU                    
+Grantech                       2          $0.1827         Telecel Global (Grantech)     
+Orange-Spain                   2          $0.1962         Orange Espagne S.A.U.         
+Mada_USD                       2          $0.2000         Mada USD                      
+
+PRICE CLEANING THRESHOLDS:
+Tier 1 threshold: $0.1003 (60% of profile avg cost)
+Tier 2 threshold: $0.0669 (40% of profile avg cost)
+
+RESULTS AFTER PRICE CLEANING:
+Links prepared for optimizer: 25
+Links ignored due to price cleaning: 4
+
+IGNORED LINKS DUE TO PRICE CLEANING:
+----------------------------------------------------------------------------------------------------
+LINK ID                        TIER       COST            REASON
+----------------------------------------------------------------------------------------------------
+BeepsendDR                     1          $0.0789         Tier 1 link cost (0.0789) is less than 60% of profile average cost (0.10)
+Ameex                          1          $0.0498         Tier 1 link cost (0.0498) is less than 60% of profile average cost (0.10)
+AmeexOTP                       1          $0.0498         Tier 1 link cost (0.0498) is less than 60% of profile average cost (0.10)
+orange                         1          $0.0857         Tier 1 link cost (0.0857) is less than 60% of profile average cost (0.10)
 
 SAMPLE LINK DATA:
 ------------------------------
@@ -76,27 +126,27 @@ PROFILE AFTER OPTIMIZATION:
 --------------------------------------------------
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Ameex         | Ameex                         |      89.4% |    95.0% | $   0.050 | $  0.0445 |
-| Undel         | ignore                        |      10.6% |     0.0% | $   0.000 | $  0.0000 |
+| Mada          | Mada - Not in use             |      95.0% |    95.0% | $   0.125 | $  0.1184 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
 ------------------------------------------------------------------------------------------
-Total Optimized Cost: $0.0445
-Cost Difference:      $-0.1201 (-72.96%)
+Total Optimized Cost: $0.1184
+Cost Difference:      $-0.0462 (-28.09%)
 
 TRAFFIC CHANGES (BEFORE -> AFTER):
 --------------------------------------------------
 | Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
 |---------------|-------------------------------|----------|----------|----------|----------------|
+| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% | $       +0.0000 |
 | Mir_Solutions_DIR | Mir Solutions Overseas L.L.C  |    40.0% |     0.0% |   -40.0% | $       -0.0678 |
-| Undel         | ignore                        |     5.0% |    10.6% |    +5.6% | $       +0.0000 |
-| Ameex         | Ameex                         |     0.0% |    89.4% |   +89.4% | $       +0.0445 |
+| Mada          | Mada - Not in use             |     0.0% |    95.0% |   +95.0% | $       +0.1184 |
 | EtisalatHUB   | EtisalatHUB                   |    55.0% |     0.0% |   -55.0% | $       -0.0968 |
 
 OPTIMIZATION STATS:
 ------------------------------
-ACHIEVED SLA:    84.90%
+ACHIEVED SLA:    90.25%
 EXPECTED SLA:    85.00%
-SLA Difference:  -0.10%
-Total Cost:      $0.0445
+SLA Difference:  +5.25%
+Total Cost:      $0.1184
 Links Used:      2
 Status:          Optimal
 
@@ -108,34 +158,34 @@ PROFILE WITH REDUCED SLA AFTER OPTIMIZATION:
 --------------------------------------------------
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Ameex         | Ameex                         |      84.1% |    95.0% | $   0.050 | $  0.0419 |
-| Undel         | ignore                        |      15.9% |     0.0% | $   0.000 | $  0.0000 |
+| Mada          | Mada - Not in use             |      95.0% |    95.0% | $   0.125 | $  0.1184 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
 ------------------------------------------------------------------------------------------
-Total Optimized Cost: $0.0419
-Cost Difference from Original: $-0.1227 (-74.55%)
-Cost Difference from Standard SLA: $-0.0026 (-5.89%)
+Total Optimized Cost: $0.1184
+Cost Difference from Original: $-0.0462 (-28.09%)
+Cost Difference from Standard SLA: $+0.0000 (+0.00%)
 
 OPTIMIZATION STATS (REDUCED SLA):
 ------------------------------
-ACHIEVED SLA:    79.90%
+ACHIEVED SLA:    90.25%
 EXPECTED SLA:    80.00%
-SLA Difference:  -0.10%
-Total Cost:      $0.0419
+SLA Difference:  +10.25%
+Total Cost:      $0.1184
 Links Used:      2
 Status:          Optimal
 
 COMPARISON BETWEEN STANDARD AND REDUCED SLA:
 --------------------------------------------------
 Standard SLA Target: 85.00% | Reduced SLA Target: 80.00%
-Standard SLA Cost:   $0.0445 | Reduced SLA Cost:   $0.0419
-Cost Savings with Reduced SLA: $+0.0026 (+5.89%)
+Standard SLA Cost:   $0.1184 | Reduced SLA Cost:   $0.1184
+Cost Savings with Reduced SLA: $+0.0000 (+0.00%)
 
 TRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):
 --------------------------------------------------
 | Link ID       | Provider                      | Standard | Reduced  | Change   |
 |---------------|-------------------------------|----------|----------|----------|
-| Undel         | ignore                        |    10.6% |    15.9% |    +5.3% |
-| Ameex         | Ameex                         |    89.4% |    84.1% |    -5.3% |
+| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% |
+| Mada          | Mada - Not in use             |    95.0% |    95.0% |    +0.0% |
 
 --------------------------------------------------
 PROFILE: Premium_Zain_Iraq (ID: 778)
@@ -181,7 +231,56 @@ Status:          Optimal
 OPTIMIZATION STEP 2: USING ALL AVAILABLE LINKS
 --------------------------------------------------
 
-Prepared data for 27 links
+ALTERNATIVE LINKS BEFORE PRICE CLEANING:
+
+ALTERNATIVE LINKS (33 total):
+----------------------------------------------------------------------------------------------------
+LINK ID                        TIER       COST            PROVIDER                      
+----------------------------------------------------------------------------------------------------
+Ameex                          1          $0.0498         Ameex                         
+AmeexOTP                       1          $0.0498         Ameex                         
+BeepsendDR                     1          $0.0789         Twilio AB - Beepsend          
+orange                         1          $0.0857         OrangeHUB                     
+Mada                           1          $0.1246         Mada - Not in use             
+Wavys                          1          $0.1370         WAYVZ                         
+Broadnetme                     1          $0.1412         Broadnetme                    
+bics                           1          $0.1412         BICS                          
+Kalaam_Dr                      1          $0.1433         Kalaam Telecom Bahrain B.S.C  
+GTS                            1          $0.1724         Globe Teleservices (GTS)      
+GMS                            1          $0.1747         Global Message Services AG - GMS
+EtisalatHUB                    1          $0.1760         EtisalatHUB                   
+link90                         1          $0.1838         Javna Software Solutions      
+Infobip_Dir                    1          $0.1848         Infobip_Euro                  
+AirtelHQ2                      1          $0.1926         Airtel HQ                     
+montyDC                        1          $0.1974         Monty Mobile                  
+Mitto                          1          $0.1993         Mitto                         
+Tata_Inter_USD                 1          $0.2066         Tata_International_USD        
+MTN_UK_USD                     1          $0.2160         MTN HUB USD                   
+MTN_AMS_USD                    1          $0.2160         MTN HUB USD                   
+clx                            1          $0.2180         Sinch - CLX                   
+Byteplus_OTP                   2          $0.1368         BytePlus Lte                  
+nxgw                           2          $0.1440         Nexmo_Vonage                  
+DEXATEL                        2          $0.1738         DEXATEL OU                    
+Grantech                       2          $0.1827         Telecel Global (Grantech)     
+Orange-Spain                   2          $0.1962         Orange Espagne S.A.U.         
+Mada_USD                       2          $0.2000         Mada USD                      
+
+PRICE CLEANING THRESHOLDS:
+Tier 1 threshold: $0.1056 (60% of profile avg cost)
+Tier 2 threshold: $0.0704 (40% of profile avg cost)
+
+RESULTS AFTER PRICE CLEANING:
+Links prepared for optimizer: 23
+Links ignored due to price cleaning: 4
+
+IGNORED LINKS DUE TO PRICE CLEANING:
+----------------------------------------------------------------------------------------------------
+LINK ID                        TIER       COST            REASON
+----------------------------------------------------------------------------------------------------
+BeepsendDR                     1          $0.0789         Tier 1 link cost (0.0789) is less than 60% of profile average cost (0.11)
+Ameex                          1          $0.0498         Tier 1 link cost (0.0498) is less than 60% of profile average cost (0.11)
+AmeexOTP                       1          $0.0498         Tier 1 link cost (0.0498) is less than 60% of profile average cost (0.11)
+orange                         1          $0.0857         Tier 1 link cost (0.0857) is less than 60% of profile average cost (0.11)
 
 SAMPLE LINK DATA:
 ------------------------------
@@ -195,26 +294,26 @@ Link link90 (Javna Software Solutions):
   Tier:          1
   Price:         $0.184
 
-Link BeepsendDR (Twilio AB - Beepsend):
-  SLA:           95.0%
-  Tier:          1
-  Price:         $0.079
+Link Byteplus_OTP (BytePlus Lte):
+  SLA:           90.0%
+  Tier:          2
+  Price:         $0.137
 
 
 PROFILE AFTER OPTIMIZATION:
 --------------------------------------------------
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Ameex         | Ameex                         |     100.0% |    95.0% | $   0.050 | $  0.0498 |
+| Mada          | Mada - Not in use             |     100.0% |    95.0% | $   0.125 | $  0.1246 |
 ------------------------------------------------------------------------------------------
-Total Optimized Cost: $0.0498
-Cost Difference:      $-0.1262 (-71.70%)
+Total Optimized Cost: $0.1246
+Cost Difference:      $-0.0514 (-29.20%)
 
 TRAFFIC CHANGES (BEFORE -> AFTER):
 --------------------------------------------------
 | Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
 |---------------|-------------------------------|----------|----------|----------|----------------|
-| Ameex         | Ameex                         |     0.0% |   100.0% |  +100.0% | $       +0.0498 |
+| Mada          | Mada - Not in use             |     0.0% |   100.0% |  +100.0% | $       +0.1246 |
 | EtisalatHUB   | EtisalatHUB                   |   100.0% |     0.0% |  -100.0% | $       -0.1760 |
 
 OPTIMIZATION STATS:
@@ -222,7 +321,7 @@ OPTIMIZATION STATS:
 ACHIEVED SLA:    95.00%
 EXPECTED SLA:    95.00%
 SLA Difference:  +0.00%
-Total Cost:      $0.0498
+Total Cost:      $0.1246
 Links Used:      1
 Status:          Optimal
 
@@ -234,10 +333,10 @@ PROFILE WITH REDUCED SLA AFTER OPTIMIZATION:
 --------------------------------------------------
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Ameex         | Ameex                         |     100.0% |    95.0% | $   0.050 | $  0.0498 |
+| Mada          | Mada - Not in use             |     100.0% |    95.0% | $   0.125 | $  0.1246 |
 ------------------------------------------------------------------------------------------
-Total Optimized Cost: $0.0498
-Cost Difference from Original: $-0.1262 (-71.70%)
+Total Optimized Cost: $0.1246
+Cost Difference from Original: $-0.0514 (-29.20%)
 Cost Difference from Standard SLA: $+0.0000 (+0.00%)
 
 OPTIMIZATION STATS (REDUCED SLA):
@@ -245,21 +344,21 @@ OPTIMIZATION STATS (REDUCED SLA):
 ACHIEVED SLA:    95.00%
 EXPECTED SLA:    90.00%
 SLA Difference:  +5.00%
-Total Cost:      $0.0498
+Total Cost:      $0.1246
 Links Used:      1
 Status:          Optimal
 
 COMPARISON BETWEEN STANDARD AND REDUCED SLA:
 --------------------------------------------------
 Standard SLA Target: 95.00% | Reduced SLA Target: 90.00%
-Standard SLA Cost:   $0.0498 | Reduced SLA Cost:   $0.0498
+Standard SLA Cost:   $0.1246 | Reduced SLA Cost:   $0.1246
 Cost Savings with Reduced SLA: $+0.0000 (+0.00%)
 
 TRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):
 --------------------------------------------------
 | Link ID       | Provider                      | Standard | Reduced  | Change   |
 |---------------|-------------------------------|----------|----------|----------|
-| Ameex         | Ameex                         |   100.0% |   100.0% |    +0.0% |
+| Mada          | Mada - Not in use             |   100.0% |   100.0% |    +0.0% |
 
 ==================================================
           PRICE CHANGE IMPACT TEST
@@ -274,30 +373,30 @@ Testing with profile: Standard_Zain_Iraq
 
 BEFORE PRICE CHANGE:
 ------------------------------
-ACHIEVED SLA:    84.90%
+ACHIEVED SLA:    90.25%
 EXPECTED SLA:    85.00%
-SLA Difference:  -0.10%
-Total Cost:      $0.0445
+SLA Difference:  +5.25%
+Total Cost:      $0.1184
 Links Used:      2
 
 Applying price change...
 
 AFTER PRICE CHANGE:
 ------------------------------
-ACHIEVED SLA:    84.90%
+ACHIEVED SLA:    90.25%
 EXPECTED SLA:    85.00%
-SLA Difference:  -0.10%
-Total Cost:      $0.0445
+SLA Difference:  +5.25%
+Total Cost:      $0.1184
 Links Used:      2
 
 IMPACT ANALYSIS:
 --------------------------------------------------
 Cost Change:     $+0.0000 (+0.00%)
 SLA Change:      +0.00%
-Before SLA:      84.90% (Expected: 85.00%)
-After SLA:       84.90% (Expected: 85.00%)
-Before Cost:     $0.0445
-After Cost:      $0.0445
+Before SLA:      90.25% (Expected: 85.00%)
+After SLA:       90.25% (Expected: 85.00%)
+Before Cost:     $0.1184
+After Cost:      $0.1184
 
 Price change impact test completed successfully!
 

@@ -83,6 +83,11 @@ class RoutingOptimizer:
         # Set SLA constraint to achieve at least the target SLA
         model += sla_expression >= target_sla - tolerance, "SLA_Minimum"
         
+        # (C) Limit "Undel" link to maximum 5% traffic if present
+        if "Undel" in normalized_links:
+            logger.info("Adding constraint: Undel link limited to maximum 5% traffic")
+            model += x["Undel"] <= 0.05, "Undel_Max_Traffic"
+        
         # Define the objective function (minimize cost)
         model += pulp.lpSum([
             x[link_id] * normalized_links[link_id]['Price']
