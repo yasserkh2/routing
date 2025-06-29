@@ -1,0 +1,66 @@
+
+=== Test 1: Without minimum links constraint ===
+Solver Status: Optimal
+Optimal Allocation (fractions of total traffic):
+  link1: 0.700 (70.0%)
+  link3: 0.300 (30.0%)
+Number of links used: 2
+Minimum Total Cost: 94.00
+Achieved SLA: 89.90%
+
+=== Test 2: With minimum 4 links constraint and minimum 5% traffic per link ===
+Solver Status: Optimal
+Optimal Allocation (fractions of total traffic):
+  link1: 0.643 (64.3%)
+  link3: 0.257 (25.7%)
+  link2: 0.050 (5.0%)
+  link5: 0.050 (5.0%)
+Number of links used: 4
+Minimum Total Cost: 95.36
+Achieved SLA: 89.90%
+
+=== Test 3: With minimum 5 links constraint and minimum 5% traffic per link ===
+Solver Status: Optimal
+Optimal Allocation (fractions of total traffic):
+  link1: 0.586 (58.6%)
+  link3: 0.264 (26.4%)
+  link2: 0.050 (5.0%)
+  link5: 0.050 (5.0%)
+  link6: 0.050 (5.0%)
+Number of links used: 5
+Minimum Total Cost: 96.71
+Achieved SLA: 89.90%
+
+=== Test 4: With minimum 6 links constraint and minimum 5% traffic per link ===
+Solver Status: Optimal
+Optimal Allocation (fractions of total traffic):
+  link1: 0.514 (51.4%)
+  link3: 0.286 (28.6%)
+  link2: 0.050 (5.0%)
+  link4: 0.050 (5.0%)
+  link5: 0.050 (5.0%)
+  link6: 0.050 (5.0%)
+Number of links used: 6
+Minimum Total Cost: 98.79
+Achieved SLA: 89.90%
+
+=== Comparison ===
+No constraint:
+  Cost: 94.00
+  SLA: 89.90%
+  Links used: 2
+
+4 links constraint:
+  Cost: 95.36 (Diff: 1.36, 1.44% increase)
+  SLA: 89.90%
+  Links used: 4
+
+5 links constraint:
+  Cost: 96.71 (Diff: 2.71, 2.89% increase)
+  SLA: 89.90%
+  Links used: 5
+
+6 links constraint:
+  Cost: 98.79 (Diff: 4.79, 5.09% increase)
+  SLA: 89.90%
+  Links used: 6

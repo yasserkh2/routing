@@ -136,10 +136,10 @@ TRAFFIC CHANGES (BEFORE -> AFTER):
 --------------------------------------------------
 | Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
 |---------------|-------------------------------|----------|----------|----------|----------------|
-| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% | $       +0.0000 |
-| Mir_Solutions_DIR | Mir Solutions Overseas L.L.C  |    40.0% |     0.0% |   -40.0% | $       -0.0678 |
-| Mada          | Mada - Not in use             |     0.0% |    95.0% |   +95.0% | $       +0.1184 |
 | EtisalatHUB   | EtisalatHUB                   |    55.0% |     0.0% |   -55.0% | $       -0.0968 |
+| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% | $       +0.0000 |
+| Mada          | Mada - Not in use             |     0.0% |    95.0% |   +95.0% | $       +0.1184 |
+| Mir_Solutions_DIR | Mir Solutions Overseas L.L.C  |    40.0% |     0.0% |   -40.0% | $       -0.0678 |
 
 OPTIMIZATION STATS:
 ------------------------------
@@ -184,8 +184,149 @@ TRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):
 --------------------------------------------------
 | Link ID       | Provider                      | Standard | Reduced  | Change   |
 |---------------|-------------------------------|----------|----------|----------|
-| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% |
 | Mada          | Mada - Not in use             |    95.0% |    95.0% |    +0.0% |
+| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% |
+
+--------------------------------------------------
+OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: 4 links, min 5.0% traffic per link
+--------------------------------------------------
+
+PROFILE WITH 4 LINKS CONSTRAINT AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |      85.0% |    95.0% | $   0.125 | $  0.1059 |
+| Wavys         | WAYVZ                         |       5.0% |    95.0% | $   0.137 | $  0.0069 |
+| Byteplus_OTP  | BytePlus Lte                  |       5.0% |    90.0% | $   0.137 | $  0.0068 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1196
+Number of Links Used: 4 (Minimum required: 4)
+Cost Difference from Standard Optimization: $+0.0012 (+1.04%)
+
+OPTIMIZATION STATS (MINIMUM LINKS):
+------------------------------
+ACHIEVED SLA:    90.00%
+EXPECTED SLA:    85.00%
+SLA Difference:  +5.00%
+Total Cost:      $0.1196
+Links Used:      4
+Status:          Optimal
+
+COMPARISON BETWEEN STANDARD AND MINIMUM LINKS OPTIMIZATION:
+--------------------------------------------------
+Standard Links Used: 2 | Minimum Links Required: 4
+Standard Cost:       $0.1184 | Minimum Links Cost:     $0.1196
+Cost Impact of Minimum Links Constraint: $+0.0012 (+1.04%)
+
+TRAFFIC DIFFERENCES (STANDARD -> MINIMUM LINKS):
+--------------------------------------------------
+| Link ID       | Provider                      | Standard | Min Links| Change   |
+|---------------|-------------------------------|----------|----------|----------|
+| Mada          | Mada - Not in use             |    95.0% |    85.0% |   -10.0% |
+| Undel         | ignore                        |     5.0% |     5.0% |    +0.0% |
+| Byteplus_OTP  | BytePlus Lte                  |     0.0% |     5.0% |    +5.0% |
+| Wavys         | WAYVZ                         |     0.0% |     5.0% |    +5.0% |
+
+--------------------------------------------------
+OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: 5 links, min 5.0% traffic per link
+--------------------------------------------------
+
+PROFILE WITH 5 LINKS CONSTRAINT AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |      80.0% |    95.0% | $   0.125 | $  0.0997 |
+| Wavys         | WAYVZ                         |       5.0% |    95.0% | $   0.137 | $  0.0069 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+| Byteplus_OTP  | BytePlus Lte                  |       5.0% |    90.0% | $   0.137 | $  0.0068 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1204
+Number of Links Used: 5 (Minimum required: 5)
+Cost Difference from Standard Optimization: $+0.0021 (+1.74%)
+
+OPTIMIZATION STATS (5 LINKS):
+------------------------------
+ACHIEVED SLA:    90.00%
+EXPECTED SLA:    85.00%
+SLA Difference:  +5.00%
+Total Cost:      $0.1204
+Links Used:      5
+Status:          Optimal
+
+--------------------------------------------------
+OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: 6 links, min 5.0% traffic per link
+--------------------------------------------------
+
+PROFILE WITH 6 LINKS CONSTRAINT AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |      75.0% |    95.0% | $   0.125 | $  0.0935 |
+| Wavys         | WAYVZ                         |       5.0% |    95.0% | $   0.137 | $  0.0069 |
+| Broadnetme    | Broadnetme                    |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+| Byteplus_OTP  | BytePlus Lte                  |       5.0% |    90.0% | $   0.137 | $  0.0068 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1213
+Number of Links Used: 6 (Minimum required: 6)
+Cost Difference from Standard Optimization: $+0.0029 (+2.44%)
+
+OPTIMIZATION STATS (6 LINKS):
+------------------------------
+ACHIEVED SLA:    90.00%
+EXPECTED SLA:    85.00%
+SLA Difference:  +5.00%
+Total Cost:      $0.1213
+Links Used:      6
+Status:          Optimal
+
+COMPARISON BETWEEN DIFFERENT LINK COUNT OPTIMIZATIONS:
+--------------------------------------------------
+Standard Links Used: 2 | Cost: $0.1184
+4 Links Required:    4 | Cost: $0.1196 | Diff: $+0.0012 (+1.04%)
+5 Links Required:    5 | Cost: $0.1204 | Diff: $+0.0021 (+1.74%)
+6 Links Required:    6 | Cost: $0.1213 | Diff: $+0.0029 (+2.44%)
+
+--------------------------------------------------
+OPTIMIZATION STEP 3: USING ALL LINKS EXCEPT UNDEL
+--------------------------------------------------
+
+Optimizing with 24 links (excluding Undel)
+
+PROFILE AFTER OPTIMIZATION (WITHOUT UNDEL):
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |     100.0% |    95.0% | $   0.125 | $  0.1246 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1246
+Cost Difference from Original: $-0.0400 (-24.30%)
+Cost Difference from Standard Optimization: $+0.0062 (+5.26%)
+
+OPTIMIZATION STATS (WITHOUT UNDEL):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    85.00%
+SLA Difference:  +10.00%
+Total Cost:      $0.1246
+Links Used:      1
+Status:          Optimal
+
+COMPARISON BETWEEN STANDARD AND NO-UNDEL OPTIMIZATION:
+--------------------------------------------------
+Standard Links Used: 2 | No-Undel Links Used: 1
+Standard Cost:       $0.1184 | No-Undel Cost:       $0.1246
+Cost Impact of Removing Undel: $+0.0062 (+5.26%)
+
+TRAFFIC DIFFERENCES (STANDARD -> NO-UNDEL):
+--------------------------------------------------
+| Link ID       | Provider                      | Standard | No-Undel | Change   |
+|---------------|-------------------------------|----------|----------|----------|
+| Mada          | Mada - Not in use             |    95.0% |   100.0% |    +5.0% |
+| Undel         | ignore                        |     5.0% |     0.0% |    -5.0% |
 
 --------------------------------------------------
 PROFILE: Premium_Zain_Iraq (ID: 778)
@@ -313,8 +454,8 @@ TRAFFIC CHANGES (BEFORE -> AFTER):
 --------------------------------------------------
 | Link ID       | Provider                      | Before % | After %  | Change   | Cost Impact ($) |
 |---------------|-------------------------------|----------|----------|----------|----------------|
-| Mada          | Mada - Not in use             |     0.0% |   100.0% |  +100.0% | $       +0.1246 |
 | EtisalatHUB   | EtisalatHUB                   |   100.0% |     0.0% |  -100.0% | $       -0.1760 |
+| Mada          | Mada - Not in use             |     0.0% |   100.0% |  +100.0% | $       +0.1246 |
 
 OPTIMIZATION STATS:
 ------------------------------
@@ -357,6 +498,146 @@ Cost Savings with Reduced SLA: $+0.0000 (+0.00%)
 TRAFFIC DIFFERENCES (STANDARD SLA -> REDUCED SLA):
 --------------------------------------------------
 | Link ID       | Provider                      | Standard | Reduced  | Change   |
+|---------------|-------------------------------|----------|----------|----------|
+| Mada          | Mada - Not in use             |   100.0% |   100.0% |    +0.0% |
+
+--------------------------------------------------
+OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: 4 links, min 5.0% traffic per link
+--------------------------------------------------
+
+PROFILE WITH 4 LINKS CONSTRAINT AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |      85.0% |    95.0% | $   0.125 | $  0.1059 |
+| Wavys         | WAYVZ                         |       5.0% |    95.0% | $   0.137 | $  0.0069 |
+| Broadnetme    | Broadnetme                    |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1269
+Number of Links Used: 4 (Minimum required: 4)
+Cost Difference from Standard Optimization: $+0.0023 (+1.83%)
+
+OPTIMIZATION STATS (MINIMUM LINKS):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    95.00%
+SLA Difference:  +0.00%
+Total Cost:      $0.1269
+Links Used:      4
+Status:          Optimal
+
+COMPARISON BETWEEN STANDARD AND MINIMUM LINKS OPTIMIZATION:
+--------------------------------------------------
+Standard Links Used: 1 | Minimum Links Required: 4
+Standard Cost:       $0.1246 | Minimum Links Cost:     $0.1269
+Cost Impact of Minimum Links Constraint: $+0.0023 (+1.83%)
+
+TRAFFIC DIFFERENCES (STANDARD -> MINIMUM LINKS):
+--------------------------------------------------
+| Link ID       | Provider                      | Standard | Min Links| Change   |
+|---------------|-------------------------------|----------|----------|----------|
+| Mada          | Mada - Not in use             |   100.0% |    85.0% |   -15.0% |
+| Broadnetme    | Broadnetme                    |     0.0% |     5.0% |    +5.0% |
+| bics          | BICS                          |     0.0% |     5.0% |    +5.0% |
+| Wavys         | WAYVZ                         |     0.0% |     5.0% |    +5.0% |
+
+--------------------------------------------------
+OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: 5 links, min 5.0% traffic per link
+--------------------------------------------------
+
+PROFILE WITH 5 LINKS CONSTRAINT AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |      80.0% |    95.0% | $   0.125 | $  0.0997 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |       5.0% |    95.0% | $   0.143 | $  0.0072 |
+| Wavys         | WAYVZ                         |       5.0% |    95.0% | $   0.137 | $  0.0069 |
+| Broadnetme    | Broadnetme                    |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1278
+Number of Links Used: 5 (Minimum required: 5)
+Cost Difference from Standard Optimization: $+0.0032 (+2.58%)
+
+OPTIMIZATION STATS (5 LINKS):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    95.00%
+SLA Difference:  +0.00%
+Total Cost:      $0.1278
+Links Used:      5
+Status:          Optimal
+
+--------------------------------------------------
+OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: 6 links, min 5.0% traffic per link
+--------------------------------------------------
+
+PROFILE WITH 6 LINKS CONSTRAINT AFTER OPTIMIZATION:
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |      75.0% |    95.0% | $   0.125 | $  0.0935 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |       5.0% |    95.0% | $   0.143 | $  0.0072 |
+| Wavys         | WAYVZ                         |       5.0% |    95.0% | $   0.137 | $  0.0069 |
+| Broadnetme    | Broadnetme                    |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+| GTS           | Globe Teleservices (GTS)      |       5.0% |    95.0% | $   0.172 | $  0.0086 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.141 | $  0.0071 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1302
+Number of Links Used: 6 (Minimum required: 6)
+Cost Difference from Standard Optimization: $+0.0056 (+4.50%)
+
+OPTIMIZATION STATS (6 LINKS):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    95.00%
+SLA Difference:  +0.00%
+Total Cost:      $0.1302
+Links Used:      6
+Status:          Optimal
+
+COMPARISON BETWEEN DIFFERENT LINK COUNT OPTIMIZATIONS:
+--------------------------------------------------
+Standard Links Used: 1 | Cost: $0.1246
+4 Links Required:    4 | Cost: $0.1269 | Diff: $+0.0023 (+1.83%)
+5 Links Required:    5 | Cost: $0.1278 | Diff: $+0.0032 (+2.58%)
+6 Links Required:    6 | Cost: $0.1302 | Diff: $+0.0056 (+4.50%)
+
+--------------------------------------------------
+OPTIMIZATION STEP 3: USING ALL LINKS EXCEPT UNDEL
+--------------------------------------------------
+
+Optimizing with 23 links (excluding Undel)
+
+PROFILE AFTER OPTIMIZATION (WITHOUT UNDEL):
+--------------------------------------------------
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Mada          | Mada - Not in use             |     100.0% |    95.0% | $   0.125 | $  0.1246 |
+------------------------------------------------------------------------------------------
+Total Optimized Cost: $0.1246
+Cost Difference from Original: $-0.0514 (-29.20%)
+Cost Difference from Standard Optimization: $+0.0000 (+0.00%)
+
+OPTIMIZATION STATS (WITHOUT UNDEL):
+------------------------------
+ACHIEVED SLA:    95.00%
+EXPECTED SLA:    95.00%
+SLA Difference:  +0.00%
+Total Cost:      $0.1246
+Links Used:      1
+Status:          Optimal
+
+COMPARISON BETWEEN STANDARD AND NO-UNDEL OPTIMIZATION:
+--------------------------------------------------
+Standard Links Used: 1 | No-Undel Links Used: 1
+Standard Cost:       $0.1246 | No-Undel Cost:       $0.1246
+Cost Impact of Removing Undel: $+0.0000 (+0.00%)
+
+TRAFFIC DIFFERENCES (STANDARD -> NO-UNDEL):
+--------------------------------------------------
+| Link ID       | Provider                      | Standard | No-Undel | Change   |
 |---------------|-------------------------------|----------|----------|----------|
 | Mada          | Mada - Not in use             |   100.0% |   100.0% |    +0.0% |
 

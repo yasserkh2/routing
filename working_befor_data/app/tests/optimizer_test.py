@@ -388,8 +388,294 @@ async def test_optimizer():
                 else:
                     print("\nFailed to find optimal solution with reduced SLA")
                 
-                # Reset optimizer for next profile
+                # Run optimization with minimum links constraint - 4 links
+                min_links_count = 4  # Set minimum number of links to 4
+                min_traffic = 0.05  # Set minimum traffic per link to 5%
+                print("\n" + "-"*50)
+                print(f"OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: {min_links_count} links, min {min_traffic*100}% traffic per link")
+                print("-"*50)
+                
+                # Reset optimizer for the minimum links test
                 optimizer.reset()
+                
+                # Run optimization with minimum links constraint
+                min_links_success = optimizer.solve(links_data, profile.expected_sla, min_links=min_links_count, min_traffic_per_link=min_traffic)
+                
+                if min_links_success:
+                    # Get optimization results for minimum links
+                    min_links_profile_info = {
+                        'profile_id': profile.profile_id,
+                        'name': profile.name,
+                        'expected_sla': profile.expected_sla
+                    }
+                    min_links_routing_plan = optimizer.get_routing_plan(links_data, min_links_profile_info)
+                    min_links_stats = optimizer.get_optimization_stats(links_data, profile.expected_sla)
+                    
+                    print("\nPROFILE WITH 4 LINKS CONSTRAINT AFTER OPTIMIZATION:")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                    print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                    min_links_optimized_cost = 0
+                    active_links = 0
+                    for route in min_links_routing_plan['routes']:
+                        if route['percentage'] > 0:  # Only show routes with traffic
+                            active_links += 1
+                            link_cost = (route['percentage'] / 100.0) * route['price']
+                            min_links_optimized_cost += link_cost
+                            print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                    
+                    print("-" * 90)
+                    print(f"Total Optimized Cost: ${min_links_optimized_cost:.4f}")
+                    print(f"Number of Links Used: {active_links} (Minimum required: {min_links_count})")
+                    print(f"Cost Difference from Standard Optimization: ${min_links_optimized_cost - optimized_cost:+.4f} ({((min_links_optimized_cost - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    print("\nOPTIMIZATION STATS (MINIMUM LINKS):")
+                    print("-" * 30)
+                    print(f"ACHIEVED SLA:    {min_links_stats['achieved_sla']:.2f}%")
+                    print(f"EXPECTED SLA:    {min_links_stats['expected_sla']:.2f}%")
+                    print(f"SLA Difference:  {min_links_stats['sla_difference']:+.2f}%")
+                    print(f"Total Cost:      ${min_links_stats['total_cost']:.4f}")
+                    print(f"Links Used:      {min_links_stats['links_used']}")
+                    print(f"Status:          {min_links_stats['optimization_status']}")
+                    
+                    # Compare with standard optimization
+                    print("\nCOMPARISON BETWEEN STANDARD AND MINIMUM LINKS OPTIMIZATION:")
+                    print("-" * 50)
+                    print(f"Standard Links Used: {stats['links_used']} | Minimum Links Required: {min_links_count}")
+                    print(f"Standard Cost:       ${optimized_cost:.4f} | Minimum Links Cost:     ${min_links_optimized_cost:.4f}")
+                    print(f"Cost Impact of Minimum Links Constraint: ${min_links_optimized_cost - optimized_cost:+.4f} ({((min_links_optimized_cost - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    # Display traffic differences between standard and minimum links optimization
+                    print("\nTRAFFIC DIFFERENCES (STANDARD -> MINIMUM LINKS):")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Standard | Min Links| Change   |")
+                    print("|---------------|-------------------------------|----------|----------|----------|")
+                    
+                    # Collect all links used in either optimization
+                    all_links = set()
+                    for route in routing_plan['routes']:
+                        if route['percentage'] > 0:
+                            all_links.add(route['link'])
+                    for route in min_links_routing_plan['routes']:
+                        if route['percentage'] > 0:
+                            all_links.add(route['link'])
+                    
+                    # Display traffic differences
+                    for link_id in all_links:
+                        standard_traffic = next((route['percentage'] for route in routing_plan['routes'] if route['link'] == link_id), 0)
+                        min_links_traffic = next((route['percentage'] for route in min_links_routing_plan['routes'] if route['link'] == link_id), 0)
+                        traffic_change = min_links_traffic - standard_traffic
+                        
+                        if standard_traffic > 0 or min_links_traffic > 0:
+                            provider = next((route['provider'] for route in routing_plan['routes'] if route['link'] == link_id), 
+                                          next((route['provider'] for route in min_links_routing_plan['routes'] if route['link'] == link_id), "Unknown"))
+                            
+                            print(f"| {link_id:<13} | {provider:<29} | {standard_traffic:7.1f}% | {min_links_traffic:7.1f}% | {traffic_change:+7.1f}% |")
+                else:
+                    print("\nFailed to find optimal solution with minimum links constraint")
+                
+                # Run optimization with minimum links constraint - 5 links
+                min_links_count_5 = 5  # Set minimum number of links to 5
+                print("\n" + "-"*50)
+                print(f"OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: {min_links_count_5} links, min {min_traffic*100}% traffic per link")
+                print("-"*50)
+                
+                # Reset optimizer for the 5 links test
+                optimizer.reset()
+                
+                # Run optimization with 5 links constraint
+                min_links_success_5 = optimizer.solve(links_data, profile.expected_sla, min_links=min_links_count_5, min_traffic_per_link=min_traffic)
+                
+                if min_links_success_5:
+                    # Get optimization results for 5 links
+                    min_links_profile_info_5 = {
+                        'profile_id': profile.profile_id,
+                        'name': profile.name,
+                        'expected_sla': profile.expected_sla
+                    }
+                    min_links_routing_plan_5 = optimizer.get_routing_plan(links_data, min_links_profile_info_5)
+                    min_links_stats_5 = optimizer.get_optimization_stats(links_data, profile.expected_sla)
+                    
+                    print("\nPROFILE WITH 5 LINKS CONSTRAINT AFTER OPTIMIZATION:")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                    print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                    min_links_optimized_cost_5 = 0
+                    active_links_5 = 0
+                    for route in min_links_routing_plan_5['routes']:
+                        if route['percentage'] > 0:  # Only show routes with traffic
+                            active_links_5 += 1
+                            link_cost = (route['percentage'] / 100.0) * route['price']
+                            min_links_optimized_cost_5 += link_cost
+                            print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                    
+                    print("-" * 90)
+                    print(f"Total Optimized Cost: ${min_links_optimized_cost_5:.4f}")
+                    print(f"Number of Links Used: {active_links_5} (Minimum required: {min_links_count_5})")
+                    print(f"Cost Difference from Standard Optimization: ${min_links_optimized_cost_5 - optimized_cost:+.4f} ({((min_links_optimized_cost_5 - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    print("\nOPTIMIZATION STATS (5 LINKS):")
+                    print("-" * 30)
+                    print(f"ACHIEVED SLA:    {min_links_stats_5['achieved_sla']:.2f}%")
+                    print(f"EXPECTED SLA:    {min_links_stats_5['expected_sla']:.2f}%")
+                    print(f"SLA Difference:  {min_links_stats_5['sla_difference']:+.2f}%")
+                    print(f"Total Cost:      ${min_links_stats_5['total_cost']:.4f}")
+                    print(f"Links Used:      {min_links_stats_5['links_used']}")
+                    print(f"Status:          {min_links_stats_5['optimization_status']}")
+                else:
+                    print("\nFailed to find optimal solution with 5 links constraint")
+                
+                # Run optimization with minimum links constraint - 6 links
+                min_links_count_6 = 6  # Set minimum number of links to 6
+                print("\n" + "-"*50)
+                print(f"OPTIMIZATION WITH MINIMUM LINKS CONSTRAINT: {min_links_count_6} links, min {min_traffic*100}% traffic per link")
+                print("-"*50)
+                
+                # Reset optimizer for the 6 links test
+                optimizer.reset()
+                
+                # Run optimization with 6 links constraint
+                min_links_success_6 = optimizer.solve(links_data, profile.expected_sla, min_links=min_links_count_6, min_traffic_per_link=min_traffic)
+                
+                if min_links_success_6:
+                    # Get optimization results for 6 links
+                    min_links_profile_info_6 = {
+                        'profile_id': profile.profile_id,
+                        'name': profile.name,
+                        'expected_sla': profile.expected_sla
+                    }
+                    min_links_routing_plan_6 = optimizer.get_routing_plan(links_data, min_links_profile_info_6)
+                    min_links_stats_6 = optimizer.get_optimization_stats(links_data, profile.expected_sla)
+                    
+                    print("\nPROFILE WITH 6 LINKS CONSTRAINT AFTER OPTIMIZATION:")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                    print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                    min_links_optimized_cost_6 = 0
+                    active_links_6 = 0
+                    for route in min_links_routing_plan_6['routes']:
+                        if route['percentage'] > 0:  # Only show routes with traffic
+                            active_links_6 += 1
+                            link_cost = (route['percentage'] / 100.0) * route['price']
+                            min_links_optimized_cost_6 += link_cost
+                            print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                    
+                    print("-" * 90)
+                    print(f"Total Optimized Cost: ${min_links_optimized_cost_6:.4f}")
+                    print(f"Number of Links Used: {active_links_6} (Minimum required: {min_links_count_6})")
+                    print(f"Cost Difference from Standard Optimization: ${min_links_optimized_cost_6 - optimized_cost:+.4f} ({((min_links_optimized_cost_6 - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    print("\nOPTIMIZATION STATS (6 LINKS):")
+                    print("-" * 30)
+                    print(f"ACHIEVED SLA:    {min_links_stats_6['achieved_sla']:.2f}%")
+                    print(f"EXPECTED SLA:    {min_links_stats_6['expected_sla']:.2f}%")
+                    print(f"SLA Difference:  {min_links_stats_6['sla_difference']:+.2f}%")
+                    print(f"Total Cost:      ${min_links_stats_6['total_cost']:.4f}")
+                    print(f"Links Used:      {min_links_stats_6['links_used']}")
+                    print(f"Status:          {min_links_stats_6['optimization_status']}")
+                    
+                    # Compare all minimum links optimizations
+                    print("\nCOMPARISON BETWEEN DIFFERENT LINK COUNT OPTIMIZATIONS:")
+                    print("-" * 50)
+                    print(f"Standard Links Used: {stats['links_used']} | Cost: ${optimized_cost:.4f}")
+                    print(f"4 Links Required:    {min_links_stats['links_used']} | Cost: ${min_links_optimized_cost:.4f} | Diff: ${min_links_optimized_cost - optimized_cost:+.4f} ({((min_links_optimized_cost - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    print(f"5 Links Required:    {min_links_stats_5['links_used']} | Cost: ${min_links_optimized_cost_5:.4f} | Diff: ${min_links_optimized_cost_5 - optimized_cost:+.4f} ({((min_links_optimized_cost_5 - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    print(f"6 Links Required:    {min_links_stats_6['links_used']} | Cost: ${min_links_optimized_cost_6:.4f} | Diff: ${min_links_optimized_cost_6 - optimized_cost:+.4f} ({((min_links_optimized_cost_6 - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                else:
+                    print("\nFailed to find optimal solution with 6 links constraint")
+                
+                # Run optimization with all links except Undel
+                print("\n" + "-"*50)
+                print("OPTIMIZATION STEP 3: USING ALL LINKS EXCEPT UNDEL")
+                print("-"*50)
+                
+                # Reset optimizer for the new test
+                optimizer.reset()
+                
+                # Create a filtered version of links_data without Undel
+                no_undel_links_data = {}
+                for link_id, link_data in links_data.items():
+                    if link_id != "Undel":
+                        no_undel_links_data[link_id] = link_data
+                
+                print(f"\nOptimizing with {len(no_undel_links_data)} links (excluding Undel)")
+                
+                # Run optimization without Undel
+                no_undel_success = optimizer.solve(no_undel_links_data, profile.expected_sla)
+                
+                if no_undel_success:
+                    # Get optimization results without Undel
+                    no_undel_profile_info = {
+                        'profile_id': profile.profile_id,
+                        'name': profile.name,
+                        'expected_sla': profile.expected_sla
+                    }
+                    no_undel_routing_plan = optimizer.get_routing_plan(no_undel_links_data, no_undel_profile_info)
+                    no_undel_stats = optimizer.get_optimization_stats(no_undel_links_data, profile.expected_sla)
+                    
+                    print("\nPROFILE AFTER OPTIMIZATION (WITHOUT UNDEL):")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                    print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                    no_undel_optimized_cost = 0
+                    for route in no_undel_routing_plan['routes']:
+                        if route['percentage'] > 0:  # Only show routes with traffic
+                            link_cost = (route['percentage'] / 100.0) * route['price']
+                            no_undel_optimized_cost += link_cost
+                            print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                    
+                    print("-" * 90)
+                    print(f"Total Optimized Cost: ${no_undel_optimized_cost:.4f}")
+                    print(f"Cost Difference from Original: ${no_undel_optimized_cost - original_cost:+.4f} ({((no_undel_optimized_cost - original_cost)/original_cost)*100:+.2f}%)")
+                    print(f"Cost Difference from Standard Optimization: ${no_undel_optimized_cost - optimized_cost:+.4f} ({((no_undel_optimized_cost - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    print("\nOPTIMIZATION STATS (WITHOUT UNDEL):")
+                    print("-" * 30)
+                    print(f"ACHIEVED SLA:    {no_undel_stats['achieved_sla']:.2f}%")
+                    print(f"EXPECTED SLA:    {no_undel_stats['expected_sla']:.2f}%")
+                    print(f"SLA Difference:  {no_undel_stats['sla_difference']:+.2f}%")
+                    print(f"Total Cost:      ${no_undel_stats['total_cost']:.4f}")
+                    print(f"Links Used:      {no_undel_stats['links_used']}")
+                    print(f"Status:          {no_undel_stats['optimization_status']}")
+                    
+                    # Compare with standard optimization
+                    print("\nCOMPARISON BETWEEN STANDARD AND NO-UNDEL OPTIMIZATION:")
+                    print("-" * 50)
+                    print(f"Standard Links Used: {stats['links_used']} | No-Undel Links Used: {no_undel_stats['links_used']}")
+                    print(f"Standard Cost:       ${optimized_cost:.4f} | No-Undel Cost:       ${no_undel_optimized_cost:.4f}")
+                    print(f"Cost Impact of Removing Undel: ${no_undel_optimized_cost - optimized_cost:+.4f} ({((no_undel_optimized_cost - optimized_cost)/optimized_cost)*100:+.2f}%)")
+                    
+                    # Display traffic differences between standard and no-undel optimization
+                    print("\nTRAFFIC DIFFERENCES (STANDARD -> NO-UNDEL):")
+                    print("-" * 50)
+                    print("| Link ID       | Provider                      | Standard | No-Undel | Change   |")
+                    print("|---------------|-------------------------------|----------|----------|----------|")
+                    
+                    # Collect all links used in either optimization
+                    all_links = set()
+                    for route in routing_plan['routes']:
+                        if route['percentage'] > 0:
+                            all_links.add(route['link'])
+                    for route in no_undel_routing_plan['routes']:
+                        if route['percentage'] > 0:
+                            all_links.add(route['link'])
+                    
+                    # Display traffic differences
+                    for link_id in all_links:
+                        standard_traffic = next((route['percentage'] for route in routing_plan['routes'] if route['link'] == link_id), 0)
+                        no_undel_traffic = next((route['percentage'] for route in no_undel_routing_plan['routes'] if route['link'] == link_id), 0)
+                        traffic_change = no_undel_traffic - standard_traffic
+                        
+                        if standard_traffic > 0 or no_undel_traffic > 0:
+                            provider = next((route['provider'] for route in routing_plan['routes'] if route['link'] == link_id), 
+                                          next((route['provider'] for route in no_undel_routing_plan['routes'] if route['link'] == link_id), "Unknown"))
+                            
+                            print(f"| {link_id:<13} | {provider:<29} | {standard_traffic:7.1f}% | {no_undel_traffic:7.1f}% | {traffic_change:+7.1f}% |")
+                else:
+                    print("\nFailed to find optimal solution without Undel")
+                    
+                    # Reset optimizer for next profile
+                    optimizer.reset()
             else:
                 print("\nFailed to find optimal solution")
         

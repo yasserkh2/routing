@@ -1164,15 +1164,26 @@
     },
     {
       "id": "1750848986992",
-      "ts": 1750849007067,
+      "ts": 1750851931493,
       "task": "in the optimization in optimizer can i put minimum number for outputs like minmum results using for example 4 links",
-      "tokensIn": 35951,
-      "tokensOut": 1917,
+      "tokensIn": 927339,
+      "tokensOut": 17469,
       "cacheWrites": 0,
-      "cacheReads": 15784,
-      "totalCost": 0.10774437,
-      "size": 57868,
+      "cacheReads": 799987,
+      "totalCost": 0.94909458,
+      "size": 427743,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1751181486252",
+      "ts": 1751182309256,
+      "task": "in the test optimizer we have already 4 links test put 5 too",
+      "tokensIn": 1244297,
+      "tokensOut": 14452,
+      "cacheWrites": 0,
+      "cacheReads": 1174710,
+      "totalCost": 0.7906077899999998,
+      "size": 588217
     }
   ]
 }

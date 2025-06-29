@@ -11,7 +11,7 @@ class RoutingOptimizer:
     def __init__(self):
         logger.info("Initialized RoutingOptimizer")
     
-    def minimize_cost_with_target_sla(self, links: Dict[str, Dict[str, Any]], target_sla: float) -> Dict[str, Any]:
+    def minimize_cost_with_target_sla(self, links: Dict[str, Dict[str, Any]], target_sla: float, min_links: int = 0, min_traffic_per_link: float = 0.01) -> Dict[str, Any]:
         """
         Solve a linear optimization problem to distribute traffic among multiple links
         so that the overall SLA meets the target_sla exactly, while minimizing total cost.
@@ -20,9 +20,11 @@ class RoutingOptimizer:
              link_id: { "sla": float, "price": float, "provider": str }
         }
         :param target_sla: float, e.g., 0.90 (as decimal) or 90.0 (as percentage)
+        :param min_links: int, minimum number of links to use in the solution (default: 0, no minimum)
+        :param min_traffic_per_link: float, minimum traffic percentage per link (default: 0.01 or 1%)
         :return: dict containing { 'status', 'allocation', 'min_cost', 'achieved_sla' }
         """
-        logger.info(f"Starting optimization with {len(links)} links, target SLA: {target_sla}")
+        logger.info(f"Starting optimization with {len(links)} links, target SLA: {target_sla}, min links: {min_links}, min traffic per link: {min_traffic_per_link*100}%")
         
         if not links:
             logger.error("No valid links provided for optimization")
@@ -59,8 +61,11 @@ class RoutingOptimizer:
         
         # Decision variables: fraction of traffic on each link i
         x = {}
+        # Binary variables to track if a link is used (has non-zero allocation)
+        y = {}
         for link_id in normalized_links:
             x[link_id] = pulp.LpVariable(f"x_{link_id.replace('-', '_')}", lowBound=0, upBound=1, cat='Continuous')
+            y[link_id] = pulp.LpVariable(f"y_{link_id.replace('-', '_')}", cat='Binary')
         
         # 2) Objective: minimize sum(x_i * price_i)
         model += pulp.lpSum([
@@ -87,6 +92,23 @@ class RoutingOptimizer:
         if "Undel" in normalized_links:
             logger.info("Adding constraint: Undel link limited to maximum 5% traffic")
             model += x["Undel"] <= 0.05, "Undel_Max_Traffic"
+            
+        # (D) Minimum number of links constraint
+        if min_links > 0 and min_links <= len(normalized_links):
+            logger.info(f"Adding constraint: Use at least {min_links} links")
+            
+            # Add constraints to link x and y variables
+            # If x[link_id] > 0, then y[link_id] = 1
+            # If x[link_id] = 0, then y[link_id] = 0
+            for link_id in normalized_links:
+                # If x > 0, then y must be 1
+                model += x[link_id] <= y[link_id], f"Link_Used_{link_id}_1"
+                # If y = 1, then x must be at least min_traffic_per_link
+                # This ensures each used link gets a meaningful allocation
+                model += x[link_id] >= min_traffic_per_link * y[link_id], f"Link_Used_{link_id}_2"
+            
+            # Hard constraint: Ensure at least min_links are used
+            model += pulp.lpSum([y[link_id] for link_id in normalized_links]) >= min_links, "Minimum_Links"
         
         # Define the objective function (minimize cost)
         model += pulp.lpSum([
@@ -140,18 +162,20 @@ class RoutingOptimizer:
             'achieved_sla': achieved_sla
         }
     
-    def solve(self, links_data: Dict[str, Dict[str, Any]], target_sla: float) -> bool:
+    def solve(self, links_data: Dict[str, Dict[str, Any]], target_sla: float, min_links: int = 0, min_traffic_per_link: float = 0.01) -> bool:
         """
         Solve the optimization problem (wrapper for backward compatibility)
         
         Args:
             links_data: Dictionary mapping link IDs to their data
             target_sla: Target SLA as percentage (e.g., 85.0 for 85%)
+            min_links: Minimum number of links to use in the solution (default: 0, no minimum)
+            min_traffic_per_link: Minimum traffic percentage per link (default: 0.01 or 1%)
         
         Returns:
             bool: True if optimization was successful, False otherwise
         """
-        result = self.minimize_cost_with_target_sla(links_data, target_sla)
+        result = self.minimize_cost_with_target_sla(links_data, target_sla, min_links, min_traffic_per_link)
         
         # Store results for backward compatibility
         self.results = result['allocation']
@@ -299,20 +323,45 @@ def test_optimizer():
         "link2": {"sla": 0.90, "price": 120, "provider": "Provider B"},
         "link3": {"sla": 0.85, "price": 80, "provider": "Provider C"},
         "link4": {"sla": 0.95, "price": 150, "provider": "Provider D"},
+        "link5": {"sla": 0.88, "price": 90, "provider": "Provider E"},
+        "link6": {"sla": 0.93, "price": 130, "provider": "Provider F"},
     }
     target_sla = 90.0  # 90%
     
-    result = optimizer.minimize_cost_with_target_sla(links_data, target_sla)
+    # Test 1: Without minimum links constraint
+    print("\n=== Test 1: Without minimum links constraint ===")
+    result1 = optimizer.minimize_cost_with_target_sla(links_data, target_sla)
     
-    print("Solver Status:", result['status'])
+    print("Solver Status:", result1['status'])
     print("Optimal Allocation (fractions of total traffic):")
-    for link_id, fraction in result['allocation'].items():
+    active_links = 0
+    for link_id, fraction in result1['allocation'].items():
         if fraction > 0.001:  # Only show links with significant traffic
+            active_links += 1
             print(f"  {link_id}: {fraction:.3f} ({fraction*100:.1f}%)")
-    print(f"Minimum Total Cost: {result['min_cost']:.2f}")
-    print(f"Achieved SLA: {result['achieved_sla']*100:.2f}%")
+    print(f"Number of links used: {active_links}")
+    print(f"Minimum Total Cost: {result1['min_cost']:.2f}")
+    print(f"Achieved SLA: {result1['achieved_sla']*100:.2f}%")
     
-    return result
+    # Reset optimizer for next test
+    optimizer.reset()
+    
+    # Test 2: With minimum links constraint (4 links)
+    print("\n=== Test 2: With minimum 4 links constraint ===")
+    result2 = optimizer.minimize_cost_with_target_sla(links_data, target_sla, min_links=4)
+    
+    print("Solver Status:", result2['status'])
+    print("Optimal Allocation (fractions of total traffic):")
+    active_links = 0
+    for link_id, fraction in result2['allocation'].items():
+        if fraction > 0.001:  # Only show links with significant traffic
+            active_links += 1
+            print(f"  {link_id}: {fraction:.3f} ({fraction*100:.1f}%)")
+    print(f"Number of links used: {active_links}")
+    print(f"Minimum Total Cost: {result2['min_cost']:.2f}")
+    print(f"Achieved SLA: {result2['achieved_sla']*100:.2f}%")
+    
+    return result2
 
 
 if __name__ == "__main__":
