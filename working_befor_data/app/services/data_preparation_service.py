@@ -68,7 +68,9 @@ PROFILE_INCLUSION_LIST = [
     "Premium_INTL_Vodafone_Qatar",
     "Premium_INTL_Ooredoo_Qatar",
     "Premium_Etisalat_Togo",
-    "Premium_Togo Cell_Togo"
+    "Premium_Togo Cell_Togo",
+    "Standard_Vodafone_Egypt",
+    "Standard_Orange_Egypt_Route",
 ]
 
 class DataPreparationService:

@@ -1185,6 +1185,95 @@
       "totalCost": 1.8238381499999998,
       "size": 775868,
       "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1751273790869",
+      "ts": 1751276009579,
+      "task": "put in the optimizer test results the tables only nothing else",
+      "tokensIn": 1836079,
+      "tokensOut": 44346,
+      "cacheWrites": 0,
+      "cacheReads": 746664,
+      "totalCost": 1.006056141,
+      "size": 970545
+    },
+    {
+      "id": "1751275417986",
+      "ts": 1751275424840,
+      "task": "hi",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "totalCost": 0,
+      "size": 12224,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1751276068033",
+      "ts": 1751363014704,
+      "task": "put title for each table in optimizer_test",
+      "tokensIn": 830612,
+      "tokensOut": 9212,
+      "cacheWrites": 0,
+      "cacheReads": 231819,
+      "totalCost": 0.217332189,
+      "size": 345418
+    },
+    {
+      "id": "1752758825999",
+      "ts": 1752759007331,
+      "task": "bash: uname: command not found\nbash: sed: command not found\n\nCEQUENS+y.khira@CAI-ENG-L152 MINGW64 /c/yasser/Cequens_projects/2025/routing_project/routing_repo",
+      "tokensIn": 109215,
+      "tokensOut": 1379,
+      "cacheWrites": 0,
+      "cacheReads": 88788,
+      "totalCost": 0.12042135000000001,
+      "size": 50640,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+    },
+    {
+      "id": "1752759290537",
+      "ts": 1752760042749,
+      "task": "bash: uname: command not found\nbash: sed: command not found\n\nCEQUENS+y.khira@CAI-ENG-L152 MINGW64 /c/yasser/Cequens_projects/2025/routing_project/routing_repo\n$ sl\nbash: sed: command not found\nbash: sl: command not found\n\nCEQUENS+y.khira@CAI-ENG-L152 MINGW64 /c/yasser/Cequens_projects/2025/routing_project/routing_repo\n$ ls\nbash: sed: command not found\nbash: ls: command not found\n\nCEQUENS+y.khira@CAI-ENG-L152 MINGW64 /c/yasser/Cequens_projects/2025/routing_project/routing_repo\n$",
+      "tokensIn": 1762404,
+      "tokensOut": 15714,
+      "cacheWrites": 0,
+      "cacheReads": 1683379,
+      "totalCost": 0.98175123,
+      "size": 557127
+    },
+    {
+      "id": "1752760062796",
+      "ts": 1752760131170,
+      "task": ".bashrc loaded successfully\nGit Bash environment initialized successfully!\nbash: uname: command not found\nbash: sed: command not found\n\nCEQUENS+y.khira@CAI-ENG-L152 MINGW64 /c/yasser/Cequens_projects/2025/routing_project/routing_repo\n$ ls\nbash: sed: command not found\nbash: ls: command not found\n\nCEQUENS+y.khira@CAI-ENG-L152 MINGW64 /c/yasser/Cequens_projects/2025/routing_project/routing_repo\n$    not working",
+      "tokensIn": 78043,
+      "tokensOut": 1304,
+      "cacheWrites": 0,
+      "cacheReads": 68473,
+      "totalCost": 0.07344051,
+      "size": 69427
+    },
+    {
+      "id": "1752761152525",
+      "ts": 1753013929918,
+      "task": "can you make saame results  from optimizaer test in execl file",
+      "tokensIn": 984221,
+      "tokensOut": 9484,
+      "cacheWrites": 0,
+      "cacheReads": 724430,
+      "totalCost": 1.29901227,
+      "size": 505837
+    },
+    {
+      "id": "1753789535966",
+      "ts": 1753789575475,
+      "task": "i need to add in the test optimizer \n5. Profile: Standard_Orange_Egypt_Route - All other links excluding undel (minimum 8 links) ---",
+      "tokensIn": 68862,
+      "tokensOut": 1674,
+      "cacheWrites": 0,
+      "cacheReads": 40476,
+      "totalCost": 0.14137434000000001,
+      "size": 115094,
+      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
     }
   ]
 }
