@@ -1,23 +1,22 @@
 {
     "profiles": [
         {
-            "profile_id": "336",
-            "name": "Standard_Etisalat_Egypt",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.009960358,
-            "sell_price_max": 0.177,
-            "ProfileAvgCostUSD": 0.1568285298291,
+            "profile_id": "317",
+            "name": "Standard_Jazz(Warid)_Pakistan",
+            "mcc": "410",
+            "mnc": "7",
+            "expected_sla": 85,
+            "description": "Exclusive Provider: GMS",
+            "sell_price_min": 0.246080738854016,
+            "sell_price_max": 0.406831127144925,
+            "ProfileAvgCostUSD": 0.345576899085696,
             "in_use_links": [
                 {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
+                    "link": "GMS",
+                    "provider": "Global Message Services AG - GMS",
+                    "buy_price": 0.3148,
                     "tier": "Tier 1 - Prime",
-                    "traffic": 95,
-                    "sla_dd": null,
+                    "traffic": 96,
                     "last_updated": ""
                 },
                 {
@@ -25,260 +24,70 @@
                     "provider": "ignore",
                     "buy_price": 0,
                     "tier": "",
-                    "traffic": 5,
-                    "sla_dd": null,
+                    "traffic": 4,
                     "last_updated": ""
                 }
             ]
         },
         {
-            "profile_id": "1272",
-            "name": "Premium_Etisalat_International",
-            "mcc": "602",
-            "mnc": "3",
+            "profile_id": "870",
+            "name": "Premium_Jazz (Warid)_Pakistan",
+            "mcc": "410",
+            "mnc": "7",
             "expected_sla": 0,
             "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0.18725940352,
-            "ProfileAvgCostUSD": 0.16508266297800003,
+            "sell_price_min": 0.26253025533,
+            "sell_price_max": 0.440689219601208,
+            "ProfileAvgCostUSD": 0.3599759365476,
             "in_use_links": [
                 {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
+                    "link": "GMS",
+                    "provider": "Global Message Services AG - GMS",
+                    "buy_price": 0.3148,
                     "tier": "Tier 1 - Prime",
                     "traffic": 100,
-                    "sla_dd": null,
                     "last_updated": ""
                 }
             ]
         },
         {
-            "profile_id": "1799",
-            "name": "GlobalENT_Etisalat_International",
-            "mcc": "602",
-            "mnc": "3",
+            "profile_id": "2496",
+            "name": "Viber_Jazz (Warid)_Pakistan",
+            "mcc": "410",
+            "mnc": "7",
             "expected_sla": 0,
             "description": "",
-            "sell_price_min": 0.172951603246618,
-            "sell_price_max": 0.184,
-            "ProfileAvgCostUSD": 0.16508266297800003,
+            "sell_price_min": 0.358155,
+            "sell_price_max": 0.378500746497,
+            "ProfileAvgCostUSD": 0.3599759365476,
             "in_use_links": [
                 {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
+                    "link": "GMS",
+                    "provider": "Global Message Services AG - GMS",
+                    "buy_price": 0.3148,
                     "tier": "Tier 1 - Prime",
                     "traffic": 100,
-                    "sla_dd": null,
                     "last_updated": ""
                 }
             ]
         },
         {
-            "profile_id": "1900",
-            "name": "Viber_Etisalat_EG",
-            "mcc": "602",
-            "mnc": "3",
+            "profile_id": "4052",
+            "name": "Enterprise_INTL_Jazz(Warid)_Pakistan",
+            "mcc": "410",
+            "mnc": "7",
             "expected_sla": 0,
             "description": "",
-            "sell_price_min": 0.0916779820186,
-            "sell_price_max": 0.095655,
-            "ProfileAvgCostUSD": 0.08783643577320001,
+            "sell_price_min": 0.342321335263107,
+            "sell_price_max": 0.35757024507842006,
+            "ProfileAvgCostUSD": 0.3599759365476,
             "in_use_links": [
                 {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
-                    "tier": "Tier 1 - Prime",
-                    "traffic": 40,
-                    "sla_dd": null,
-                    "last_updated": ""
-                },
-                {
-                    "link": "MRM_WhatsApp",
-                    "provider": "MrMessaging",
-                    "buy_price": 0.035,
-                    "tier": "Tier 7 - WhatsApp",
-                    "traffic": 60,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "2914",
-            "name": "Verify_Etisalat_Egypt",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.050436503853192004,
-            "sell_price_max": 2.49756168672541,
-            "ProfileAvgCostUSD": 0.16508266297800003,
-            "in_use_links": [
-                {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
+                    "link": "GMS",
+                    "provider": "Global Message Services AG - GMS",
+                    "buy_price": 0.3148,
                     "tier": "Tier 1 - Prime",
                     "traffic": 100,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "3978",
-            "name": "Enterprise_INTL_Etisalat_International",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.17577150584189,
-            "sell_price_max": 0.18710916980224002,
-            "ProfileAvgCostUSD": 0.16508266297800003,
-            "in_use_links": [
-                {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
-                    "tier": "Tier 1 - Prime",
-                    "traffic": 100,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "4411",
-            "name": "Bein_Etisalat_Egypt_International",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0,
-            "ProfileAvgCostUSD": 0.16508266297800003,
-            "in_use_links": [
-                {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
-                    "tier": "Tier 1 - Prime",
-                    "traffic": 100,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "5044",
-            "name": "Amazon_Etisalat_International",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0.165909114548632,
-            "sell_price_max": 0.169,
-            "ProfileAvgCostUSD": 0.1522082917772,
-            "in_use_links": [
-                {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
-                    "tier": "Tier 1 - Prime",
-                    "traffic": 90,
-                    "sla_dd": null,
-                    "last_updated": ""
-                },
-                {
-                    "link": "MRM_WhatsApp",
-                    "provider": "MrMessaging",
-                    "buy_price": 0.035,
-                    "tier": "Tier 7 - WhatsApp",
-                    "traffic": 10,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "5592",
-            "name": "Tencent_OTP_Egypt_Etisalat",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0,
-            "ProfileAvgCostUSD": 0.1538175881773,
-            "in_use_links": [
-                {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
-                    "tier": "Tier 1 - Prime",
-                    "traffic": 85,
-                    "sla_dd": null,
-                    "last_updated": ""
-                },
-                {
-                    "link": "mocean",
-                    "provider": "MoceanSMS - Micro Ocean Technologies",
-                    "buy_price": 0.1,
-                    "tier": "",
-                    "traffic": 13,
-                    "sla_dd": null,
-                    "last_updated": ""
-                },
-                {
-                    "link": "Undel",
-                    "provider": "ignore",
-                    "buy_price": 0,
-                    "tier": "",
-                    "traffic": 2,
-                    "sla_dd": null,
-                    "last_updated": ""
-                }
-            ]
-        },
-        {
-            "profile_id": "5593",
-            "name": "Tencent_ADV_Egypt_Etisalat",
-            "mcc": "602",
-            "mnc": "3",
-            "expected_sla": 0,
-            "description": "",
-            "sell_price_min": 0,
-            "sell_price_max": 0,
-            "ProfileAvgCostUSD": 0.1538175881773,
-            "in_use_links": [
-                {
-                    "link": "Broadnetme",
-                    "provider": "Broadnetme",
-                    "buy_price": 0.159,
-                    "tier": "Tier 1 - Prime",
-                    "traffic": 85,
-                    "sla_dd": null,
-                    "last_updated": ""
-                },
-                {
-                    "link": "mocean",
-                    "provider": "MoceanSMS - Micro Ocean Technologies",
-                    "buy_price": 0.1,
-                    "tier": "",
-                    "traffic": 13,
-                    "sla_dd": null,
-                    "last_updated": ""
-                },
-                {
-                    "link": "Undel",
-                    "provider": "ignore",
-                    "buy_price": 0,
-                    "tier": "",
-                    "traffic": 2,
-                    "sla_dd": null,
                     "last_updated": ""
                 }
             ]
@@ -286,10 +95,352 @@
     ],
     "alternative_links": [
         {
-            "link": "stc_cross",
+            "link": "STC_WL_Offnet70723",
             "provider": "Saudi Telecom Company",
             "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "STC_BL_Offnet70727",
+            "provider": "Saudi Telecom Company",
+            "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_BL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_WL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "routelocal",
+            "provider": "RouteSMS Solutions Limited",
+            "base_buy_price": 0.0206,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "link90",
+            "provider": "Javna Software Solutions",
+            "base_buy_price": 0.4025,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "omniLink",
+            "provider": "verificationh",
+            "base_buy_price": 0.1464,
+            "tier": "Tier 9 - Custom Route"
+        },
+        {
+            "link": "Advoic_D1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.0166,
             "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Advoic_H1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.048,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "ZOI",
+            "provider": "Zain Omantel - ZOI",
+            "base_buy_price": 0.185,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "ADA_WhatsApp",
+            "provider": "ADA SINGAPORE PTE. LTD",
+            "base_buy_price": 0.0713,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "GPG_PRM",
+            "provider": "Green Packet Global Pte Ltd GPG",
+            "base_buy_price": 0.26,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Infobip_Dir",
+            "provider": "Infobip_Euro",
+            "base_buy_price": 0.3648,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Kalaam_Dr",
+            "provider": "Kalaam Telecom Bahrain B.S.C",
+            "base_buy_price": 0.2893,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "GupShup_WAB",
+            "provider": "GUPSHUP INC.",
+            "base_buy_price": 0.0663,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Dott-HQ",
+            "provider": "DOTT Telecom OU",
+            "base_buy_price": 0.1178,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "IDT_DIR",
+            "provider": "IDT",
+            "base_buy_price": 0.2893,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Mada_USD",
+            "provider": "Mada USD",
+            "base_buy_price": 0.2406,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "Byteplus_ADV",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Byteplus_OTP",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "Byteplus_HQ_ADV",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.0259,
+            "tier": "Tier 3 - Med"
+        },
+        {
+            "link": "Byteplus_OTP_New",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GMS",
+            "provider": "Global Message Services AG - GMS",
+            "base_buy_price": 0.36,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Wavys",
+            "provider": "WAYVZ",
+            "base_buy_price": 0.1567,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_UK_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_AMS_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "WIS_standard",
+            "provider": "WIS TELECOM",
+            "base_buy_price": 0.1395,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GoMobit_WA",
+            "provider": "GO MOBIT LLC - gomobit",
+            "base_buy_price": 0.0172,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "AmeexOTP",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Ameex_P2P",
+            "provider": "Ameex",
+            "base_buy_price": 0.0732,
+            "tier": "Tier 8 - P2P"
+        },
+        {
+            "link": "TechAlphW",
+            "provider": "TechAlpha Messaging LLC",
+            "base_buy_price": 0.0034,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "IdentidadP_backup",
+            "provider": "Identidad_EUR",
+            "base_buy_price": 0.342,
+            "tier": "Tier 4 - Low"
+        },
+        {
+            "link": "SigmaW_new",
+            "provider": "Sigma",
+            "base_buy_price": 0.0078,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "DimocoGL",
+            "provider": "DIMOCO Messaging AG - Ibasis",
+            "base_buy_price": 0.0064,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "DEXATEL",
+            "provider": "DEXATEL OU",
+            "base_buy_price": 0.2744,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "DEXATEL_HQ",
+            "provider": "DEXATEL OU",
+            "base_buy_price": 0.0537,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "MRM_WhatsApp",
+            "provider": "MrMessaging",
+            "base_buy_price": 0.0252,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Tata_Inter_USD",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Tata_Inter_USD2",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Ameex",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "VodafoneHub",
+            "provider": "Vodafone Hub",
+            "base_buy_price": 0.5608,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "VodafoneHub2_FR",
+            "provider": "Vodafone Hub",
+            "base_buy_price": 0.5608,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Orange-Spain",
+            "provider": "Orange Espagne S.A.U.",
+            "base_buy_price": 0.3922,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "BroadBandW",
+            "provider": "BroadBand - Bankai",
+            "base_buy_price": 0.0063,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Acmetel_LCL",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.0029,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Acmetel_WHS",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.2493,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "orange",
+            "provider": "OrangeHUB",
+            "base_buy_price": 0.3371,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "EtisalatHUB",
+            "provider": "EtisalatHUB",
+            "base_buy_price": 0.339,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Mitto",
+            "provider": "Mitto",
+            "base_buy_price": 0.3682,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Broadnetme",
+            "provider": "Broadnetme",
+            "base_buy_price": 0.307,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "LankDirect",
+            "provider": "Ventatel - Lanck",
+            "base_buy_price": 0.0332,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GTS",
+            "provider": "Globe Teleservices (GTS)",
+            "base_buy_price": 0.2058,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "BeepsendDR",
+            "provider": "Twilio AB - Beepsend",
+            "base_buy_price": 0.1372,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "bics",
+            "provider": "BICS",
+            "base_buy_price": 0.2916,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "montyDC",
+            "provider": "Monty Mobile",
+            "base_buy_price": 0.305,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "clx",
+            "provider": "Sinch - CLX",
+            "base_buy_price": 0.4002,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "AirtelHQ2",
+            "provider": "Airtel HQ",
+            "base_buy_price": 0.4242,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Grantech",
+            "provider": "Telecel Global (Grantech)",
+            "base_buy_price": 0.3488,
+            "tier": "Tier 2 - High"
         },
         {
             "link": "STC_WL_Offnet70723",
@@ -316,358 +467,328 @@
             "tier": "Tier 6 - Local"
         },
         {
-            "link": "link90",
-            "provider": "Javna Software Solutions",
-            "base_buy_price": 0.1557,
-            "tier": "Tier 1 - Prime"
+            "link": "routelocal",
+            "provider": "RouteSMS Solutions Limited",
+            "base_buy_price": 0.0206,
+            "tier": "Tier 6 - Local"
         },
         {
-            "link": "Dott-HQ",
-            "provider": "DOTT Telecom OU",
-            "base_buy_price": 0.0903,
-            "tier": "Tier 5 - Unverified"
+            "link": "link90",
+            "provider": "Javna Software Solutions",
+            "base_buy_price": 0.4025,
+            "tier": "Tier 1 - Prime"
         },
         {
             "link": "omniLink",
             "provider": "verificationh",
-            "base_buy_price": 0.1041,
+            "base_buy_price": 0.1464,
             "tier": "Tier 9 - Custom Route"
         },
         {
-            "link": "G729_HQ",
-            "provider": "G729 s.l.",
-            "base_buy_price": 0.1246,
+            "link": "Advoic_D1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.0166,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "Byteplus_HQ_ADV",
-            "provider": "BytePlus Lte",
-            "base_buy_price": 0.1327,
-            "tier": "Tier 3 - Med"
+            "link": "Advoic_H1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.048,
+            "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "Byteplus_OTP_New",
-            "provider": "BytePlus Lte",
-            "base_buy_price": 0.1327,
+            "link": "ZOI",
+            "provider": "Zain Omantel - ZOI",
+            "base_buy_price": 0.185,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "ADA_WhatsApp",
             "provider": "ADA SINGAPORE PTE. LTD",
-            "base_buy_price": 0.0656,
+            "base_buy_price": 0.0713,
             "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "GPG_PRM",
+            "provider": "Green Packet Global Pte Ltd GPG",
+            "base_buy_price": 0.26,
+            "tier": "Tier 5 - Unverified"
         },
         {
             "link": "Infobip_Dir",
             "provider": "Infobip_Euro",
-            "base_buy_price": 0.164,
+            "base_buy_price": 0.3648,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Kalaam_Dr",
             "provider": "Kalaam Telecom Bahrain B.S.C",
-            "base_buy_price": 0.1609,
+            "base_buy_price": 0.2893,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "GupShup_WAB",
             "provider": "GUPSHUP INC.",
-            "base_buy_price": 0.0688,
+            "base_buy_price": 0.0663,
             "tier": "Tier 7 - WhatsApp"
         },
         {
-            "link": "MTN_AMS_USD",
-            "provider": "MTN HUB USD",
-            "base_buy_price": 0.1642,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "WIS_standard",
-            "provider": "WIS TELECOM",
-            "base_buy_price": 0.0644,
+            "link": "Dott-HQ",
+            "provider": "DOTT Telecom OU",
+            "base_buy_price": 0.1178,
             "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "GoMobit_Dir",
-            "provider": "GO MOBIT LLC - gomobit",
-            "base_buy_price": 0.0883,
-            "tier": "Tier 2 - High"
         },
         {
             "link": "IDT_DIR",
             "provider": "IDT",
-            "base_buy_price": 0.175,
+            "base_buy_price": 0.2893,
             "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Mada_USD",
+            "provider": "Mada USD",
+            "base_buy_price": 0.2406,
+            "tier": "Tier 2 - High"
         },
         {
             "link": "Byteplus_ADV",
             "provider": "BytePlus Lte",
-            "base_buy_price": 0.1116,
+            "base_buy_price": 0.3438,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "Byteplus_OTP",
             "provider": "BytePlus Lte",
-            "base_buy_price": 0.1116,
+            "base_buy_price": 0.3438,
             "tier": "Tier 2 - High"
         },
         {
-            "link": "vodafone2023",
-            "provider": "Vodafone Enterprise",
-            "base_buy_price": 0.0022,
-            "tier": "Tier 6 - Local"
+            "link": "Byteplus_HQ_ADV",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.0259,
+            "tier": "Tier 3 - Med"
         },
         {
-            "link": "SigmaW_new",
-            "provider": "Sigma",
-            "base_buy_price": 0.0395,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "DimocoGL",
-            "provider": "DIMOCO Messaging AG - Ibasis",
-            "base_buy_price": 0.0134,
+            "link": "Byteplus_OTP_New",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "GMS",
             "provider": "Global Message Services AG - GMS",
-            "base_buy_price": 0.1433,
+            "base_buy_price": 0.36,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Wavys",
             "provider": "WAYVZ",
-            "base_buy_price": 0.1246,
+            "base_buy_price": 0.1567,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "MTN_UK_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1642,
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_AMS_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "WIS_standard",
+            "provider": "WIS TELECOM",
+            "base_buy_price": 0.1395,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GoMobit_WA",
+            "provider": "GO MOBIT LLC - gomobit",
+            "base_buy_price": 0.0172,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "AmeexOTP",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Ameex_P2P",
             "provider": "Ameex",
-            "base_buy_price": 0.0613,
+            "base_buy_price": 0.0732,
             "tier": "Tier 8 - P2P"
         },
         {
             "link": "TechAlphW",
             "provider": "TechAlpha Messaging LLC",
-            "base_buy_price": 0.027,
+            "base_buy_price": 0.0034,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "IdentidadP_backup",
             "provider": "Identidad_EUR",
-            "base_buy_price": 0.1792,
+            "base_buy_price": 0.342,
             "tier": "Tier 4 - Low"
         },
         {
-            "link": "BTS_silver",
-            "provider": "BTS",
-            "base_buy_price": 0.0716,
+            "link": "SigmaW_new",
+            "provider": "Sigma",
+            "base_buy_price": 0.0078,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "vodafone",
-            "provider": "Vodafone Enterprise",
-            "base_buy_price": 0.0022,
-            "tier": "Tier 6 - Local"
-        },
-        {
-            "link": "vodafone2020",
-            "provider": "Vodafone Enterprise",
-            "base_buy_price": 0.0022,
-            "tier": "Tier 6 - Local"
-        },
-        {
-            "link": "MRM_WhatsApp",
-            "provider": "MrMessaging",
-            "base_buy_price": 0.0363,
-            "tier": "Tier 7 - WhatsApp"
-        },
-        {
-            "link": "MRM_RCS",
-            "provider": "MrMessaging",
-            "base_buy_price": 0.055,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "Tata_Inter_USD",
-            "provider": "Tata_International_USD",
-            "base_buy_price": 0.1671,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "Tata_Inter_USD2",
-            "provider": "Tata_International_USD",
-            "base_buy_price": 0.168,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "Ameex",
-            "provider": "Ameex",
-            "base_buy_price": 0.0602,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "AmeexOTP",
-            "provider": "Ameex",
-            "base_buy_price": 0.0602,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "bics",
-            "provider": "BICS",
-            "base_buy_price": 0.1604,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "IT-DecisionsD",
-            "provider": "IT Decision",
-            "base_buy_price": 0.0426,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "IT-DecisionsLCR",
-            "provider": "IT Decision",
-            "base_buy_price": 0.0384,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "BroadBandW",
-            "provider": "BroadBand - Bankai",
-            "base_buy_price": 0.0144,
+            "link": "DimocoGL",
+            "provider": "DIMOCO Messaging AG - Ibasis",
+            "base_buy_price": 0.0064,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "DEXATEL",
             "provider": "DEXATEL OU",
-            "base_buy_price": 0.1657,
+            "base_buy_price": 0.2744,
             "tier": "Tier 2 - High"
         },
         {
             "link": "DEXATEL_HQ",
             "provider": "DEXATEL OU",
-            "base_buy_price": 0.0799,
+            "base_buy_price": 0.0537,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "BroadNetS",
-            "provider": "Broadnetme",
-            "base_buy_price": 0.026,
+            "link": "MRM_WhatsApp",
+            "provider": "MrMessaging",
+            "base_buy_price": 0.0252,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Tata_Inter_USD",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Tata_Inter_USD2",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "LankDirect",
-            "provider": "Ventatel - Lanck",
-            "base_buy_price": 0.0514,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "GTS",
-            "provider": "Globe Teleservices (GTS)",
-            "base_buy_price": 0.135,
+            "link": "Ameex",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "VodafoneHub",
             "provider": "Vodafone Hub",
-            "base_buy_price": 0.1212,
+            "base_buy_price": 0.5608,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "VodafoneHub2_FR",
             "provider": "Vodafone Hub",
-            "base_buy_price": 0.144,
+            "base_buy_price": 0.5608,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Orange-Spain",
             "provider": "Orange Espagne S.A.U.",
-            "base_buy_price": 0.2518,
+            "base_buy_price": 0.3922,
             "tier": "Tier 2 - High"
         },
         {
-            "link": "Grantech",
-            "provider": "Telecel Global (Grantech)",
-            "base_buy_price": 0.1609,
-            "tier": "Tier 2 - High"
+            "link": "BroadBandW",
+            "provider": "BroadBand - Bankai",
+            "base_buy_price": 0.0063,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Acmetel_LCL",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.0029,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Acmetel_WHS",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.2493,
+            "tier": "Tier 5 - Unverified"
         },
         {
             "link": "orange",
             "provider": "OrangeHUB",
-            "base_buy_price": 0.1713,
+            "base_buy_price": 0.3371,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "EtisalatHUB",
             "provider": "EtisalatHUB",
-            "base_buy_price": 0.176,
+            "base_buy_price": 0.339,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Mitto",
             "provider": "Mitto",
-            "base_buy_price": 0.1661,
+            "base_buy_price": 0.3682,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Broadnetme",
             "provider": "Broadnetme",
-            "base_buy_price": 0.1651,
+            "base_buy_price": 0.307,
             "tier": "Tier 1 - Prime"
         },
         {
-            "link": "BroadNet",
-            "provider": "Broadnetme",
-            "base_buy_price": 0.1142,
+            "link": "LankDirect",
+            "provider": "Ventatel - Lanck",
+            "base_buy_price": 0.0332,
             "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GTS",
+            "provider": "Globe Teleservices (GTS)",
+            "base_buy_price": 0.2058,
+            "tier": "Tier 1 - Prime"
         },
         {
             "link": "BeepsendDR",
             "provider": "Twilio AB - Beepsend",
-            "base_buy_price": 0.0654,
+            "base_buy_price": 0.1372,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "bics",
+            "provider": "BICS",
+            "base_buy_price": 0.2916,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "montyDC",
             "provider": "Monty Mobile",
-            "base_buy_price": 0.1657,
+            "base_buy_price": 0.305,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "clx",
             "provider": "Sinch - CLX",
-            "base_buy_price": 0.1846,
+            "base_buy_price": 0.4002,
             "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "nxgw",
-            "provider": "Nexmo_Vonage",
-            "base_buy_price": 0.0684,
-            "tier": "Tier 2 - High"
         },
         {
             "link": "AirtelHQ2",
             "provider": "Airtel HQ",
-            "base_buy_price": 0.1749,
+            "base_buy_price": 0.4242,
             "tier": "Tier 1 - Prime"
         },
         {
-            "link": "Bongo",
-            "provider": "Bongo - Ongoza - Beem",
-            "base_buy_price": 0.026,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "stc_cross",
-            "provider": "Saudi Telecom Company",
-            "base_buy_price": 0.0213,
-            "tier": "Tier 5 - Unverified"
+            "link": "Grantech",
+            "provider": "Telecel Global (Grantech)",
+            "base_buy_price": 0.3488,
+            "tier": "Tier 2 - High"
         },
         {
             "link": "STC_WL_Offnet70723",
@@ -694,360 +815,676 @@
             "tier": "Tier 6 - Local"
         },
         {
-            "link": "link90",
-            "provider": "Javna Software Solutions",
-            "base_buy_price": 0.1557,
-            "tier": "Tier 1 - Prime"
+            "link": "routelocal",
+            "provider": "RouteSMS Solutions Limited",
+            "base_buy_price": 0.0206,
+            "tier": "Tier 6 - Local"
         },
         {
-            "link": "Dott-HQ",
-            "provider": "DOTT Telecom OU",
-            "base_buy_price": 0.0903,
-            "tier": "Tier 5 - Unverified"
+            "link": "link90",
+            "provider": "Javna Software Solutions",
+            "base_buy_price": 0.4025,
+            "tier": "Tier 1 - Prime"
         },
         {
             "link": "omniLink",
             "provider": "verificationh",
-            "base_buy_price": 0.1041,
+            "base_buy_price": 0.1464,
             "tier": "Tier 9 - Custom Route"
         },
         {
-            "link": "G729_HQ",
-            "provider": "G729 s.l.",
-            "base_buy_price": 0.1246,
+            "link": "Advoic_D1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.0166,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "Byteplus_HQ_ADV",
-            "provider": "BytePlus Lte",
-            "base_buy_price": 0.1327,
-            "tier": "Tier 3 - Med"
+            "link": "Advoic_H1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.048,
+            "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "Byteplus_OTP_New",
-            "provider": "BytePlus Lte",
-            "base_buy_price": 0.1327,
+            "link": "ZOI",
+            "provider": "Zain Omantel - ZOI",
+            "base_buy_price": 0.185,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "ADA_WhatsApp",
             "provider": "ADA SINGAPORE PTE. LTD",
-            "base_buy_price": 0.0656,
+            "base_buy_price": 0.0713,
             "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "GPG_PRM",
+            "provider": "Green Packet Global Pte Ltd GPG",
+            "base_buy_price": 0.26,
+            "tier": "Tier 5 - Unverified"
         },
         {
             "link": "Infobip_Dir",
             "provider": "Infobip_Euro",
-            "base_buy_price": 0.164,
+            "base_buy_price": 0.3648,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Kalaam_Dr",
             "provider": "Kalaam Telecom Bahrain B.S.C",
-            "base_buy_price": 0.1609,
+            "base_buy_price": 0.2893,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "GupShup_WAB",
             "provider": "GUPSHUP INC.",
-            "base_buy_price": 0.0688,
+            "base_buy_price": 0.0663,
             "tier": "Tier 7 - WhatsApp"
         },
         {
-            "link": "MTN_AMS_USD",
-            "provider": "MTN HUB USD",
-            "base_buy_price": 0.1642,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "WIS_standard",
-            "provider": "WIS TELECOM",
-            "base_buy_price": 0.0644,
+            "link": "Dott-HQ",
+            "provider": "DOTT Telecom OU",
+            "base_buy_price": 0.1178,
             "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "GoMobit_Dir",
-            "provider": "GO MOBIT LLC - gomobit",
-            "base_buy_price": 0.0883,
-            "tier": "Tier 2 - High"
         },
         {
             "link": "IDT_DIR",
             "provider": "IDT",
-            "base_buy_price": 0.175,
+            "base_buy_price": 0.2893,
             "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Mada_USD",
+            "provider": "Mada USD",
+            "base_buy_price": 0.2406,
+            "tier": "Tier 2 - High"
         },
         {
             "link": "Byteplus_ADV",
             "provider": "BytePlus Lte",
-            "base_buy_price": 0.1116,
+            "base_buy_price": 0.3438,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "Byteplus_OTP",
             "provider": "BytePlus Lte",
-            "base_buy_price": 0.1116,
+            "base_buy_price": 0.3438,
             "tier": "Tier 2 - High"
         },
         {
-            "link": "vodafone2023",
-            "provider": "Vodafone Enterprise",
-            "base_buy_price": 0.0022,
-            "tier": "Tier 6 - Local"
+            "link": "Byteplus_HQ_ADV",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.0259,
+            "tier": "Tier 3 - Med"
         },
         {
-            "link": "SigmaW_new",
-            "provider": "Sigma",
-            "base_buy_price": 0.0395,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "DimocoGL",
-            "provider": "DIMOCO Messaging AG - Ibasis",
-            "base_buy_price": 0.0134,
+            "link": "Byteplus_OTP_New",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "GMS",
             "provider": "Global Message Services AG - GMS",
-            "base_buy_price": 0.1433,
+            "base_buy_price": 0.36,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Wavys",
             "provider": "WAYVZ",
-            "base_buy_price": 0.1246,
+            "base_buy_price": 0.1567,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "MTN_UK_USD",
             "provider": "MTN HUB USD",
-            "base_buy_price": 0.1642,
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_AMS_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "WIS_standard",
+            "provider": "WIS TELECOM",
+            "base_buy_price": 0.1395,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GoMobit_WA",
+            "provider": "GO MOBIT LLC - gomobit",
+            "base_buy_price": 0.0172,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "AmeexOTP",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Ameex_P2P",
             "provider": "Ameex",
-            "base_buy_price": 0.0613,
+            "base_buy_price": 0.0732,
             "tier": "Tier 8 - P2P"
         },
         {
             "link": "TechAlphW",
             "provider": "TechAlpha Messaging LLC",
-            "base_buy_price": 0.027,
+            "base_buy_price": 0.0034,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "IdentidadP_backup",
             "provider": "Identidad_EUR",
-            "base_buy_price": 0.1792,
+            "base_buy_price": 0.342,
             "tier": "Tier 4 - Low"
         },
         {
-            "link": "BTS_silver",
-            "provider": "BTS",
-            "base_buy_price": 0.0716,
+            "link": "SigmaW_new",
+            "provider": "Sigma",
+            "base_buy_price": 0.0078,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "vodafone",
-            "provider": "Vodafone Enterprise",
-            "base_buy_price": 0.0022,
-            "tier": "Tier 6 - Local"
-        },
-        {
-            "link": "vodafone2020",
-            "provider": "Vodafone Enterprise",
-            "base_buy_price": 0.0022,
-            "tier": "Tier 6 - Local"
-        },
-        {
-            "link": "MRM_WhatsApp",
-            "provider": "MrMessaging",
-            "base_buy_price": 0.0363,
-            "tier": "Tier 7 - WhatsApp"
-        },
-        {
-            "link": "MRM_RCS",
-            "provider": "MrMessaging",
-            "base_buy_price": 0.055,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "Tata_Inter_USD",
-            "provider": "Tata_International_USD",
-            "base_buy_price": 0.1671,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "Tata_Inter_USD2",
-            "provider": "Tata_International_USD",
-            "base_buy_price": 0.168,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "Ameex",
-            "provider": "Ameex",
-            "base_buy_price": 0.0602,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "AmeexOTP",
-            "provider": "Ameex",
-            "base_buy_price": 0.0602,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "bics",
-            "provider": "BICS",
-            "base_buy_price": 0.1604,
-            "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "IT-DecisionsD",
-            "provider": "IT Decision",
-            "base_buy_price": 0.0426,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "IT-DecisionsLCR",
-            "provider": "IT Decision",
-            "base_buy_price": 0.0384,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "BroadBandW",
-            "provider": "BroadBand - Bankai",
-            "base_buy_price": 0.0144,
+            "link": "DimocoGL",
+            "provider": "DIMOCO Messaging AG - Ibasis",
+            "base_buy_price": 0.0064,
             "tier": "Tier 5 - Unverified"
         },
         {
             "link": "DEXATEL",
             "provider": "DEXATEL OU",
-            "base_buy_price": 0.1657,
+            "base_buy_price": 0.2744,
             "tier": "Tier 2 - High"
         },
         {
             "link": "DEXATEL_HQ",
             "provider": "DEXATEL OU",
-            "base_buy_price": 0.0799,
+            "base_buy_price": 0.0537,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "BroadNetS",
-            "provider": "Broadnetme",
-            "base_buy_price": 0.026,
+            "link": "MRM_WhatsApp",
+            "provider": "MrMessaging",
+            "base_buy_price": 0.0252,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Tata_Inter_USD",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Tata_Inter_USD2",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
             "tier": "Tier 5 - Unverified"
         },
         {
-            "link": "LankDirect",
-            "provider": "Ventatel - Lanck",
-            "base_buy_price": 0.0514,
-            "tier": "Tier 5 - Unverified"
-        },
-        {
-            "link": "GTS",
-            "provider": "Globe Teleservices (GTS)",
-            "base_buy_price": 0.135,
+            "link": "Ameex",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "VodafoneHub",
             "provider": "Vodafone Hub",
-            "base_buy_price": 0.1212,
+            "base_buy_price": 0.5608,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "VodafoneHub2_FR",
             "provider": "Vodafone Hub",
-            "base_buy_price": 0.144,
+            "base_buy_price": 0.5608,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Orange-Spain",
             "provider": "Orange Espagne S.A.U.",
-            "base_buy_price": 0.2518,
+            "base_buy_price": 0.3922,
             "tier": "Tier 2 - High"
         },
         {
-            "link": "Grantech",
-            "provider": "Telecel Global (Grantech)",
-            "base_buy_price": 0.1609,
-            "tier": "Tier 2 - High"
+            "link": "BroadBandW",
+            "provider": "BroadBand - Bankai",
+            "base_buy_price": 0.0063,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Acmetel_LCL",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.0029,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Acmetel_WHS",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.2493,
+            "tier": "Tier 5 - Unverified"
         },
         {
             "link": "orange",
             "provider": "OrangeHUB",
-            "base_buy_price": 0.1713,
+            "base_buy_price": 0.3371,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "EtisalatHUB",
             "provider": "EtisalatHUB",
-            "base_buy_price": 0.176,
+            "base_buy_price": 0.339,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Mitto",
             "provider": "Mitto",
-            "base_buy_price": 0.1661,
+            "base_buy_price": 0.3682,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "Broadnetme",
             "provider": "Broadnetme",
-            "base_buy_price": 0.1651,
+            "base_buy_price": 0.307,
             "tier": "Tier 1 - Prime"
         },
         {
-            "link": "BroadNet",
-            "provider": "Broadnetme",
-            "base_buy_price": 0.1142,
+            "link": "LankDirect",
+            "provider": "Ventatel - Lanck",
+            "base_buy_price": 0.0332,
             "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GTS",
+            "provider": "Globe Teleservices (GTS)",
+            "base_buy_price": 0.2058,
+            "tier": "Tier 1 - Prime"
         },
         {
             "link": "BeepsendDR",
             "provider": "Twilio AB - Beepsend",
-            "base_buy_price": 0.0654,
+            "base_buy_price": 0.1372,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "bics",
+            "provider": "BICS",
+            "base_buy_price": 0.2916,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "montyDC",
             "provider": "Monty Mobile",
-            "base_buy_price": 0.1657,
+            "base_buy_price": 0.305,
             "tier": "Tier 1 - Prime"
         },
         {
             "link": "clx",
             "provider": "Sinch - CLX",
-            "base_buy_price": 0.1846,
+            "base_buy_price": 0.4002,
             "tier": "Tier 1 - Prime"
-        },
-        {
-            "link": "nxgw",
-            "provider": "Nexmo_Vonage",
-            "base_buy_price": 0.0684,
-            "tier": "Tier 2 - High"
         },
         {
             "link": "AirtelHQ2",
             "provider": "Airtel HQ",
-            "base_buy_price": 0.1749,
+            "base_buy_price": 0.4242,
             "tier": "Tier 1 - Prime"
         },
         {
-            "link": "Bongo",
-            "provider": "Bongo - Ongoza - Beem",
-            "base_buy_price": 0.026,
-            "tier": "Tier 1 - Prime"
+            "link": "Grantech",
+            "provider": "Telecel Global (Grantech)",
+            "base_buy_price": 0.3488,
+            "tier": "Tier 2 - High"
         },
         {
-            "link": "STC_WL_TN",
- 
+            "link": "STC_WL_Offnet70723",
             "provider": "Saudi Telecom Company",
- 
             "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "STC_BL_Offnet70727",
+            "provider": "Saudi Telecom Company",
+            "base_buy_price": 0.0213,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_BL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Mobily_WL_TN",
+            "provider": "Mobily",
+            "base_buy_price": 0.0666,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "routelocal",
+            "provider": "RouteSMS Solutions Limited",
+            "base_buy_price": 0.0206,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "link90",
+            "provider": "Javna Software Solutions",
+            "base_buy_price": 0.4025,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "omniLink",
+            "provider": "verificationh",
+            "base_buy_price": 0.1464,
+            "tier": "Tier 9 - Custom Route"
+        },
+        {
+            "link": "Advoic_D1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.0166,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Advoic_H1",
+            "provider": "Advoic Communications Pte. Ltd.",
+            "base_buy_price": 0.048,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "ZOI",
+            "provider": "Zain Omantel - ZOI",
+            "base_buy_price": 0.185,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "ADA_WhatsApp",
+            "provider": "ADA SINGAPORE PTE. LTD",
+            "base_buy_price": 0.0713,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "GPG_PRM",
+            "provider": "Green Packet Global Pte Ltd GPG",
+            "base_buy_price": 0.26,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Infobip_Dir",
+            "provider": "Infobip_Euro",
+            "base_buy_price": 0.3648,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Kalaam_Dr",
+            "provider": "Kalaam Telecom Bahrain B.S.C",
+            "base_buy_price": 0.2893,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "GupShup_WAB",
+            "provider": "GUPSHUP INC.",
+            "base_buy_price": 0.0663,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Dott-HQ",
+            "provider": "DOTT Telecom OU",
+            "base_buy_price": 0.1178,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "IDT_DIR",
+            "provider": "IDT",
+            "base_buy_price": 0.2893,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Mada_USD",
+            "provider": "Mada USD",
+            "base_buy_price": 0.2406,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "Byteplus_ADV",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Byteplus_OTP",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "Byteplus_HQ_ADV",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.0259,
+            "tier": "Tier 3 - Med"
+        },
+        {
+            "link": "Byteplus_OTP_New",
+            "provider": "BytePlus Lte",
+            "base_buy_price": 0.3438,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GMS",
+            "provider": "Global Message Services AG - GMS",
+            "base_buy_price": 0.36,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Wavys",
+            "provider": "WAYVZ",
+            "base_buy_price": 0.1567,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_UK_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "MTN_AMS_USD",
+            "provider": "MTN HUB USD",
+            "base_buy_price": 0.3534,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "WIS_standard",
+            "provider": "WIS TELECOM",
+            "base_buy_price": 0.1395,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GoMobit_WA",
+            "provider": "GO MOBIT LLC - gomobit",
+            "base_buy_price": 0.0172,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "AmeexOTP",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Ameex_P2P",
+            "provider": "Ameex",
+            "base_buy_price": 0.0732,
+            "tier": "Tier 8 - P2P"
+        },
+        {
+            "link": "TechAlphW",
+            "provider": "TechAlpha Messaging LLC",
+            "base_buy_price": 0.0034,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "IdentidadP_backup",
+            "provider": "Identidad_EUR",
+            "base_buy_price": 0.342,
             "tier": "Tier 4 - Low"
+        },
+        {
+            "link": "SigmaW_new",
+            "provider": "Sigma",
+            "base_buy_price": 0.0078,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "DimocoGL",
+            "provider": "DIMOCO Messaging AG - Ibasis",
+            "base_buy_price": 0.0064,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "DEXATEL",
+            "provider": "DEXATEL OU",
+            "base_buy_price": 0.2744,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "DEXATEL_HQ",
+            "provider": "DEXATEL OU",
+            "base_buy_price": 0.0537,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "MRM_WhatsApp",
+            "provider": "MrMessaging",
+            "base_buy_price": 0.0252,
+            "tier": "Tier 7 - WhatsApp"
+        },
+        {
+            "link": "Tata_Inter_USD",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Tata_Inter_USD2",
+            "provider": "Tata_International_USD",
+            "base_buy_price": 0.348,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Ameex",
+            "provider": "Ameex",
+            "base_buy_price": 0.3145,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "VodafoneHub",
+            "provider": "Vodafone Hub",
+            "base_buy_price": 0.5608,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "VodafoneHub2_FR",
+            "provider": "Vodafone Hub",
+            "base_buy_price": 0.5608,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Orange-Spain",
+            "provider": "Orange Espagne S.A.U.",
+            "base_buy_price": 0.3922,
+            "tier": "Tier 2 - High"
+        },
+        {
+            "link": "BroadBandW",
+            "provider": "BroadBand - Bankai",
+            "base_buy_price": 0.0063,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "Acmetel_LCL",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.0029,
+            "tier": "Tier 6 - Local"
+        },
+        {
+            "link": "Acmetel_WHS",
+            "provider": "Acme Tel FZC",
+            "base_buy_price": 0.2493,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "orange",
+            "provider": "OrangeHUB",
+            "base_buy_price": 0.3371,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "EtisalatHUB",
+            "provider": "EtisalatHUB",
+            "base_buy_price": 0.339,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Mitto",
+            "provider": "Mitto",
+            "base_buy_price": 0.3682,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Broadnetme",
+            "provider": "Broadnetme",
+            "base_buy_price": 0.307,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "LankDirect",
+            "provider": "Ventatel - Lanck",
+            "base_buy_price": 0.0332,
+            "tier": "Tier 5 - Unverified"
+        },
+        {
+            "link": "GTS",
+            "provider": "Globe Teleservices (GTS)",
+            "base_buy_price": 0.2058,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "BeepsendDR",
+            "provider": "Twilio AB - Beepsend",
+            "base_buy_price": 0.1372,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "bics",
+            "provider": "BICS",
+            "base_buy_price": 0.2916,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "montyDC",
+            "provider": "Monty Mobile",
+            "base_buy_price": 0.305,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "clx",
+            "provider": "Sinch - CLX",
+            "base_buy_price": 0.4002,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "AirtelHQ2",
+            "provider": "Airtel HQ",
+            "base_buy_price": 0.4242,
+            "tier": "Tier 1 - Prime"
+        },
+        {
+            "link": "Grantech",
+            "provider": "Telecel Global (Grantech)",
+            "base_buy_price": 0.3488,
+            "tier": "Tier 2 - High"
         }
     ]
 }

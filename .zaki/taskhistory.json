@@ -1265,15 +1265,58 @@
     },
     {
       "id": "1753789535966",
-      "ts": 1753789575475,
+      "ts": 1753790271656,
       "task": "i need to add in the test optimizer \n5. Profile: Standard_Orange_Egypt_Route - All other links excluding undel (minimum 8 links) ---",
-      "tokensIn": 68862,
-      "tokensOut": 1674,
+      "tokensIn": 468184,
+      "tokensOut": 4454,
       "cacheWrites": 0,
-      "cacheReads": 40476,
-      "totalCost": 0.14137434000000001,
-      "size": 115094,
-      "shadowGitConfigWorkTree": "c:\\yasser\\Cequens_projects\\2025\\routing_project\\routing_repo"
+      "cacheReads": 394728,
+      "totalCost": 0.44593278000000003,
+      "size": 206605
+    },
+    {
+      "id": "1754231258132",
+      "ts": 1754231658170,
+      "task": "i have an interview and i need to prepare for it tell me about each point i can be asked in this project in the interview",
+      "tokensIn": 587153,
+      "tokensOut": 12729,
+      "cacheWrites": 0,
+      "cacheReads": 520708,
+      "totalCost": 0.57675021,
+      "size": 519517
+    },
+    {
+      "id": "1754231665281",
+      "ts": 1754231807420,
+      "task": "hi",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0,
+      "size": 41947
+    },
+    {
+      "id": "1754231824707",
+      "ts": 1754231824807,
+      "task": "hi",
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "cacheWrites": 0,
+      "cacheReads": 0,
+      "totalCost": 0,
+      "size": 20259
+    },
+    {
+      "id": "1755172309970",
+      "ts": 1755172638761,
+      "task": "i am trying to use cd working_befor_data && python -m app.tests.optimizer_test   on \"Standard_Pakistan-SCO_Mobile\" but not working trace to me why",
+      "tokensIn": 156920,
+      "tokensOut": 2201,
+      "cacheWrites": 0,
+      "cacheReads": 126656,
+      "totalCost": 0.17944905,
+      "size": 199354
     }
   ]
 }

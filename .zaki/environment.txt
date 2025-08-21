@@ -5,26 +5,26 @@ Home Directory: C:\Users\y.khira
 Current Working Directory: c:\yasser\Cequens_projects\2025\routing_project\routing_repo
 Platform: win32
 Architecture: x64
-Node Version: v22.15.1
+Node Version: v22.17.0
 Total Memory: 16GB
-Free Memory: 3GB
+Free Memory: 2GB
 CPU Cores: 12
 
-Current Time: 7/29/2025, 2:45:36 PM (Africa/Cairo, UTC+3:00)
+Current Time: 8/14/2025, 2:51:50 PM (Africa/Cairo, UTC+3:00)
 
 # EDITOR STATE
 
 Visible Files:
-  working_befor_data\optimizer_test_results.txt
+  ..\..\..\..\..\request_f6471425-f652-4578-8221-ab9b1ac071ab\0
+  working_befor_data\mock_data\api_round_2_reorganized_links_no_sla.json
 
 Open Tabs:
   working_befor_data\mock_data\api_round_2_reorganized_links_no_sla.json
   working_befor_data\optimizer_test_results.txt
-  working_befor_data\Standard_Orange_Egypt_Route_filter.xlsx
-  working_befor_data\Standard_Orange_Egypt_Route.xlsx
-  working_befor_data\create_optimizer_excel.py
-  working_befor_data\app\services\data_preparation_service.py
   working_befor_data\app\tests\optimizer_test.py
+  working_befor_data\app\services\data_preparation_service.py
+  working_befor_data\create_optimizer_excel.py
+  interview_preparation_guide.md
 
 # WORKSPACE SUMMARY
 
@@ -37,6 +37,7 @@ Files:
   README.md
   .gitattributes
   api-structure-wit sebai/
+  interview_preparation_guide.md
   optimizer_output.txt
   project_cv_description.md
   project_design/
@@ -64,42 +65,36 @@ Files:
   working_befor_data/optimizer_test_output.txt
   working_befor_data/optimizer_test_results.txt
   working_befor_data/optimizer_test_results.xlsx
+  working_befor_data/optimizer_test_results_new.xlsx
+  working_befor_data/Premium_Telecom Egypt_International.xlsx
   working_befor_data/README.md
   working_befor_data/readme_2.md
   working_befor_data/requirements.txt
   working_befor_data/Results/
+  working_befor_data/Standard_Etisalat_Egypt (2).xlsx
+  working_befor_data/Standard_Etisalat_Egypt.xlsx
   working_befor_data/Standard_Orange_Egypt_Route.xlsx
   working_befor_data/Standard_Orange_Egypt_Route_filter.xlsx
   working_befor_data/Standard_Vodafone_Egypt.xlsx
   working_befor_data/test_min_links.py
   working_befor_data/VodafoneHub.xlsx
   working_befor_data/web_interface/
-  project_design/data/data_model.md
-  project_design/data/data_sources.md
   project_design/architecture/components.md
   project_design/architecture/scalability.md
   project_design/architecture/system_architecture.md
   project_design/architecture/technology_stack.md
-  project_design/decision_making/approval_workflow.md
-  project_design/decision_making/decision_logic.md
-  project_design/ml/ml_models.md
-  project_design/optimization/objective_function.md
-  project_design/optimization/optimization_algorithm.md
+  project_design/data/data_model.md
+  project_design/data/data_sources.md
   project_design/deployment/ci_cd.md
   project_design/deployment/deployment_strategy.md
   project_design/deployment/monitoring.md
+  project_design/optimization/objective_function.md
+  project_design/optimization/optimization_algorithm.md
+  project_design/decision_making/approval_workflow.md
+  project_design/decision_making/decision_logic.md
   project_design/security/data_privacy.md
   project_design/security/security_considerations.md
-  project_design/testing/testing_strategy.md
-  project_design/testing/test_cases.md
-  working_befor_data/aihub-bateel-project/api/
-  working_befor_data/aihub-bateel-project/buildspec.yaml
-  working_befor_data/aihub-bateel-project/Dockerfile
-  working_befor_data/aihub-bateel-project/files/
-  working_befor_data/aihub-bateel-project/Note_book/
-  working_befor_data/aihub-bateel-project/README.md
-  working_befor_data/aihub-bateel-project/requirements.txt
-  working_befor_data/aihub-bateel-project/uploads/
+  project_design/ml/ml_models.md
   working_befor_data/app/api/
   working_befor_data/app/core/
   working_befor_data/app/docs/
@@ -109,11 +104,20 @@ Files:
   working_befor_data/app/tests/
   working_befor_data/app/utils/
   working_befor_data/app/__init__.py
+  working_befor_data/aihub-bateel-project/api/
+  working_befor_data/aihub-bateel-project/buildspec.yaml
+  working_befor_data/aihub-bateel-project/Dockerfile
+  working_befor_data/aihub-bateel-project/files/
+  working_befor_data/aihub-bateel-project/Note_book/
+  working_befor_data/aihub-bateel-project/README.md
+  working_befor_data/aihub-bateel-project/requirements.txt
+  working_befor_data/aihub-bateel-project/uploads/
+  project_design/testing/testing_strategy.md
+  project_design/testing/test_cases.md
   working_befor_data/mock_data/api_round_2_reorganized_links_no_sla.json
   working_befor_data/mock_data/price_changes.json
   working_befor_data/mock_data/README.md
   working_befor_data/mock_data/sla_update.json
-  working_befor_data/Results/results.xlsx
   working_befor_data/web_interface/event_index.html
   working_befor_data/web_interface/event_server.py
   working_befor_data/web_interface/index.html
@@ -124,6 +128,71 @@ Files:
   working_befor_data/web_interface/sla.html
   working_befor_data/web_interface/sla_index.html
   working_befor_data/web_interface/sla_server.py
+  working_befor_data/Results/results.xlsx
+  working_befor_data/app/api/api.py
+  working_befor_data/app/api/api_caller.py
+  working_befor_data/app/api/api_interfaces.py
+  working_befor_data/app/api/main.py
+  working_befor_data/app/api/README.md
+  working_befor_data/app/api/__init__.py
+  working_befor_data/app/docs/api_structure.md
+  working_befor_data/app/docs/event_flow_paths.txt
+  working_befor_data/app/docs/event_system.md
+  working_befor_data/app/docs/README.md
+  working_befor_data/app/core/optimizer.py
+  working_befor_data/app/core/README.md
+  working_befor_data/app/core/__init__.py
+  working_befor_data/app/models/link.py
+  working_befor_data/app/models/profile.py
+  working_befor_data/app/models/README.md
+  working_befor_data/app/models/__init__.py
+  working_befor_data/app/logs/app_20250313.log
+  working_befor_data/app/logs/app_20250316.log
+  working_befor_data/app/logs/app_20250317.log
+  working_befor_data/app/logs/app_20250318.log
+  working_befor_data/app/logs/app_20250323.log
+  working_befor_data/app/logs/app_20250324.log
+  working_befor_data/app/logs/app_20250410.log
+  working_befor_data/app/logs/app_20250522.log
+  working_befor_data/app/logs/app_20250525.log
+  working_befor_data/app/logs/app_20250526.log
+  working_befor_data/app/logs/app_20250527.log
+  working_befor_data/app/logs/app_20250528.log
+  working_befor_data/app/logs/app_20250529.log
+  working_befor_data/app/logs/app_20250602.log
+  working_befor_data/app/logs/app_20250619.log
+  working_befor_data/app/logs/app_20250622.log
+  working_befor_data/app/logs/app_20250624.log
+  working_befor_data/app/logs/app_20250625.log
+  working_befor_data/app/logs/app_20250629.log
+  working_befor_data/app/logs/app_20250630.log
+  working_befor_data/app/logs/app_20250701.log
+  working_befor_data/app/logs/app_20250714.log
+  working_befor_data/app/logs/app_20250720.log
+  working_befor_data/app/logs/app_20250721.log
+  working_befor_data/app/logs/app_20250727.log
+  working_befor_data/app/logs/app_20250729.log
+  working_befor_data/app/logs/app_20250730.log
+  working_befor_data/app/logs/app_20250806.log
+  working_befor_data/app/logs/app_20250807.log
+  working_befor_data/app/logs/app_20250810.log
+  working_befor_data/app/logs/app_20250813.log
+  working_befor_data/app/logs/app_20250814.log
+  working_befor_data/app/tests/event_handler_example.py
+  working_befor_data/app/tests/optimizer_test.py
+  working_befor_data/app/tests/README.md
+  working_befor_data/app/tests/sla_change_example.py
+  working_befor_data/app/tests/system_integration_test.py
+  working_befor_data/app/tests/test_data_preparation.py
+  working_befor_data/app/tests/test_link_comprehensive.py
+  working_befor_data/app/tests/test_profile_comprehensive.py
+  working_befor_data/app/tests/__init__.py
+  working_befor_data/app/services/base_mock_service.py
+  working_befor_data/app/services/data_preparation_service.py
+  working_befor_data/app/services/event_handler.py
+  working_befor_data/app/services/mock_services.py
+  working_befor_data/app/services/README.md
+  working_befor_data/app/services/__init__.py
   working_befor_data/aihub-bateel-project/api/.gitignore
   working_befor_data/aihub-bateel-project/api/api/
   working_befor_data/aihub-bateel-project/api/app/
@@ -154,84 +223,15 @@ Files:
   working_befor_data/aihub-bateel-project/api/test_memory.py
   working_befor_data/aihub-bateel-project/api/test_o3_mini.py
   working_befor_data/aihub-bateel-project/api/uploads/
-  working_befor_data/aihub-bateel-project/Note_book/Search.ipynb
-  working_befor_data/aihub-bateel-project/Note_book/YT_Talk_to_CSV_&_Excel_Files_with_LangChain.ipynb
-  working_befor_data/aihub-bateel-project/files/Item Planning data.xlsx
-  working_befor_data/aihub-bateel-project/uploads/item_planning_data.csv
-  working_befor_data/app/api/api.py
-  working_befor_data/app/api/api_caller.py
-  working_befor_data/app/api/api_interfaces.py
-  working_befor_data/app/api/main.py
-  working_befor_data/app/api/README.md
-  working_befor_data/app/api/__init__.py
-  working_befor_data/app/docs/api_structure.md
-  working_befor_data/app/docs/event_flow_paths.txt
-  working_befor_data/app/docs/event_system.md
-  working_befor_data/app/docs/README.md
-  working_befor_data/app/core/optimizer.py
-  working_befor_data/app/core/README.md
-  working_befor_data/app/core/__init__.py
-  working_befor_data/app/logs/app_20250313.log
-  working_befor_data/app/logs/app_20250316.log
-  working_befor_data/app/logs/app_20250317.log
-  working_befor_data/app/logs/app_20250318.log
-  working_befor_data/app/logs/app_20250323.log
-  working_befor_data/app/logs/app_20250324.log
-  working_befor_data/app/logs/app_20250410.log
-  working_befor_data/app/logs/app_20250522.log
-  working_befor_data/app/logs/app_20250525.log
-  working_befor_data/app/logs/app_20250526.log
-  working_befor_data/app/logs/app_20250527.log
-  working_befor_data/app/logs/app_20250528.log
-  working_befor_data/app/logs/app_20250529.log
-  working_befor_data/app/logs/app_20250602.log
-  working_befor_data/app/logs/app_20250619.log
-  working_befor_data/app/logs/app_20250622.log
-  working_befor_data/app/logs/app_20250624.log
-  working_befor_data/app/logs/app_20250625.log
-  working_befor_data/app/logs/app_20250629.log
-  working_befor_data/app/logs/app_20250630.log
-  working_befor_data/app/logs/app_20250701.log
-  working_befor_data/app/logs/app_20250714.log
-  working_befor_data/app/logs/app_20250720.log
-  working_befor_data/app/logs/app_20250721.log
-  working_befor_data/app/logs/app_20250727.log
-  working_befor_data/app/models/link.py
-  working_befor_data/app/models/profile.py
-  working_befor_data/app/models/README.md
-  working_befor_data/app/models/__init__.py
-  working_befor_data/app/services/base_mock_service.py
-  working_befor_data/app/services/data_preparation_service.py
-  working_befor_data/app/services/event_handler.py
-  working_befor_data/app/services/mock_services.py
-  working_befor_data/app/services/README.md
-  working_befor_data/app/services/__init__.py
-  working_befor_data/app/tests/event_handler_example.py
-  working_befor_data/app/tests/optimizer_test.py
-  working_befor_data/app/tests/README.md
-  working_befor_data/app/tests/sla_change_example.py
-  working_befor_data/app/tests/system_integration_test.py
-  working_befor_data/app/tests/test_data_preparation.py
-  working_befor_data/app/tests/test_link_comprehensive.py
-  working_befor_data/app/tests/test_profile_comprehensive.py
-  working_befor_data/app/tests/__init__.py
   working_befor_data/app/utils/logger.py
   working_befor_data/app/utils/README.md
   working_befor_data/app/utils/__init__.py
-  working_befor_data/aihub-bateel-project/api/api/schema/
+  working_befor_data/aihub-bateel-project/files/Item Planning data.xlsx
+  working_befor_data/aihub-bateel-project/Note_book/Search.ipynb
+  working_befor_data/aihub-bateel-project/Note_book/YT_Talk_to_CSV_&_Excel_Files_with_LangChain.ipynb
+  working_befor_data/aihub-bateel-project/uploads/item_planning_data.csv
   working_befor_data/aihub-bateel-project/api/app/main.py
   working_befor_data/aihub-bateel-project/api/app/__init__.py
   working_befor_data/aihub-bateel-project/api/schema/api_documentation.md
-  working_befor_data/aihub-bateel-project/api/schema/corrected_openapi.json
-  working_befor_data/aihub-bateel-project/api/schema/openapi.json
-  working_befor_data/aihub-bateel-project/api/schema/openapi_simplified.json
-  working_befor_data/aihub-bateel-project/api/schema/query_item_planning_openapi.json
-  working_befor_data/aihub-bateel-project/api/schema/simplified_openapi.json
-  working_befor_data/aihub-bateel-project/api/static/index.html
-  working_befor_data/aihub-bateel-project/api/uploads/07855e9c-ce28-491d-8645-cb34d70d03d3_sample_data.csv
-  working_befor_data/aihub-bateel-project/api/uploads/6361a8ba-9732-4026-a04e-0f719ba63b0d_sample_data.csv
-  working_befor_data/aihub-bateel-project/api/uploads/69ff39ac-36df-4bc7-a9e9-8fbd66119b56_sample_data.csv
-  working_befor_data/aihub-bateel-project/api/uploads/c7dcf0c0-49d1-4612-9fec-cf9bd438df41_sample_data.csv
-  working_befor_data/aihub-bateel-project/api/uploads/d5b09587-b19b-425d-8f63-4f5e03e44a53_sample_data.csv
 
 (Showing first 200 files. Use list_files tool for complete view)

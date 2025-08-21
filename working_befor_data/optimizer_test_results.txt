@@ -1,33 +1,46 @@
 
---- 1. Profile: Standard_Orange_Egypt_Route - Round 1: reusuing current routes ---
+--- 1. Profile: Standard_Jazz(Warid)_Pakistan - Round 1: reusuing current routes ---
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Sinfini_DIR   | Solutions Infini - Kaleyra - BUC Mobile |     100.0% |    85.0% | $   0.285 | $  0.2850 |
+| GMS           | Global Message Services AG - GMS |      95.0% |    95.0% | $   0.315 | $  0.2991 |
+| Undel         | ignore                        |       5.0% |     0.0% | $   0.000 | $  0.0000 |
 
---- 2. Profile: Standard_Orange_Egypt_Route - All other links including undel ---
+--- 2. Profile: Standard_Jazz(Warid)_Pakistan - All other links including undel ---
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Wavys         | WAYVZ                         |      59.6% |    95.0% | $   0.214 | $  0.1275 |
-| STC_WL_TN     | Saudi Telecom Company         |      40.4% |    70.0% | $   0.021 | $  0.0086 |
+| Byteplus_HQ_ADV | BytePlus Lte                  |      67.3% |    80.0% | $   0.026 | $  0.0174 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |      32.7% |    95.0% | $   0.289 | $  0.0945 |
 
---- 3. Profile: Standard_Orange_Egypt_Route - All other links including undel (minimum 4 links) ---
+--- 3. Profile: Standard_Jazz(Warid)_Pakistan - All other links including undel (minimum 4 links) ---
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Wavys         | WAYVZ                         |      49.6% |    95.0% | $   0.214 | $  0.1061 |
-| STC_WL_TN     | Saudi Telecom Company         |      40.4% |    70.0% | $   0.021 | $  0.0086 |
-| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |       5.0% |    95.0% | $   0.262 | $  0.0131 |
-| GMS           | Global Message Services AG - GMS |       5.0% |    95.0% | $   0.218 | $  0.0109 |
+| Byteplus_HQ_ADV | BytePlus Lte                  |      67.3% |    80.0% | $   0.026 | $  0.0174 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |      22.7% |    95.0% | $   0.289 | $  0.0656 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.292 | $  0.0146 |
+| montyDC       | Monty Mobile                  |       5.0% |    95.0% | $   0.305 | $  0.0152 |
 
---- 4. Profile: Standard_Orange_Egypt_Route - All other links excluding undel ---
+--- 4. Profile: Standard_Jazz(Warid)_Pakistan - All other links excluding undel ---
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Wavys         | WAYVZ                         |      59.6% |    95.0% | $   0.214 | $  0.1275 |
-| STC_WL_TN     | Saudi Telecom Company         |      40.4% |    70.0% | $   0.021 | $  0.0086 |
+| Byteplus_HQ_ADV | BytePlus Lte                  |      67.3% |    80.0% | $   0.026 | $  0.0174 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |      32.7% |    95.0% | $   0.289 | $  0.0945 |
 
---- 5. Profile: Standard_Orange_Egypt_Route - All other links excluding undel (minimum 4 links) ---
+--- 5. Profile: Standard_Jazz(Warid)_Pakistan - All other links excluding undel (minimum 4 links) ---
 | Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
 |---------------|-------------------------------|-----------|----------|-----------|-----------|
-| Wavys         | WAYVZ                         |      49.6% |    95.0% | $   0.214 | $  0.1061 |
-| STC_WL_TN     | Saudi Telecom Company         |      40.4% |    70.0% | $   0.021 | $  0.0086 |
-| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |       5.0% |    95.0% | $   0.262 | $  0.0131 |
-| GMS           | Global Message Services AG - GMS |       5.0% |    95.0% | $   0.218 | $  0.0109 |
+| Byteplus_HQ_ADV | BytePlus Lte                  |      67.3% |    80.0% | $   0.026 | $  0.0174 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |      22.7% |    95.0% | $   0.289 | $  0.0656 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.292 | $  0.0146 |
+| montyDC       | Monty Mobile                  |       5.0% |    95.0% | $   0.305 | $  0.0152 |
+
+--- 6. Profile: Standard_Jazz(Warid)_Pakistan - All other links excluding undel (minimum 8 links) ---
+| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |
+|---------------|-------------------------------|-----------|----------|-----------|-----------|
+| Byteplus_HQ_ADV | BytePlus Lte                  |      65.0% |    80.0% | $   0.026 | $  0.0168 |
+| Kalaam_Dr     | Kalaam Telecom Bahrain B.S.C  |       5.0% |    95.0% | $   0.289 | $  0.0145 |
+| AmeexOTP      | Ameex                         |       5.0% |    95.0% | $   0.315 | $  0.0157 |
+| Ameex         | Ameex                         |       5.0% |    95.0% | $   0.315 | $  0.0157 |
+| Broadnetme    | Broadnetme                    |       5.0% |    95.0% | $   0.307 | $  0.0154 |
+| bics          | BICS                          |       5.0% |    95.0% | $   0.292 | $  0.0146 |
+| montyDC       | Monty Mobile                  |       5.0% |    95.0% | $   0.305 | $  0.0152 |
+| Mada_USD      | Mada USD                      |       5.0% |    90.0% | $   0.241 | $  0.0120 |

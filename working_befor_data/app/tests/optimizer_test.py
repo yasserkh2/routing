@@ -246,6 +246,35 @@ async def test_optimizer():
                             no_undel_min_links_optimized_cost += link_cost
                             print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
                     
+                    # Reset optimizer for the new test with 8 minimum links
+                    optimizer.reset()
+                    
+                    # Run optimization without Undel with minimum 8 links
+                    min_links_count_8 = 8  # Set minimum number of links to 8
+                    no_undel_min_links_8_success = optimizer.solve(no_undel_links_data, profile.expected_sla, min_links=min_links_count_8, min_traffic_per_link=min_traffic)
+                    
+                    if no_undel_min_links_8_success:
+                        # Get optimization results without Undel with minimum 8 links
+                        no_undel_min_links_8_profile_info = {
+                            'profile_id': profile.profile_id,
+                            'name': profile.name,
+                            'expected_sla': profile.expected_sla
+                        }
+                        no_undel_min_links_8_routing_plan = optimizer.get_routing_plan(no_undel_links_data, no_undel_min_links_8_profile_info)
+                        no_undel_min_links_8_stats = optimizer.get_optimization_stats(no_undel_links_data, profile.expected_sla)
+                        
+                        print(f"\n--- 6. Profile: {profile.name} - All other links excluding undel (minimum 8 links) ---")
+                        print("| Link ID       | Provider                      | Traffic % | SLA      | Price ($) | Cost ($)  |")
+                        print("|---------------|-------------------------------|-----------|----------|-----------|-----------|")
+                        no_undel_min_links_8_optimized_cost = 0
+                        active_links_no_undel_8 = 0
+                        for route in no_undel_min_links_8_routing_plan['routes']:
+                            if route['percentage'] > 0:  # Only show routes with traffic
+                                active_links_no_undel_8 += 1
+                                link_cost = (route['percentage'] / 100.0) * route['price']
+                                no_undel_min_links_8_optimized_cost += link_cost
+                                print(f"| {route['link']:<13} | {route['provider']:<29} | {route['percentage']:9.1f}% | {route['sla']:7.1f}% | ${route['price']:8.3f} | ${link_cost:8.4f} |")
+                    
                     """# Display traffic differences
                     print(f"\n--- Profile: {profile.name} - Traffic Differences (No-Undel vs. No-Undel+Min Links) ---")
                     print("| Link ID       | Provider                      | No-Undel | No-Undel+4| Change   |")

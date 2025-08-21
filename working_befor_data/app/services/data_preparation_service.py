@@ -71,6 +71,15 @@ PROFILE_INCLUSION_LIST = [
     "Premium_Togo Cell_Togo",
     "Standard_Vodafone_Egypt",
     "Standard_Orange_Egypt_Route",
+    "Standard_Etisalat_Egypt",
+    "Premium_Telecom Egypt_International",
+    "Standard_Asiacell_Iraq",
+    "Standard_Korek Telecom_Iraq",
+    "Telegram_Jazz (Mobilink)_Pakistan",
+    "Standard_Ufone_Pakistan",
+    "Standard_Telenor_Pakistan",
+    "Standard",
+    "Standard_Jazz(Warid)_Pakistan"
 ]
 
 class DataPreparationService:
